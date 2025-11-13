@@ -1,8 +1,7 @@
-import React from 'react';
-import { View, StyleSheet } from 'react-native';
 import { Link } from 'expo-router';
-import { ThemedText } from '../components/atoms/ThemedText';
+import { StyleSheet, View } from 'react-native';
 import { Button } from '../components/atoms/Button';
+import { ThemedText } from '../components/atoms/ThemedText';
 
 export default function Index() {
   return (
@@ -10,13 +9,13 @@ export default function Index() {
       <ThemedText variant="h1">Livion</ThemedText>
       <ThemedText style={{marginTop:12}}>Your health story. Yours to share.</ThemedText>
       <View style={{marginTop:20}}>
-        <Link href="/patient/home"><Button title="Continue as Patient" /></Link>
+        <Link href="/patient/home" asChild><Button title="Continue as Patient" /></Link>
       </View>
       <View style={{marginTop:12}}>
-        <Link href="/clinician/dashboard"><Button title="Continue as Clinician" /></Link>
+        <Link href="/clinician/dashboard" asChild><Button title="Continue as Clinician" /></Link>
       </View>
       <View style={{marginTop:12}}>
-        <Link href="/admin/dashboard"><Button title="Admin" /></Link>
+        <Link href="/admin/dashboard" asChild><Button title="Admin" /></Link>
       </View>
     </View>
   );
