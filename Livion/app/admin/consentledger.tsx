@@ -1,16 +1,74 @@
-import React from 'react';
-import { View, ScrollView } from 'react-native';
+import { SafeAreaView, ScrollView, StyleSheet, View } from 'react-native';
 import { ThemedText } from '../../components/atoms/ThemedText';
+import { ConsentChip } from '../../components/molecules/ConsentChip';
+import { BorderRadius, Colors, Spacing } from '../../constants/Colors';
 
-export default function ConsentLedger() {
-  const ledger = [
-    {id:'c1',action:'granted',scope:'Apple Health',when:'2025-01-10'},
-    {id:'c2',action:'revoked',scope:'EHR Data',when:'2025-02-01'}
-  ];
+export default function ConsentLedgerScreen() {
   return (
-    <ScrollView style={{padding:16}}>
-      <ThemedText variant="h1">Consent Ledger</ThemedText>
-      {ledger.map(l => <View key={l.id} style={{marginTop:12}}><ThemedText>{l.scope}: {l.action} — {l.when}</ThemedText></View>)}
-    </ScrollView>
+    <SafeAreaView style={styles.safeArea}>
+      <ScrollView contentContainerStyle={styles.container}>
+        <ThemedText variant="display" weight="bold" style={styles.header}>
+          Consent Ledger
+        </ThemedText>
+        <ThemedText variant="subtitle" color="secondary" style={styles.subheader}>
+          Audit trail of consent changes across the platform.
+        </ThemedText>
+
+        <View style={styles.entry}>
+          <View style={styles.row}>
+            <ConsentChip scope="Health Records" status="active" />
+            <ThemedText variant="caption" color="tertiary">
+              Oct 07, 2025 · Jane Doe
+            </ThemedText>
+          </View>
+          <ThemedText variant="body" color="secondary">
+            Patient reinstated sharing of clinical notes after care plan review.
+          </ThemedText>
+        </View>
+
+        <View style={styles.entry}>
+          <View style={styles.row}>
+            <ConsentChip scope="Research Program" status="revoked" />
+            <ThemedText variant="caption" color="tertiary">
+              Oct 06, 2025 · Mark Lee
+            </ThemedText>
+          </View>
+          <ThemedText variant="body" color="secondary">
+            Patient opted out due to relocation. System updated retention timers.
+          </ThemedText>
+        </View>
+      </ScrollView>
+    </SafeAreaView>
   );
 }
+
+const styles = StyleSheet.create({
+  safeArea: {
+    flex: 1,
+    backgroundColor: Colors.background.primary,
+  },
+  container: {
+    padding: Spacing.lg,
+    paddingBottom: Spacing['2xl'],
+  },
+  header: {
+    marginBottom: Spacing.sm,
+  },
+  subheader: {
+    marginBottom: Spacing.xl,
+  },
+  entry: {
+    backgroundColor: Colors.background.cardGlass,
+    borderRadius: BorderRadius.lg,
+    padding: Spacing.lg,
+    borderColor: Colors.border.medium,
+    borderWidth: 1,
+    marginBottom: Spacing.lg,
+  },
+  row: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: Spacing.sm,
+  },
+});

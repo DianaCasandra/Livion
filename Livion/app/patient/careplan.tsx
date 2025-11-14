@@ -1,26 +1,74 @@
-import React from 'react';
-import { View, ScrollView, StyleSheet } from 'react-native';
+import { SafeAreaView, ScrollView, StyleSheet, View } from 'react-native';
 import { ThemedText } from '../../components/atoms/ThemedText';
-import { useMockData } from '../../components/providers/MockDataProvider';
-import { Button } from '../../components/atoms/Button';
+import { CareTaskTile } from '../../components/molecules/CareTaskTile';
+import { BorderRadius, Colors, Spacing } from '../../constants/Colors';
+import { useMockData } from '../../hooks/useMockData';
 
-export default function CarePlan() {
-  const mock = useMockData();
+export default function CarePlanScreen() {
+  const { patientData } = useMockData();
+
   return (
-    <ScrollView contentContainerStyle={styles.container}>
-      <ThemedText variant="h1">Care Plan</ThemedText>
-      {mock.tasks.map(t => (
-        <View key={t.id} style={styles.tile}>
-          <ThemedText>{t.title}</ThemedText>
-          <ThemedText style={{fontSize:12, color:'#555'}}>{t.due}</ThemedText>
+    <SafeAreaView style={styles.safeArea}>
+      <ScrollView contentContainerStyle={styles.container}>
+        <ThemedText variant="display" weight="bold" style={styles.header}>
+          Care Plan
+        </ThemedText>
+
+        <View style={styles.section}>
+          <ThemedText variant="heading" weight="semibold">
+            Active Tasks
+          </ThemedText>
+          {patientData.careTasks.map((task) => (
+            <CareTaskTile
+              key={task.id}
+              title={task.title}
+              description={task.description}
+              dueDate={task.dueDate}
+              status={task.status}
+              style={styles.card}
+            />
+          ))}
         </View>
-      ))}
-      <View style={{marginTop:12}}><Button title="Mark all complete" onPress={()=>{}}/></View>
-    </ScrollView>
+
+        <View style={styles.section}>
+          <ThemedText variant="heading" weight="semibold">
+            Clinical Notes
+          </ThemedText>
+          <View style={styles.noteCard}>
+            <ThemedText variant="body" color="secondary">
+              Last reviewed by Dr. Harper on Oct 04, 2025. Continue daily monitoring and weekly check-ins. Adjustment to medication scheduled in next visit.
+            </ThemedText>
+          </View>
+        </View>
+      </ScrollView>
+    </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
-  container: { padding:16 },
-  tile: { backgroundColor:'#fff', padding:12, borderRadius:10, marginTop:10 }
+  safeArea: {
+    flex: 1,
+    backgroundColor: Colors.background.primary,
+  },
+  container: {
+    padding: Spacing.lg,
+    paddingBottom: Spacing['2xl'],
+  },
+  header: {
+    marginBottom: Spacing.xl,
+  },
+  section: {
+    marginBottom: Spacing['2xl'],
+  },
+  card: {
+    marginTop: Spacing.md,
+  },
+  noteCard: {
+    marginTop: Spacing.md,
+    padding: Spacing.lg,
+    borderRadius: BorderRadius.lg,
+    backgroundColor: Colors.background.cardGlass,
+    borderColor: Colors.border.medium,
+    borderWidth: 1,
+  },
 });

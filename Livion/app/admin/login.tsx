@@ -1,11 +1,11 @@
 import { useRouter } from 'expo-router';
 import { SafeAreaView, ScrollView, StyleSheet, View } from 'react-native';
-import { Button } from '../../../components/atoms/Button';
-import { InputField } from '../../../components/atoms/InputField';
-import { ThemedText } from '../../../components/atoms/ThemedText';
-import { BorderRadius, Colors, Spacing } from '../../../constants/Colors';
+import { Button } from '../../components/atoms/Button';
+import { InputField } from '../../components/atoms/InputField';
+import { ThemedText } from '../../components/atoms/ThemedText';
+import { BorderRadius, Colors, Spacing } from '../../constants/Colors';
 
-export default function PatientLoginScreen() {
+export default function AdminLoginScreen() {
   const router = useRouter();
 
   return (
@@ -13,15 +13,16 @@ export default function PatientLoginScreen() {
       <ScrollView contentContainerStyle={styles.container}>
         <View style={styles.card}>
           <ThemedText variant="display" weight="bold" align="center" style={styles.title}>
-            Patient Login
+            Admin Console
           </ThemedText>
-          <InputField label="Email" placeholder="you@example.com" keyboardType="email-address" style={styles.input} />
+          <InputField label="Admin Email" placeholder="you@livion.com" keyboardType="email-address" style={styles.input} />
           <InputField label="Password" placeholder="••••••••" secureTextEntry style={styles.input} />
-          <Button variant="primary" fullWidth style={styles.button} onPress={() => router.replace('/patient/home')}>
-            Sign In
+          <InputField label="Security Key" placeholder="Enter security token" style={styles.input} />
+          <Button variant="primary" fullWidth style={styles.button} onPress={() => router.replace('/admin/dashboard')}>
+            Enter Console
           </Button>
           <ThemedText variant="caption" color="tertiary" align="center" style={styles.footer}>
-            By continuing, you consent to Livion's data use policy.
+            Admin access is monitored. Contact security if you suspect unauthorized use.
           </ThemedText>
         </View>
       </ScrollView>

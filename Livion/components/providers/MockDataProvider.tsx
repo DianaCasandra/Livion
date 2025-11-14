@@ -1,28 +1,140 @@
-import React, { createContext, useContext } from 'react';
+import React, { createContext, ReactNode, useContext } from 'react';
 
-export type Task = { id: string; title: string; due?: string; status: 'pending'|'done'|'snoozed' };
-export type Insight = { id: string; title: string; reason: string; source: string; action?: string };
+// Mock Data Types
+export type Insight = {
+  id: string;
+  title: string;
+  reason: string;
+  source: string;
+  evidence?: string;
+  action?: {
+    label: string;
+    onPress: () => void;
+  };
+};
 
-const mock = {
-  user: { id: 'u1', name: 'Ana Popescu', role: 'patient' },
+export type CareTask = {
+  id: string;
+  title: string;
+  description: string;
+  dueDate: Date;
+  status: 'due' | 'overdue' | 'completed';
+};
+
+export type ConsentRecord = {
+  id: string;
+  scope: string;
+  status: 'active' | 'pending' | 'revoked';
+  grantedDate: Date;
+};
+
+export type PatientData = {
+  name: string;
+  age: number;
+  conditions: string[];
+  insights: Insight[];
+  careTasks: CareTask[];
+  consents: ConsentRecord[];
+};
+
+// Mock Data
+const mockPatientData: PatientData = {
+  name: 'Jane Doe',
+  age: 34,
+  conditions: ['Type 2 Diabetes', 'Hypertension'],
   insights: [
-    { id: 'i1', title: 'Blood pressure trend stable', reason: 'Last 7 readings', source: 'Connected cuff', action: 'View' },
-    { id: 'i2', title: 'Medication adherence improved', reason: 'Took meds 6/7 days', source: 'Self-report', action: 'Why?' }
-  ] as Insight[],
-  tasks: [
-    { id: 't1', title: 'Take medication X', due: 'Today', status: 'pending' },
-    { id: 't2', title: 'Measure BP', due: 'Tomorrow', status: 'pending' }
-  ] as Task[],
+    {
+      id: '1',
+      title: 'Blood Glucose Trend',
+      reason: 'Your morning blood glucose readings have been consistently higher this week.',
+      source: 'Continuous Glucose Monitor',
+      evidence: 'Based on 7 days of CGM data showing average fasting glucose of 145 mg/dL, compared to your target range of 80-130 mg/dL. This pattern suggests potential need for medication adjustment or dietary review.',
+      action: {
+        label: 'Schedule Review',
+        onPress: () => console.log('Schedule review clicked'),
+      },
+    },
+    {
+      id: '2',
+      title: 'Activity Achievement',
+      reason: 'You\'ve reached your weekly step goal 3 weeks in a row!',
+      source: 'Fitness Tracker',
+      action: {
+        label: 'View Progress',
+        onPress: () => console.log('View progress clicked'),
+      },
+    },
+  ],
+  careTasks: [
+    {
+      id: '1',
+      title: 'Blood Pressure Check',
+      description: 'Take your morning blood pressure reading',
+      dueDate: new Date(),
+      status: 'due',
+    },
+    {
+      id: '2',
+      title: 'Medication Refill',
+      description: 'Metformin prescription needs renewal',
+      dueDate: new Date(Date.now() - 86400000), // Yesterday
+      status: 'overdue',
+    },
+    {
+      id: '3',
+      title: 'Weekly Exercise Log',
+      description: 'Log your exercise activities for the week',
+      dueDate: new Date(Date.now() + 172800000), // 2 days from now
+      status: 'completed',
+    },
+  ],
   consents: [
-    { scope: 'Apple Health', status: 'granted' },
-    { scope: 'EHR Data', status: 'revoked' }
-  ]
+    {
+      id: '1',
+      scope: 'Health Data Sharing',
+      status: 'active',
+      grantedDate: new Date('2024-01-15'),
+    },
+    {
+      id: '2',
+      scope: 'Research Participation',
+      status: 'pending',
+      grantedDate: new Date('2024-03-01'),
+    },
+  ],
 };
 
-const MockDataContext = createContext(mock);
-
-export const MockDataProvider: React.FC<{children: React.ReactNode}> = ({children}) => {
-  return <MockDataContext.Provider value={mock}>{children}</MockDataContext.Provider>;
+type MockDataContextType = {
+  patientData: PatientData;
+  updatePatientData: (data: Partial<PatientData>) => void;
 };
 
-export const useMockData = () => useContext(MockDataContext);
+const MockDataContext = createContext<MockDataContextType | undefined>(undefined);
+
+export const MockDataProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
+  const [patientData] = React.useState<PatientData>(mockPatientData);
+
+  const updatePatientData = (data: Partial<PatientData>) => {
+    // In real app, this would update state
+    console.log('Update patient data:', data);
+  };
+
+  return (
+    <MockDataContext.Provider
+      value={{
+        patientData,
+        updatePatientData,
+      }}
+    >
+      {children}
+    </MockDataContext.Provider>
+  );
+};
+
+export const useMockData = () => {
+  const context = useContext(MockDataContext);
+  if (!context) {
+    throw new Error('useMockData must be used within MockDataProvider');
+  }
+  return context;
+};

@@ -4,10 +4,18 @@ import { CareTaskTile } from '../molecules/CareTaskTile';
 import { useMockData } from '../providers/MockDataProvider';
 
 export const TaskList: React.FC = () => {
-  const m = useMockData();
+  const { patientData } = useMockData();
+  
   return (
     <View>
-      {m.tasks.map(t => <CareTaskTile key={t.id} title={t.title} due={t.due} />)}
+      {patientData.careTasks.map((t) => (
+        <CareTaskTile 
+          key={t.id} 
+          title={t.title}
+          dueDate={t.dueDate}
+          status={t.status}
+        />
+      ))}
     </View>
   );
 };

@@ -1,27 +1,57 @@
+// app/index.tsx
 import { Link } from 'expo-router';
-import { StyleSheet, View } from 'react-native';
-import { Button } from '../components/atoms/Button';
+import { View } from 'react-native';
 import { ThemedText } from '../components/atoms/ThemedText';
 
-export default function Index() {
+export default function LandingPage() {
   return (
-    <View style={styles.container}>
-      <ThemedText variant="h1">Livion</ThemedText>
-      <ThemedText style={{marginTop:12}}>Your health story. Yours to share.</ThemedText>
-      <View style={{marginTop:20}}>
-        <Link href="/patient/home" asChild><Button title="Continue as Patient" /></Link>
-      </View>
-      <View style={{marginTop:12}}>
-        <Link href="/clinician/dashboard" asChild><Button title="Continue as Clinician" /></Link>
-      </View>
-      <View style={{marginTop:12}}>
-        <Link href="/admin/dashboard" asChild><Button title="Admin" /></Link>
+    <View style={{ 
+      flex: 1, 
+      justifyContent: 'center', 
+      alignItems: 'center', 
+      padding: 20, 
+      backgroundColor: '#0f172a' 
+    }}>
+      <ThemedText variant="display" style={{ marginBottom: 20 }}>
+        HealthApp
+      </ThemedText>
+      <ThemedText variant="body" color="secondary" style={{ textAlign: 'center', marginBottom: 30 }}>
+        Welcome to your personal health companion
+      </ThemedText>
+      
+      <View style={{ gap: 15, width: '100%', maxWidth: 300 }}>
+        {/* Folosește rutele corecte pentru structura ta */}
+        <Link href={"/patient/home" as any} style={{
+          backgroundColor: '#0d9488',
+          padding: 15,
+          borderRadius: 8,
+          width: '100%',
+        }}>
+          <ThemedText color="inverse" align="center">
+            Get Started as Patient
+          </ThemedText>
+        </Link>
+        
+        <Link href={"/clinician/dashboard" as any} style={{
+          backgroundColor: 'transparent',
+          padding: 15,
+          borderRadius: 8,
+          borderWidth: 2,
+          borderColor: '#0d9488',
+          width: '100%',
+        }}>
+          <ThemedText color="teal" align="center">I'm a Clinician</ThemedText>
+        </Link>
+        
+        <Link href={"/admin/dashboard" as any} style={{
+          backgroundColor: 'transparent',
+          padding: 15,
+          borderRadius: 8,
+          width: '100%',
+        }}>
+          <ThemedText color="secondary" align="center">Admin Access</ThemedText>
+        </Link>
       </View>
     </View>
   );
 }
-
-const styles = StyleSheet.create({
-  container: { flex:1, alignItems:'center', justifyContent:'center', padding:20, backgroundColor:'#f6f7fb' }
-});
-

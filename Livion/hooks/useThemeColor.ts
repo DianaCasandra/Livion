@@ -1,9 +1,10 @@
-import { useContext } from 'react';
-import { ThemeContext } from '../components/providers/ThemeProvider';
-import { Colors } from '../constants/Colors';
+import { useTheme } from '../components/providers/ThemeProvider';
 
-export const useThemeColor = (key: keyof typeof Colors) => {
-  const { theme } = useContext(ThemeContext);
-  // Simple: theme can be 'light' or 'dark' but we keep same palette for POC
-  return Colors[key];
+/**
+ * useThemeColor Hook
+ * Access theme colors consistently across the app
+ */
+export const useThemeColor = () => {
+  const { colors } = useTheme();
+  return colors;
 };
