@@ -4,43 +4,49 @@ import { Button } from '../../../components/atoms/Button';
 import { ThemedText } from '../../../components/atoms/ThemedText';
 import { Colors, Spacing } from '../../../constants/Colors';
 
-export default function WelcomeScreen() {
+export default function ClinicianWelcomeScreen() {
   const router = useRouter();
 
   return (
-
-    
-
     <SafeAreaView style={styles.safeArea}>
       <ScrollView
         style={styles.container}
         contentContainerStyle={styles.contentContainer}
       >
-
-                <TouchableOpacity
-                  onPress={() => router.back()}
-                  style={styles.backButton}
-                >
-                  <ThemedText variant="body" color="teal" style={styles.backButtonText}>
-                    ← Back to Onboarding
-                  </ThemedText>
-                </TouchableOpacity>
-        
+        {/* Back button */}
+        <TouchableOpacity
+          onPress={() => router.back()}
+          style={styles.backButton}
+        >
+          <ThemedText variant="body" color="teal" style={styles.backButtonText}>
+            ← Back
+          </ThemedText>
+        </TouchableOpacity>
 
         <View style={styles.content}>
-          {/* Subtle Title */}
+          {/* Title */}
           <ThemedText
             variant="heading"
             color="secondary"
             align="center"
             style={styles.softTitle}
           >
-            Your health story. Yours to share.
+            Welcome to Livion
+          </ThemedText>
+
+          {/* Subtitle */}
+          <ThemedText
+            variant="body"
+            color="indigo"
+            align="center"
+            style={styles.subtitle}
+          >
+            Thank you for joining the clinician community of Livion.
           </ThemedText>
 
           {/* Link-style button */}
           <TouchableOpacity
-            onPress={() => router.push('/patient/onboarding/userpromise')}
+            //onPress={() => router.push('/clinician/onboarding/register')}
             style={styles.linkButton}
           >
             <ThemedText
@@ -49,7 +55,7 @@ export default function WelcomeScreen() {
               align="center"
               style={styles.linkText}
             >
-              User Promise & Privacy Explainer
+              Learn how Livion supports your workflow
             </ThemedText>
           </TouchableOpacity>
 
@@ -60,10 +66,10 @@ export default function WelcomeScreen() {
             variant="primary"
             size="lg"
             fullWidth
-            onPress={() => router.push('/patient/onboarding/register')}
+            onPress={() => router.push('/clinician/onboarding/register')}
             style={styles.button}
           >
-            Get Started
+            Continue
           </Button>
         </View>
       </ScrollView>
@@ -89,10 +95,17 @@ const styles = StyleSheet.create({
   },
 
   softTitle: {
+    marginBottom: Spacing.sm,
+    opacity: 0.95,
+    fontSize: 24,
+    lineHeight: 34,
+  },
+
+  subtitle: {
     marginBottom: Spacing.lg,
-    opacity: 0.9,
-    fontSize: 20,
-    lineHeight: 28,
+    opacity: 0.85,
+    fontSize: 16,
+    lineHeight: 24,
   },
 
   linkButton: {
@@ -108,10 +121,12 @@ const styles = StyleSheet.create({
   button: {
     marginTop: Spacing.xl,
   },
+
   backButton: {
     paddingVertical: 8,
     paddingHorizontal: 12,
   },
+
   backButtonText: {
     fontSize: 14,
   },

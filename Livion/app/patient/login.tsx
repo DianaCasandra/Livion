@@ -1,9 +1,9 @@
 import { useRouter } from 'expo-router';
-import { SafeAreaView, ScrollView, StyleSheet, View } from 'react-native';
-import { Button } from '../../../components/atoms/Button';
-import { InputField } from '../../../components/atoms/InputField';
-import { ThemedText } from '../../../components/atoms/ThemedText';
-import { BorderRadius, Colors, Spacing } from '../../../constants/Colors';
+import { SafeAreaView, ScrollView, StyleSheet, TouchableOpacity, View } from 'react-native';
+import { Button } from '../../components/atoms/Button';
+import { InputField } from '../../components/atoms/InputField';
+import { ThemedText } from '../../components/atoms/ThemedText';
+import { BorderRadius, Colors, Spacing } from '../../constants/Colors';
 
 export default function PatientLoginScreen() {
   const router = useRouter();
@@ -11,11 +11,22 @@ export default function PatientLoginScreen() {
   return (
     <SafeAreaView style={styles.safeArea}>
       <ScrollView contentContainerStyle={styles.container}>
+
+              <TouchableOpacity
+                onPress={() => router.back()}
+                style={styles.backButton}
+              >
+                <ThemedText variant="body" color="teal" style={styles.backButtonText}>
+                  ← Back
+                </ThemedText>
+              </TouchableOpacity>
+      
+
         <View style={styles.card}>
           <ThemedText variant="display" weight="bold" align="center" style={styles.title}>
             Patient Login
           </ThemedText>
-          <InputField label="Email" placeholder="you@example.com" keyboardType="email-address" style={styles.input} />
+          <InputField label="Email / Phone " placeholder="you@example.com / +40 **** *** ***" keyboardType="email-address" style={styles.input} />
           <InputField label="Password" placeholder="••••••••" secureTextEntry style={styles.input} />
           <Button variant="primary" fullWidth style={styles.button} onPress={() => router.replace('/patient/home')}>
             Sign In
@@ -57,5 +68,11 @@ const styles = StyleSheet.create({
   },
   footer: {
     marginTop: Spacing.lg,
+  },
+  backButton: {
+    marginBottom: Spacing.md,
+  },
+  backButtonText: {
+    marginBottom: Spacing.md,
   },
 });
