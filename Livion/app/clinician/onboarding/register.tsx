@@ -12,43 +12,44 @@ export default function PatientLoginScreen() {
     <SafeAreaView style={styles.safeArea}>
       <ScrollView contentContainerStyle={styles.container}>
 
-              <TouchableOpacity
-                onPress={() => router.back()}
-                style={styles.backButton}
-              >
-                <ThemedText variant="body" color="teal" style={styles.backButtonText}>
-                  ← Back to Onboarding
-                </ThemedText>
-              </TouchableOpacity>
-      
+        <TouchableOpacity
+          onPress={() => router.back()}
+          style={styles.backButton}
+        >
+          <ThemedText variant="body" color="teal" style={styles.backButtonText}>
+            ⪻ Back to Onboarding
+          </ThemedText>
+        </TouchableOpacity>
+
 
         <View style={styles.card}>
           <ThemedText variant="display" weight="bold" align="center" style={styles.title}>
-            Patient Register
+            Clinician Register
           </ThemedText>
-          <InputField label="Email / Phone* " placeholder="you@example.com / +40 **** *** ***" keyboardType="email-address" style={styles.input} />
-          <InputField label="Password*" placeholder="••••••••" secureTextEntry style={styles.input} />
-          <InputField label="Confirm password*" placeholder="••••••••" secureTextEntry style={styles.input} />
-          <InputField label="License" placeholder="••••••••" secureTextEntry style={styles.input} />      
-          <Button variant="primary" fullWidth style={styles.button} onPress={() => router.replace('/patient/home')}>
+          <InputField label="HCP Verification " placeholder="enter your license ID" style={styles.input} />
+          <InputField label="Organization" placeholder="e.g: Regina Maria, DentaVis" secureTextEntry style={styles.input} />
+          <InputField label="Role" placeholder="e.g: nurse, physician" secureTextEntry style={styles.input} />
+          <InputField label="Set a Password" placeholder="" secureTextEntry style={styles.input} />
+          <InputField label="Confirm password" placeholder="" secureTextEntry style={styles.input} />
+          <Button variant="primary" fullWidth style={styles.button} onPress={() => router.replace('/clinician/dashboard')}>
             Sign In
           </Button>
           <ThemedText variant="caption" color="tertiary" align="center" style={styles.footer}>
             By continuing, you consent to Livion's data use policy.
-            Already have an account? 
+            Already have an account?
             <TouchableOpacity
-                        onPress={() => router.push('/patient/login')}
-                        style={styles.linkButton}
-                      >
-                        <ThemedText
-                          variant="body"
-                          color="teal"
-                          align="center"
-                          style={styles.linkText}
-                        >
-                          Log in here.
-                        </ThemedText>
-                      </TouchableOpacity>
+              onPress={() => router.push('/clinician/login')}
+              style={styles.linkButton}
+            >
+              <ThemedText
+                variant="body"
+                color="teal"
+                align="center"
+                style={styles.linkText}
+              >
+                Log in here
+              </ThemedText>
+            </TouchableOpacity>
           </ThemedText>
         </View>
       </ScrollView>
@@ -65,19 +66,26 @@ const styles = StyleSheet.create({
     flexGrow: 1,
     justifyContent: 'center',
     padding: Spacing.xl,
+
   },
   card: {
     padding: Spacing.xl,
     borderRadius: BorderRadius.xl,
     backgroundColor: Colors.background.cardGlass,
     borderColor: Colors.border.medium,
-    borderWidth: 1,
+    borderWidth: 3,
+    alignItems: 'center', // <-- center all children horizontally
   },
-  title: {
-    marginBottom: Spacing.xl,
-  },
+
   input: {
     marginTop: Spacing.md,
+    width: '109%',          // <-- make it responsive but not overflowing
+    maxWidth: 400,         // optional: prevents overly wide inputs on large screens
+    marginLeft: -10,
+  },
+
+  title: {
+    marginBottom: Spacing.xl,
   },
   button: {
     marginTop: Spacing.lg,
@@ -86,7 +94,8 @@ const styles = StyleSheet.create({
     marginTop: Spacing.lg,
   },
   backButton: {
-    marginBottom: Spacing.md,
+    paddingVertical: 20,
+    paddingHorizontal: -30,
   },
   backButtonText: {
     marginBottom: Spacing.md,

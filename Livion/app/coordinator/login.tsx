@@ -17,23 +17,25 @@ export default function PatientLoginScreen() {
           style={styles.backButton}
         >
           <ThemedText variant="body" color="teal" style={styles.backButtonText}>
-            ⪻ Back
+            ⪻ Back to Onboarding
           </ThemedText>
         </TouchableOpacity>
 
 
         <View style={styles.card}>
           <ThemedText variant="display" weight="bold" align="center" style={styles.title}>
-            Patient Login
+            Care Coordinator Login
           </ThemedText>
-          <InputField label="Email / Phone " placeholder="" keyboardType="email-address" style={styles.input} />
+          <InputField label="Work Email " placeholder="you@work.com" style={styles.input} />
+          <InputField label="Role Confirmation" placeholder="e.g: pharmacist" secureTextEntry style={styles.input} />
           <InputField label="Password" placeholder="" secureTextEntry style={styles.input} />
-          <Button variant="primary" fullWidth style={styles.button} onPress={() => router.replace('/patient/home')}>
-            Sign In
+          <Button variant="primary" fullWidth style={styles.button} onPress={() => router.replace('/clinician/dashboard')}>
+            Sign In Securely
           </Button>
           <ThemedText variant="caption" color="tertiary" align="center" style={styles.footer}>
-            Thank you for choosing Livion.
+            Protected under HIPAA and GDPR. Contact support for access issues.
           </ThemedText>
+          
         </View>
       </ScrollView>
     </SafeAreaView>
@@ -49,19 +51,26 @@ const styles = StyleSheet.create({
     flexGrow: 1,
     justifyContent: 'center',
     padding: Spacing.xl,
+
   },
   card: {
     padding: Spacing.xl,
     borderRadius: BorderRadius.xl,
     backgroundColor: Colors.background.cardGlass,
     borderColor: Colors.border.medium,
-    borderWidth: 1,
+    borderWidth: 3,
+    alignItems: 'center', // <-- center all children horizontally
   },
-  title: {
-    marginBottom: Spacing.xl,
-  },
+
   input: {
     marginTop: Spacing.md,
+    width: '109%',          // <-- make it responsive but not overflowing
+    maxWidth: 400,         // optional: prevents overly wide inputs on large screens
+    marginLeft: -10,
+  },
+
+  title: {
+    marginBottom: Spacing.xl,
   },
   button: {
     marginTop: Spacing.lg,
@@ -70,10 +79,16 @@ const styles = StyleSheet.create({
     marginTop: Spacing.lg,
   },
   backButton: {
-    marginBottom: 20,
+    paddingVertical: 20,
+    paddingHorizontal: -30,
   },
   backButtonText: {
     marginBottom: Spacing.md,
-    fontSize: 18,
+  },
+  linkButton: {
+    marginTop: Spacing.sm,
+  },
+  linkText: {
+    marginTop: Spacing.sm,
   },
 });

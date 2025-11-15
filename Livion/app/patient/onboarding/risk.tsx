@@ -1,47 +1,93 @@
+import { useState } from 'react';
 import { useRouter } from 'expo-router';
-import { SafeAreaView, ScrollView, StyleSheet, View } from 'react-native';
-import { Button } from '../../../components/atoms/Button';
+import { SafeAreaView, ScrollView, StyleSheet, View, TouchableOpacity } from 'react-native';
 import { Chip } from '../../../components/atoms/Chip';
+import { Button } from '../../../components/atoms/Button';
 import { ThemedText } from '../../../components/atoms/ThemedText';
 import { BorderRadius, Colors, Spacing } from '../../../constants/Colors';
+
+const QUESTIONS = [
+  "Do you experience severe headaches daily?",
+  "Have you had episodes of dizziness or fainting?",
+  "Are you experiencing chest pain or pressure?",
+  "Do you have persistent shortness of breath?",
+  "Do you notice unusual swelling in your legs or ankles?",
+];
 
 export default function RiskAssessmentScreen() {
   const router = useRouter();
 
+  // 'yes' | 'no' | null for each question
+  const [answers, setAnswers] = useState<(string | null)[]>(Array(QUESTIONS.length).fill(null));
+
+  const yesCount = answers.filter(a => a === 'yes').length;
+
+  const handleAnswer = (index: number, value: 'yes' | 'no') => {
+    const newAnswers = [...answers];
+    newAnswers[index] = value;
+    setAnswers(newAnswers);
+  };
+
   return (
     <SafeAreaView style={styles.safeArea}>
       <ScrollView contentContainerStyle={styles.container}>
+        {/* Back button */}
+        <TouchableOpacity onPress={() => router.back()} style={styles.backButton}>
+          <ThemedText variant="body" color="teal" style={styles.backButtonText}>
+            ⪻ Back
+          </ThemedText>
+        </TouchableOpacity>
+
         <View style={styles.card}>
-          <ThemedText variant="display" weight="bold" style={styles.title}>
+          <ThemedText variant="display" weight="bold" align="center" color="teal" style={styles.title}>
             Risk Snapshot
           </ThemedText>
-          <ThemedText variant="body" color="secondary" style={styles.body}>
-            Based on your data, here are the current focus areas. Your care team will review these with you and adjust your plan as needed.
+
+          <ThemedText variant="body" color="secondary" align="center" style={styles.body}>
+            Please complete the following triage questions regarding your current symptoms. We will examine your state as a starting point in your health journey.
           </ThemedText>
 
-          <View style={styles.riskList}>
-            <View style={styles.riskItem}>
-              <Chip label="Priority" variant="status-attention" />
-              <ThemedText variant="subtitle" weight="semibold" style={styles.riskTitle}>
-                Morning Glucose Spikes
-              </ThemedText>
-              <ThemedText variant="body" color="secondary">
-                Average fasting glucose 145 mg/dL (target 80-130). Monitor breakfast choices and medication timing.
-              </ThemedText>
-            </View>
-            <View style={styles.riskItem}>
-              <Chip label="Stable" variant="status-ok" />
-              <ThemedText variant="subtitle" weight="semibold" style={styles.riskTitle}>
-                Blood Pressure Trends
-              </ThemedText>
-              <ThemedText variant="body" color="secondary">
-                Weekly average 125/80 mmHg. Continue current routine and daily readings.
-              </ThemedText>
-            </View>
+          {/* Questions */}
+          <View style={styles.questionsContainer}>
+            {QUESTIONS.map((q, i) => (
+              <View key={i} style={styles.questionItem}>
+                <ThemedText variant="subtitle" weight="semibold" style={styles.questionText}>
+                  {q}
+                </ThemedText>
+                <View style={styles.answerButtons}>
+                  <Chip
+                    label="Yes"
+                    variant={answers[i] === 'yes' ? 'status-action' : 'teal'}
+                    style={{ marginRight: Spacing.sm }}
+                    onPress={() => handleAnswer(i, 'yes')}
+                  />
+                  <Chip
+                    label="No"
+                    variant={answers[i] === 'no' ? 'status-ok' : 'teal'}
+                    onPress={() => handleAnswer(i, 'no')}
+                  />
+                </View>
+              </View>
+            ))}
           </View>
 
+          {/* Guidance if 3+ yes */}
+          {yesCount >= 3 && (
+            <View style={styles.guidanceContainer}>
+              <ThemedText variant="subtitle" weight="bold" style={{ color: Colors.status.action, marginBottom: Spacing.sm }}>
+                Seek Care
+              </ThemedText>
+              <ThemedText variant="body" color="secondary" align='center'>
+                Based on your responses, it is recommended to contact your healthcare provider immediately. For emergencies, call:
+              </ThemedText>
+              <ThemedText variant="body" color="secondary">
+                - 112 (EU)
+              </ThemedText>
+            </View>
+          )}
+
           <Button variant="primary" fullWidth style={styles.button} onPress={() => router.replace('/patient/home')}>
-            Finish Onboarding
+            Finish Assessment
           </Button>
         </View>
       </ScrollView>
@@ -50,15 +96,8 @@ export default function RiskAssessmentScreen() {
 }
 
 const styles = StyleSheet.create({
-  safeArea: {
-    flex: 1,
-    backgroundColor: Colors.background.primary,
-  },
-  container: {
-    flexGrow: 1,
-    justifyContent: 'center',
-    padding: Spacing.xl,
-  },
+  safeArea: { flex: 1, backgroundColor: Colors.background.primary },
+  container: { flexGrow: 1, padding: Spacing.xl },
   card: {
     padding: Spacing.xl,
     borderRadius: BorderRadius.xl,
@@ -66,28 +105,24 @@ const styles = StyleSheet.create({
     borderColor: Colors.border.medium,
     borderWidth: 1,
   },
-  title: {
-    marginBottom: Spacing.md,
-  },
-  body: {
-    marginBottom: Spacing.lg,
-  },
-  riskList: {
-    gap: Spacing.lg,
-    marginBottom: Spacing.xl,
-  },
-  riskItem: {
+  title: { marginBottom: Spacing.md },
+  body: { marginBottom: Spacing.lg },
+  backButton: { flexDirection: 'row', alignItems: 'center', marginBottom: 15, marginTop: 15 },
+  backButtonText: { marginBottom: Spacing.md, fontSize: 18 },
+  questionsContainer: { gap: Spacing.lg, marginBottom: Spacing.xl },
+  questionItem: {
     backgroundColor: Colors.background.card,
     borderRadius: BorderRadius.lg,
-    padding: Spacing.lg,
-    borderColor: Colors.border.medium,
-    borderWidth: 1,
+    padding: Spacing.md,
   },
-  riskTitle: {
-    marginTop: Spacing.sm,
-    marginBottom: Spacing.sm,
+  questionText: { marginBottom: Spacing.sm },
+  answerButtons: { flexDirection: 'row' },
+  guidanceContainer: {
+    alignItems: 'center',
+    marginTop: Spacing.lg,
+    padding: Spacing.md,
+    backgroundColor: `${Colors.status.action}20`,
+    borderRadius: BorderRadius.md,
   },
-  button: {
-    marginTop: Spacing.sm,
-  },
+  button: { marginTop: Spacing.lg },
 });

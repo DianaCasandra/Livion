@@ -4,7 +4,7 @@ import { Button } from '../../../components/atoms/Button';
 import { ThemedText } from '../../../components/atoms/ThemedText';
 import { Colors, Spacing } from '../../../constants/Colors';
 
-export default function ClinicianWelcomeScreen() {
+export default function WelcomeScreen() {
   const router = useRouter();
 
   return (
@@ -13,55 +13,33 @@ export default function ClinicianWelcomeScreen() {
         style={styles.container}
         contentContainerStyle={styles.contentContainer}
       >
-        {/* Back button */}
-        <TouchableOpacity
-          onPress={() => router.back()}
-          style={styles.backButton}
-        >
-          <ThemedText variant="body" color="teal" style={styles.backButtonText}>
-            ← Back
-          </ThemedText>
-        </TouchableOpacity>
 
-        <View style={styles.content}>
-          {/* Title */}
+        <View style={styles.topSection}>
+          <TouchableOpacity onPress={() => router.back()} style={styles.backButton}>
+            <ThemedText variant="body" color="teal" style={styles.backButtonText}>
+              ⪻ Back to Onboarding
+            </ThemedText>
+          </TouchableOpacity>
+        </View>
+
+        <View style={styles.middleSection}>
           <ThemedText
             variant="heading"
             color="secondary"
             align="center"
             style={styles.softTitle}
           >
-            Welcome to Livion
+            Thank you for joining the clinician community of Livion. Your story matters.
           </ThemedText>
 
-          {/* Subtitle */}
-          <ThemedText
-            variant="body"
-            color="indigo"
-            align="center"
-            style={styles.subtitle}
-          >
-            Thank you for joining the clinician community of Livion.
-          </ThemedText>
-
-          {/* Link-style button */}
-          <TouchableOpacity
-            //onPress={() => router.push('/clinician/onboarding/register')}
-            style={styles.linkButton}
-          >
-            <ThemedText
-              variant="body"
-              color="teal"
-              align="center"
-              style={styles.linkText}
-            >
-              Learn how Livion supports your workflow
+          <TouchableOpacity>
+            <ThemedText variant="body" color="teal" align="center" style={styles.linkText}>
+              Privacy Explainer
             </ThemedText>
           </TouchableOpacity>
+        </View>
 
-          {/* Spacer */}
-          <View style={{ height: Spacing.xl }} />
-
+        <View style={styles.bottomSection}>
           <Button
             variant="primary"
             size="lg"
@@ -69,9 +47,10 @@ export default function ClinicianWelcomeScreen() {
             onPress={() => router.push('/clinician/onboarding/register')}
             style={styles.button}
           >
-            Continue
+            Get Started
           </Button>
         </View>
+
       </ScrollView>
     </SafeAreaView>
   );
@@ -87,25 +66,33 @@ const styles = StyleSheet.create({
   },
   contentContainer: {
     flexGrow: 1,
-    justifyContent: 'center',
     padding: Spacing.xl,
+  },
+  topSection: {
+    flex: 1,
+    justifyContent: 'flex-start',
+    paddingTop: 25,
+  },
+  middleSection: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  bottomSection: {
+    flex: 1,
+    justifyContent: 'flex-end',
+    alignItems: 'center',
+    paddingBottom: 40, // optional
   },
   content: {
     alignItems: 'center',
   },
 
   softTitle: {
-    marginBottom: Spacing.sm,
-    opacity: 0.95,
-    fontSize: 24,
-    lineHeight: 34,
-  },
-
-  subtitle: {
     marginBottom: Spacing.lg,
-    opacity: 0.85,
-    fontSize: 16,
-    lineHeight: 24,
+    opacity: 0.9,
+    fontSize: 20,
+    lineHeight: 28,
   },
 
   linkButton: {
@@ -121,13 +108,11 @@ const styles = StyleSheet.create({
   button: {
     marginTop: Spacing.xl,
   },
-
   backButton: {
-    paddingVertical: 8,
-    paddingHorizontal: 12,
+    paddingVertical: 15,
+    paddingHorizontal: -30,
   },
-
   backButtonText: {
-    fontSize: 14,
+    fontSize: 16,
   },
 });

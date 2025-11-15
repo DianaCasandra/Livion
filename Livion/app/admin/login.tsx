@@ -1,29 +1,41 @@
 import { useRouter } from 'expo-router';
-import { SafeAreaView, ScrollView, StyleSheet, View } from 'react-native';
+import { SafeAreaView, ScrollView, StyleSheet, TouchableOpacity, View } from 'react-native';
 import { Button } from '../../components/atoms/Button';
 import { InputField } from '../../components/atoms/InputField';
 import { ThemedText } from '../../components/atoms/ThemedText';
 import { BorderRadius, Colors, Spacing } from '../../constants/Colors';
 
-export default function AdminLoginScreen() {
+export default function PatientLoginScreen() {
   const router = useRouter();
 
   return (
     <SafeAreaView style={styles.safeArea}>
       <ScrollView contentContainerStyle={styles.container}>
+
+        <TouchableOpacity
+          onPress={() => router.back()}
+          style={styles.backButton}
+        >
+          <ThemedText variant="body" color="teal" style={styles.backButtonText}>
+            ⪻ Back to Onboarding
+          </ThemedText>
+        </TouchableOpacity>
+
+
         <View style={styles.card}>
           <ThemedText variant="display" weight="bold" align="center" style={styles.title}>
-            Admin Console
+            Admin/Compliance Login
           </ThemedText>
-          <InputField label="Admin Email" placeholder="you@livion.com" keyboardType="email-address" style={styles.input} />
-          <InputField label="Password" placeholder="••••••••" secureTextEntry style={styles.input} />
-          <InputField label="Security Key" placeholder="Enter security token" style={styles.input} />
+          <InputField label="Email" placeholder="" style={styles.input} />
+          <InputField label="Password" placeholder="" secureTextEntry style={styles.input} />
+          <InputField label="Token" placeholder="" secureTextEntry style={styles.input} />
           <Button variant="primary" fullWidth style={styles.button} onPress={() => router.replace('/admin/dashboard')}>
-            Enter Console
+            Sign In Securely
           </Button>
           <ThemedText variant="caption" color="tertiary" align="center" style={styles.footer}>
-            Admin access is monitored. Contact security if you suspect unauthorized use.
+            Protected under HIPAA and GDPR. Contact support for access issues.
           </ThemedText>
+          
         </View>
       </ScrollView>
     </SafeAreaView>
@@ -39,24 +51,44 @@ const styles = StyleSheet.create({
     flexGrow: 1,
     justifyContent: 'center',
     padding: Spacing.xl,
+
   },
   card: {
     padding: Spacing.xl,
     borderRadius: BorderRadius.xl,
     backgroundColor: Colors.background.cardGlass,
     borderColor: Colors.border.medium,
-    borderWidth: 1,
+    borderWidth: 3,
+    alignItems: 'center', // <-- center all children horizontally
   },
-  title: {
-    marginBottom: Spacing.xl,
-  },
+
   input: {
     marginTop: Spacing.md,
+    width: '109%',          // <-- make it responsive but not overflowing
+    maxWidth: 400,         // optional: prevents overly wide inputs on large screens
+    marginLeft: -10,
+  },
+
+  title: {
+    marginBottom: Spacing.xl,
   },
   button: {
     marginTop: Spacing.lg,
   },
   footer: {
     marginTop: Spacing.lg,
+  },
+  backButton: {
+    paddingVertical: 20,
+    paddingHorizontal: -30,
+  },
+  backButtonText: {
+    marginBottom: Spacing.md,
+  },
+  linkButton: {
+    marginTop: Spacing.sm,
+  },
+  linkText: {
+    marginTop: Spacing.sm,
   },
 });

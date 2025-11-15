@@ -75,7 +75,9 @@ const styles = StyleSheet.create({
     width: '100%',
   },
   label: {
-    marginBottom: Spacing.sm,
+    marginBottom: 1,      
+    textAlign: 'center', 
+    marginTop: 10,
   },
   input: {
     backgroundColor: Colors.background.cardGlass,

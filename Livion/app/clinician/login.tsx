@@ -1,5 +1,5 @@
 import { useRouter } from 'expo-router';
-import { SafeAreaView, ScrollView, StyleSheet, View } from 'react-native';
+import { SafeAreaView, ScrollView, StyleSheet, View, TouchableOpacity } from 'react-native';
 import { Button } from '../../components/atoms/Button';
 import { InputField } from '../../components/atoms/InputField';
 import { ThemedText } from '../../components/atoms/ThemedText';
@@ -11,13 +11,22 @@ export default function ClinicianLoginScreen() {
   return (
     <SafeAreaView style={styles.safeArea}>
       <ScrollView contentContainerStyle={styles.container}>
+
+        <TouchableOpacity
+          onPress={() => router.back()}
+          style={styles.backButton}
+        >
+          <ThemedText variant="body" color="teal" style={styles.backButtonText}>
+            ⪻ Back
+          </ThemedText>
+        </TouchableOpacity>
+
         <View style={styles.card}>
           <ThemedText variant="display" weight="bold" align="center" style={styles.title}>
             Clinician Access
           </ThemedText>
           <InputField label="Work Email" placeholder="you@clinic.com" keyboardType="email-address" style={styles.input} />
-          <InputField label="Password" placeholder="••••••••" secureTextEntry style={styles.input} />
-          <InputField label="2FA Code" placeholder="123456" keyboardType="numeric" style={styles.input} />
+          <InputField label="Password" placeholder="" secureTextEntry style={styles.input} />
           <Button variant="primary" fullWidth style={styles.button} onPress={() => router.replace('/clinician/dashboard')}>
             Sign In Securely
           </Button>
@@ -45,18 +54,31 @@ const styles = StyleSheet.create({
     borderRadius: BorderRadius.xl,
     backgroundColor: Colors.background.cardGlass,
     borderColor: Colors.border.medium,
-    borderWidth: 1,
+    borderWidth: 3,
+    alignItems: 'center', // <-- center all children horizontally
+  },
+
+  input: {
+    marginTop: Spacing.md,
+    width: '109%',          // <-- make it responsive but not overflowing
+    maxWidth: 400,         // optional: prevents overly wide inputs on large screens
+    marginLeft: -10,
   },
   title: {
     marginBottom: Spacing.xl,
-  },
-  input: {
-    marginTop: Spacing.md,
   },
   button: {
     marginTop: Spacing.lg,
   },
   footer: {
     marginTop: Spacing.lg,
+  },
+  backButton: {
+    marginBottom: 20,
+  },
+  backButtonText: {
+    marginTop: -10,
+    marginBottom: Spacing.md,
+    fontSize: 17,
   },
 });

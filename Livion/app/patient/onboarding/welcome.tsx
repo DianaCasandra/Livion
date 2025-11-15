@@ -8,27 +8,21 @@ export default function WelcomeScreen() {
   const router = useRouter();
 
   return (
-
-    
-
     <SafeAreaView style={styles.safeArea}>
       <ScrollView
         style={styles.container}
         contentContainerStyle={styles.contentContainer}
       >
 
-                <TouchableOpacity
-                  onPress={() => router.back()}
-                  style={styles.backButton}
-                >
-                  <ThemedText variant="body" color="teal" style={styles.backButtonText}>
-                    ← Back to Onboarding
-                  </ThemedText>
-                </TouchableOpacity>
-        
+        <View style={styles.topSection}>
+          <TouchableOpacity onPress={() => router.back()} style={styles.backButton}>
+            <ThemedText variant="body" color="teal" style={styles.backButtonText}>
+              ⪻ Back to Onboarding
+            </ThemedText>
+          </TouchableOpacity>
+        </View>
 
-        <View style={styles.content}>
-          {/* Subtle Title */}
+        <View style={styles.middleSection}>
           <ThemedText
             variant="heading"
             color="secondary"
@@ -38,24 +32,17 @@ export default function WelcomeScreen() {
             Your health story. Yours to share.
           </ThemedText>
 
-          {/* Link-style button */}
           <TouchableOpacity
             onPress={() => router.push('/patient/onboarding/userpromise')}
             style={styles.linkButton}
           >
-            <ThemedText
-              variant="body"
-              color="teal"
-              align="center"
-              style={styles.linkText}
-            >
+            <ThemedText variant="body" color="teal" align="center" style={styles.linkText}>
               User Promise & Privacy Explainer
             </ThemedText>
           </TouchableOpacity>
+        </View>
 
-          {/* Spacer */}
-          <View style={{ height: Spacing.xl }} />
-
+        <View style={styles.bottomSection}>
           <Button
             variant="primary"
             size="lg"
@@ -66,6 +53,7 @@ export default function WelcomeScreen() {
             Get Started
           </Button>
         </View>
+
       </ScrollView>
     </SafeAreaView>
   );
@@ -81,8 +69,23 @@ const styles = StyleSheet.create({
   },
   contentContainer: {
     flexGrow: 1,
-    justifyContent: 'center',
     padding: Spacing.xl,
+  },
+  topSection: {
+    flex: 1,
+    justifyContent: 'flex-start',
+    paddingTop: 25,
+  },
+  middleSection: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  bottomSection: {
+    flex: 1,
+    justifyContent: 'flex-end',
+    alignItems: 'center',
+    paddingBottom: 40, // optional
   },
   content: {
     alignItems: 'center',
@@ -109,10 +112,10 @@ const styles = StyleSheet.create({
     marginTop: Spacing.xl,
   },
   backButton: {
-    paddingVertical: 8,
-    paddingHorizontal: 12,
+    paddingVertical: 15,
+    paddingHorizontal: -30,
   },
   backButtonText: {
-    fontSize: 14,
+    fontSize: 16,
   },
 });

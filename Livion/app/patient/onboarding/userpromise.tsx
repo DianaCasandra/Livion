@@ -41,7 +41,7 @@ export default function UserPromise() {
           style={styles.backButton}
         >
           <ThemedText variant="body" color="teal" style={styles.backButtonText}>
-            ← Back to Onboarding
+            ⪻ Back to Onboarding
           </ThemedText>
         </TouchableOpacity>
 
@@ -174,7 +174,7 @@ const styles = StyleSheet.create({
   },
   backButtonText: {
     textDecorationLine: 'underline',
-    fontSize: 15,
+    fontSize: 16,
   },
 
   /* Title */

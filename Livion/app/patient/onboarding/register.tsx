@@ -17,7 +17,7 @@ export default function PatientLoginScreen() {
                 style={styles.backButton}
               >
                 <ThemedText variant="body" color="teal" style={styles.backButtonText}>
-                  ← Back to Onboarding
+                  ⪻ Back to Onboarding
                 </ThemedText>
               </TouchableOpacity>
       
@@ -26,10 +26,10 @@ export default function PatientLoginScreen() {
           <ThemedText variant="display" weight="bold" align="center" style={styles.title}>
             Patient Register
           </ThemedText>
-          <InputField label="Email / Phone* " placeholder="you@example.com / +40 **** *** ***" keyboardType="email-address" style={styles.input} />
-          <InputField label="Password*" placeholder="••••••••" secureTextEntry style={styles.input} />
-          <InputField label="Confirm password*" placeholder="••••••••" secureTextEntry style={styles.input} />
-          <InputField label="Bank ID" placeholder="••••••••" secureTextEntry style={styles.input} />          
+          <InputField label="Email / Phone " placeholder="" keyboardType="email-address" style={styles.input} />
+          <InputField label="Set a Password" placeholder="" secureTextEntry style={styles.input} />
+          <InputField label="Confirm password" placeholder="" secureTextEntry style={styles.input} />
+          <InputField label="Bank ID (optional)" placeholder="" secureTextEntry style={styles.input} />          
           <Button variant="primary" fullWidth style={styles.button} onPress={() => router.replace('/patient/onboarding/consent')}>
             Sign In
           </Button>
@@ -46,7 +46,7 @@ export default function PatientLoginScreen() {
                           align="center"
                           style={styles.linkText}
                         >
-                          Log in here.
+                          Log in here
                         </ThemedText>
                       </TouchableOpacity>
           </ThemedText>
@@ -71,7 +71,7 @@ const styles = StyleSheet.create({
     borderRadius: BorderRadius.xl,
     backgroundColor: Colors.background.cardGlass,
     borderColor: Colors.border.medium,
-    borderWidth: 1,
+    borderWidth: 3,
   },
   title: {
     marginBottom: Spacing.xl,
@@ -86,7 +86,8 @@ const styles = StyleSheet.create({
     marginTop: Spacing.lg,
   },
   backButton: {
-    marginBottom: Spacing.md,
+    paddingVertical: 20,
+    paddingHorizontal: -30,
   },
   backButtonText: {
     marginBottom: Spacing.md,

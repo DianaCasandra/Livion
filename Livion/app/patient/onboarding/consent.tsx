@@ -32,13 +32,15 @@ export default function ConsentScreen() {
     <SafeAreaView style={styles.safeArea}>
       <ScrollView contentContainerStyle={styles.container}>
 
-        {/* Back Button */}
-        <TouchableOpacity style={styles.backButton} onPress={() => router.back()}>
-          <ArrowLeft size={22} color="#0d9488" />
-          <ThemedText variant="body" color="teal" style={{ marginLeft: 6 }}>
-            Back
+        <TouchableOpacity
+          onPress={() => router.back()}
+          style={styles.backButton}
+        >
+          <ThemedText variant="body" color="teal" style={styles.backButton}>
+            ⪻ Back
           </ThemedText>
         </TouchableOpacity>
+
 
         <View style={styles.card}>
           <ThemedText variant="display" weight="bold" style={styles.title}>
@@ -83,6 +85,8 @@ export default function ConsentScreen() {
           <ThemedText
             variant="heading"
             weight="semibold"
+            color="teal"
+            align="center"
             style={styles.subtitle}
           >
             Sharing Scopes
@@ -130,7 +134,7 @@ export default function ConsentScreen() {
             style={styles.nextButton}
             onPress={() => router.push('/patient/onboarding/dataconnections')}
           >
-            Next Step <ArrowRight size={18} color="white" />
+            Continue
           </Button>
         </View>
 
@@ -199,7 +203,8 @@ const styles = StyleSheet.create({
   backButton: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginBottom: Spacing.lg,
+    marginBottom: 15,
+    marginTop: 15,
   },
 
   card: {
@@ -228,11 +233,11 @@ const styles = StyleSheet.create({
     marginBottom: Spacing.md,
   },
 
-  /* Toggle rows */
   toggleRow: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
+    marginBottom: -17,
   },
   smallToggleRow: {
     paddingLeft: Spacing.lg,
@@ -259,6 +264,7 @@ const styles = StyleSheet.create({
   },
 
   disclaimer: {
-    marginTop: Spacing.lg,
+    marginBottom: 25,
+    marginTop: 15,
   },
 });
