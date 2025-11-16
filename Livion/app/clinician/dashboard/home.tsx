@@ -114,9 +114,14 @@ export default function ClinicianDashboard() {
                 <ThemedText variant="body" color="secondary" style={styles.insightBody}>
                   {insight.reason}
                 </ThemedText>
-                <Button variant="secondary" size="sm" style={styles.reviewButton}>
-                  Review patient
-                </Button>
+<Button
+  variant="secondary"
+  size="sm"
+  style={{ ...styles.reviewButton, backgroundColor: 'rgba(57, 73, 171, 0.5)', borderColor: '#3949AB' }}
+>
+  Review patient
+</Button>
+
               </GlowyCard>
             ))}
           </View>

@@ -39,7 +39,7 @@ export default function RiskAssessmentScreen() {
         </TouchableOpacity>
 
         <View style={styles.card}>
-          <ThemedText variant="display" weight="bold" align="center" color="teal" style={styles.title}>
+          <ThemedText variant="display" weight="bold" align="center" color="primary" style={styles.title}>
             Risk Snapshot
           </ThemedText>
 

@@ -34,23 +34,18 @@ export default function PatientLoginScreen() {
           <Button variant="primary" fullWidth style={styles.button} onPress={() => router.replace('/clinician/dashboard/home')}>
             Sign In
           </Button>
-          <ThemedText variant="caption" color="tertiary" align="center" style={styles.footer}>
-            By continuing, you consent to Livion's data use policy.
-            Already have an account?
-            <TouchableOpacity
-              onPress={() => router.push('/clinician/login')}
-              style={styles.linkButton}
-            >
-              <ThemedText
-                variant="body"
-                color="teal"
-                align="center"
-                style={styles.linkText}
-              >
-                Log in here
-              </ThemedText>
-            </TouchableOpacity>
-          </ThemedText>
+<View style={styles.footerContainer}>
+  <ThemedText variant="caption" color="tertiary" align="center" style={styles.footerText}>
+    By continuing, you consent to Livion's data use policy.
+  </ThemedText>
+
+  <TouchableOpacity onPress={() => router.push('/clinician/login')} style={styles.linkButton}>
+    <ThemedText variant="body" color="teal" align="center" style={styles.linkText}>
+      Log in here
+    </ThemedText>
+  </TouchableOpacity>
+</View>
+
         </View>
       </ScrollView>
     </SafeAreaView>
@@ -106,4 +101,12 @@ const styles = StyleSheet.create({
   linkText: {
     marginTop: Spacing.sm,
   },
+  footerContainer: {
+  marginTop: Spacing.lg,
+  alignItems: 'center', // centerizează pe orizontală
+},
+footerText: {
+  marginBottom: Spacing.sm, // spațiu între text și link
+},
+
 });

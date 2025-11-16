@@ -15,6 +15,7 @@ export const Colors = {
     indigo: '#4f46e5',    // Indigo 600 - competence
     darkNavy: '#0f172a',  // Deep navy background
     deepPurple: '#1e1b4b', // Deep purple for layered backgrounds
+    white: '#ffffff',    // Pure white for contrast
   },
 
   // Accent Colors
@@ -38,7 +39,7 @@ export const Colors = {
     primary: '#0f172a',   // Deep navy
     secondary: '#3949AB', // Slate 800
     card: '#1e1b4b',      // Deep purple with transparency
-    cardGlass: 'rgba(30, 27, 75, 0.6)', // Glassmorphism effect
+    cardGlass: '#1e1b4b99', // Glassmorphism effect
     overlay: 'rgba(15, 23, 42, 0.95)',
   },
 

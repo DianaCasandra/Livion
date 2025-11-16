@@ -29,9 +29,10 @@ export default function DataConnectionsScreen() {
         </TouchableOpacity>
 
         <View style={styles.card}>
-          <ThemedText variant="display" weight="bold" color="teal" align="center"style={styles.title}>
-            Data Connections
-          </ThemedText>
+<ThemedText variant="display" weight="bold" color="primary" align="center" style={styles.title}>
+  Data Connections
+</ThemedText>
+
           <ThemedText variant="body" color="secondary" align="center" style={styles.body}>
             Connect wearable devices and health records to unlock richer insights.
           </ThemedText>

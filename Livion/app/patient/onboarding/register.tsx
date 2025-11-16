@@ -33,23 +33,33 @@ export default function PatientLoginScreen() {
           <Button variant="primary" fullWidth style={styles.button} onPress={() => router.replace('/patient/onboarding/consent')}>
             Sign In
           </Button>
-          <ThemedText variant="caption" color="tertiary" align="center" style={styles.footer}>
-            By continuing, you consent to Livion's data use policy.
-            Already have an account? 
-            <TouchableOpacity
-                        onPress={() => router.push('/patient/login')}
-                        style={styles.linkButton}
-                      >
-                        <ThemedText
-                          variant="body"
-                          color="teal"
-                          align="center"
-                          style={styles.linkText}
-                        >
-                          Log in here
-                        </ThemedText>
-                      </TouchableOpacity>
-          </ThemedText>
+          <ThemedText
+  variant="caption"
+  color="tertiary"
+  align="center"
+  style={styles.footer}
+>
+  By continuing, you consent to Livion's data use policy.
+</ThemedText>
+
+<View style={{ alignItems: 'center', marginTop: Spacing.sm }}>
+  <ThemedText variant="caption" color="tertiary" align="center">
+    Already have an account?
+  </ThemedText>
+
+  <TouchableOpacity onPress={() => router.push('/patient/login')} style={{ marginTop: Spacing.xs }}>
+    <ThemedText
+      variant="caption"
+      color="teal"
+      weight="semibold"
+      align="center"
+    >
+      Log in here
+    </ThemedText>
+  </TouchableOpacity>
+</View>
+
+
         </View>
       </ScrollView>
     </SafeAreaView>
