@@ -1,12 +1,13 @@
-import { LinearGradient } from 'expo-linear-gradient'; // Adăugat pentru fundalul dinamic
+import { LinearGradient } from 'expo-linear-gradient';
 import { Href, useRouter } from 'expo-router';
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import {
+  Animated,
   Dimensions,
-  Platform, // Adăugat pentru Platform.OS în StatusBar
+  Platform,
   SafeAreaView,
   ScrollView,
-  StatusBar, // Adăugat pentru StatusBar
+  StatusBar,
   StyleSheet,
   View,
 } from 'react-native';
@@ -14,14 +15,70 @@ import { Button } from '../components/atoms/Button';
 import { ThemedText } from '../components/atoms/ThemedText';
 import { BorderRadius, Colors, Spacing } from '../constants/Colors';
 
-const { width: SCREEN_W, height: SCREEN_H } = Dimensions.get('window'); // Adăugat, deși nu e direct folosit pentru card
+const { width: SCREEN_W, height: SCREEN_H } = Dimensions.get('window');
 
 export default function LandingPage() {
   const [expandedRole, setExpandedRole] = useState<string | null>(null);
   const router = useRouter();
 
-  const toggleRole = (role: string) => {
-    setExpandedRole(prev => (prev === role ? null : role));
+  const anim1 = useRef(new Animated.Value(0)).current;
+  const anim2 = useRef(new Animated.Value(0)).current;
+
+  useEffect(() => {
+    const loopAnimation = (anim: Animated.Value, delay: number) => {
+      Animated.loop(
+        Animated.sequence([
+          Animated.timing(anim, {
+            toValue: 1,
+            duration: 9000,
+            delay,
+            useNativeDriver: false,
+          }),
+          Animated.timing(anim, {
+            toValue: 0,
+            duration: 9000,
+            useNativeDriver: false,
+          }),
+        ])
+      ).start();
+    };
+
+    loopAnimation(anim1, 0);
+    loopAnimation(anim2, 2000);
+  }, []);
+
+  const blob1Style = {
+    transform: [
+      {
+        translateX: anim1.interpolate({
+          inputRange: [0, 1],
+          outputRange: [-50, 50],
+        }),
+      },
+      {
+        translateY: anim1.interpolate({
+          inputRange: [0, 1],
+          outputRange: [-30, 30],
+        }),
+      },
+    ],
+  };
+
+  const blob2Style = {
+    transform: [
+      {
+        translateX: anim2.interpolate({
+          inputRange: [0, 1],
+          outputRange: [40, -40],
+        }),
+      },
+      {
+        translateY: anim2.interpolate({
+          inputRange: [0, 1],
+          outputRange: [60, -60],
+        }),
+      },
+    ],
   };
 
   const roles = [
@@ -31,43 +88,43 @@ export default function LandingPage() {
     { key: 'admin', label: 'Admin', twoOptions: false },
   ];
 
+  const toggleRole = (role: string) => {
+    setExpandedRole(prev => (prev === role ? null : role));
+  };
+
   return (
-    <View style={styles.root}> {/* Schimbat SafeAreaView în View pentru a permite fundalul pe toată suprafața */}
+    <View style={styles.root}>
       <StatusBar barStyle="light-content" translucent backgroundColor="transparent" />
 
-      {/* background ombré + soft glow layers din HomeGlossyAnimated */}
       <LinearGradient
         colors={["#07203f", "#04363a", "#06233d"]}
         style={StyleSheet.absoluteFill}
-        start={[0, 0]}
-        end={[1, 1]}
       />
 
-      {/* subtle radial glows (pure view overlays) din HomeGlossyAnimated */}
-      <View style={styles.glowTopRight} pointerEvents="none" />
-      <View style={styles.glowBottomLeft} pointerEvents="none" />
+      <Animated.View style={[styles.blobBlue, blob1Style]} />
+      <Animated.View style={[styles.blobTeal, blob2Style]} />
 
-      <SafeAreaView style={styles.safeAreaContent}> {/* Wrapper pentru conținut pentru a respecta zona sigură */}
+      <SafeAreaView style={styles.safeAreaContent}>
         <ScrollView contentContainerStyle={styles.container}>
           <View style={styles.card}>
-            {/* Titlu */}
+
             <ThemedText variant="display" weight="bold" style={styles.title}>
               Livion
             </ThemedText>
 
-            <ThemedText variant="body" color="secondary" style={styles.subtitle}>
+            <ThemedText variant="body" style={[styles.subtitle, { color: '#0d948866' }]}>
               Powered by Minai
             </ThemedText>
 
-            <ThemedText variant="heading" style={styles.sectionLabel}>
+            <ThemedText variant="heading" style={[styles.sectionLabel, { color: '#3949AB' }]}>
               Choose your role
             </ThemedText>
 
-            {/* Roluri */}
             <View style={styles.rolesContainer}>
               {roles.map(role => (
                 <View key={role.key} style={styles.roleWrapper}>
-                  {/* Butonul principal de Rol */}
+                  
+                  {/* BUTTON INTER */}
                   <Button
                     variant="primary"
                     fullWidth
@@ -76,7 +133,6 @@ export default function LandingPage() {
                     {role.label}
                   </Button>
 
-                  {/* Sub-butoane */}
                   {expandedRole === role.key && (
                     <View style={styles.subButtonsContainer}>
                       {role.twoOptions ? (
@@ -90,6 +146,7 @@ export default function LandingPage() {
                           >
                             Onboarding
                           </Button>
+
                           <Button
                             variant="secondary"
                             style={styles.subButton}
@@ -116,6 +173,7 @@ export default function LandingPage() {
                 </View>
               ))}
             </View>
+
           </View>
         </ScrollView>
       </SafeAreaView>
@@ -124,14 +182,12 @@ export default function LandingPage() {
 }
 
 const styles = StyleSheet.create({
-  root: { // Stilul 'root' preluat din HomeGlossyAnimated.tsx
+  root: {
     flex: 1,
-    backgroundColor: '#041025', // Fundalul de bază, va fi acoperit de LinearGradient
-    paddingTop: Platform.OS === 'android' ? StatusBar.currentHeight || 24 : 0, // Ajustează padding-ul pentru StatusBar, lăsând iOS să fie gestionat de SafeAreaView
+    backgroundColor: '#041025',
+    paddingTop: Platform.OS === 'android' ? StatusBar.currentHeight || 24 : 0,
   },
-  safeAreaContent: { // Noul stil pentru a împinge conținutul în zona sigură
-    flex: 1,
-  },
+  safeAreaContent: { flex: 1 },
   container: {
     flexGrow: 1,
     justifyContent: 'center',
@@ -141,7 +197,7 @@ const styles = StyleSheet.create({
   card: {
     padding: Spacing.xl,
     borderRadius: BorderRadius.xl,
-    backgroundColor: Colors.background.cardGlass, // Acesta ar trebui să fie semi-transparent pentru a vedea fundalul
+    backgroundColor: Colors.background.cardGlass,
     borderColor: Colors.border.medium,
     borderWidth: 3,
     width: '100%',
@@ -151,56 +207,51 @@ const styles = StyleSheet.create({
   title: {
     marginBottom: Spacing.sm,
     color: Colors.primary.teal,
-    fontWeight: 'bold',
   },
   subtitle: {
     marginBottom: Spacing.lg,
     fontSize: 16,
-    color: 'rgba(255,255,255,0.85)', // Ajustat pentru contrast cu fundalul întunecat
   },
   sectionLabel: {
     marginBottom: Spacing.lg,
-    color: Colors.primary.indigo,
-    fontSize: 18,
+    color: '#5C6BC0',
+    fontSize: 20,
+    fontWeight: '700',
   },
   rolesContainer: {
     width: '100%',
     maxWidth: 340,
     gap: Spacing.lg,
   },
-  roleWrapper: {
-    gap: Spacing.sm,
-  },
+  roleWrapper: { gap: Spacing.sm },
   subButtonsContainer: {
     marginTop: Spacing.sm,
     gap: Spacing.sm,
-    alignItems: 'center',
     width: '100%',
+    alignItems: 'center',
   },
   subButton: {
     minWidth: '70%',
+    backgroundColor: '#3949AB',
   },
-  // Stiluri pentru glow-uri, preluate din HomeGlossyAnimated.tsx
-  glowTopRight: {
+  blobBlue: {
     position: 'absolute',
-    width: 400,
-    height: 400,
-    right: -120,
-    top: -60,
+    width: 450,
+    height: 450,
     borderRadius: 999,
     backgroundColor: '#075985',
-    opacity: 0.08,
-    transform: [{ scale: 1.4 }],
+    opacity: 0.12,
+    top: -150,
+    right: -120,
   },
-  glowBottomLeft: {
+  blobTeal: {
     position: 'absolute',
     width: 500,
     height: 500,
-    left: -180,
-    bottom: -120,
     borderRadius: 999,
     backgroundColor: '#0ea5a4',
-    opacity: 0.06,
-    transform: [{ scale: 1.2 }],
+    opacity: 0.10,
+    bottom: -130,
+    left: -170,
   },
 });

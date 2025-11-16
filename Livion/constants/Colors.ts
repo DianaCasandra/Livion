@@ -68,7 +68,7 @@ export const Colors = {
 
   // Glow Effects (for neon/highlight effects)
   glow: {
-    teal: 'rgba(13, 148, 136, 0.4)',
+    teal: '#0d948866',
     indigo: 'rgba(79, 70, 229, 0.4)',
     purple: 'rgba(167, 139, 250, 0.4)',
     pink: 'rgba(244, 114, 182, 0.4)',
