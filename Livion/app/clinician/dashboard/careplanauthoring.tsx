@@ -69,7 +69,7 @@ export default function CarePlanAuthoringScreen() {
 
           {/* Card: Formularul principal (învelit în GlowyCard) */}
           <GlowyCard>
-            <InputField label="Care Plan Title" placeholder="e.g. Glucose Stabilization Plan" style={styles.input} />
+            <InputField label="Care Plan Title" placeholder="e.g. Glucose Stabilization" style={styles.input} />
             <InputField
               label="Goals"
               placeholder="Improve fasting glucose to 110 mg/dL within 6 weeks."

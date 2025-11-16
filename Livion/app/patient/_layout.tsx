@@ -1,10 +1,6 @@
 import { Stack } from 'expo-router';
 import { Colors } from '../../constants/Colors';
 
-/**
- * Patient Layout
- * Stack navigator for patient screens
- */
 export default function PatientLayout() {
   return (
     <Stack

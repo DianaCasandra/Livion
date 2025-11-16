@@ -29,7 +29,7 @@ export default function PatientLoginScreen() {
           <InputField label="Work Email " placeholder="you@work.com" style={styles.input} />
           <InputField label="Role Confirmation" placeholder="e.g: pharmacist" secureTextEntry style={styles.input} />
           <InputField label="Password" placeholder="" secureTextEntry style={styles.input} />
-          <Button variant="primary" fullWidth style={styles.button} onPress={() => router.replace('/clinician/dashboard')}>
+          <Button variant="primary" fullWidth style={styles.button} onPress={() => router.replace('/coordinator/navigation')}>
             Sign In Securely
           </Button>
           <ThemedText variant="caption" color="tertiary" align="center" style={styles.footer}>

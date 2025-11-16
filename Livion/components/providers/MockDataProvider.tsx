@@ -28,7 +28,7 @@ export type ConsentRecord = {
   grantedDate: Date;
 };
 
-// ⭐ NEW TYPES added for Home UI
+
 export type PatientMetrics = {
   steps: number | null;
   sleep: number | null;   // hours
@@ -43,7 +43,6 @@ export type PatientData = {
   careTasks: CareTask[];
   consents: ConsentRecord[];
 
-  // ⭐ NEW FIELDS FOR HOME SCREEN
   metrics: PatientMetrics;
   safetyMessage?: string;
   statusSummary?: string;
@@ -55,17 +54,14 @@ const mockPatientData: PatientData = {
   age: 34,
   conditions: ['Type 2 Diabetes', 'Hypertension'],
 
-  // ⭐ ADDED: metrics block (required by header)
   metrics: {
     steps: 7321,
     sleep: 7.2,
     mood: 'Good',
   },
 
-  // ⭐ ADDED: status summary for small header card
   statusSummary: 'Stable',
 
-  // ⭐ ADDED: safety banner message
   safetyMessage:
     'Your care team has reviewed your latest readings. No urgent concerns — continue your routine and report any symptoms.',
 

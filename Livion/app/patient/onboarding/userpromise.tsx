@@ -1,16 +1,28 @@
 import { useRouter } from 'expo-router';
 import { useEffect, useRef } from 'react';
-import { Animated, SafeAreaView, ScrollView, StyleSheet, TouchableOpacity, View } from 'react-native';
+import {
+  Animated,
+  SafeAreaView,
+  ScrollView,
+  StyleSheet,
+  TouchableOpacity,
+  View,
+} from 'react-native';
 import { ThemedText } from '../../../components/atoms/ThemedText';
 import { Colors, Spacing } from '../../../constants/Colors';
 
-// Icons (rounded, simple, calming)
-import { CircleCheck, HeartHandshake, Leaf, ShieldCheck, Sparkles } from 'lucide-react-native';
+// Icons
+import {
+  CircleCheck,
+  HeartHandshake,
+  Leaf,
+  ShieldCheck,
+  Sparkles,
+} from 'lucide-react-native';
 
 export default function UserPromise() {
   const router = useRouter();
 
-  // Animation: fade + slide
   const slide = useRef(new Animated.Value(20)).current;
   const opacity = useRef(new Animated.Value(0)).current;
 
@@ -34,13 +46,16 @@ export default function UserPromise() {
         style={styles.container}
         contentContainerStyle={styles.contentContainer}
       >
-
         {/* Back link */}
         <TouchableOpacity
           onPress={() => router.back()}
           style={styles.backButton}
         >
-          <ThemedText variant="body" color="teal" style={styles.backButtonText}>
+          <ThemedText
+            variant="body"
+            color="teal"
+            style={styles.backButtonText}
+          >
             ⪻ Back to Onboarding
           </ThemedText>
         </TouchableOpacity>
@@ -57,7 +72,7 @@ export default function UserPromise() {
           </ThemedText>
 
           {/* Manifesto Section */}
-          <View style={styles.section}>
+          <View style={styles.sectionCentered}>
             <ManifestoItem
               icon={<Sparkles size={20} color="#0d9488" />}
               textBold="1. You are not a datapoint."
@@ -88,45 +103,52 @@ export default function UserPromise() {
               text=" Every choice contributes to a mission of stronger communities and honest care."
             />
 
-            {/* Items 6–13 without icons to keep visual balance */}
             {[
-              ["6. Everyone belongs.", " Diversity is our foundation."],
-              ["7. Connection is care.", " Healing grows through shared progress."],
-              ["8. We lead with clarity.", " Transparency is care."],
-              ["9. Progress feels good.", " We design for joy, not guilt."],
-              ["10. Rest is also progress.", " Doing nothing can be healthy."],
-              ["11. Your voice shapes Livion.", " We build this with you."],
-              ["12. We aim for lasting change.", " Beyond screens — real-world good."],
-              ["13. Health is hope.", " Every tap is toward collective wellbeing."],
+              ['6. Everyone belongs.', ' Diversity is our foundation.'],
+              ['7. Connection is care.', ' Healing grows through shared progress.'],
+              ['8. We lead with clarity.', ' Transparency is care.'],
+              ['9. Progress feels good.', ' We design for joy, not guilt.'],
+              ['10. Rest is also progress.', ' Doing nothing can be healthy.'],
+              ['11. Your voice shapes Livion.', ' We build this with you.'],
+              ['12. We aim for lasting change.', ' Beyond screens — real-world good.'],
+              ['13. Health is hope.', ' Every tap is toward collective wellbeing.'],
             ].map(([bold, rest], i) => (
-              <ThemedText key={i} variant="body" style={styles.item}>
+              <ThemedText key={i} variant="body" style={styles.itemCentered}>
                 <ThemedText weight="bold">{bold}</ThemedText> {rest}
               </ThemedText>
             ))}
-
           </View>
 
           {/* Divider */}
           <View style={styles.divider} />
 
           {/* Privacy Explainer */}
-          <ThemedText variant="heading" weight="bold" style={styles.subtitle}>
+          <ThemedText
+            variant="heading"
+            weight="bold"
+            color="teal"
+            align="center"
+            style={styles.subtitle}
+          >
             Privacy Explainer
           </ThemedText>
 
-          <ThemedText variant="body" color="secondary" style={styles.paragraph}>
-            This is placeholder text for a future plain-language privacy explainer. It describes
-            how data is stored, how consent works, and what choices users have at any point.
+          <ThemedText
+            variant="body"
+            color="secondary"
+            align="center"
+            style={styles.paragraph}
+          >
+            This is placeholder text for a future plain-language privacy explainer...
           </ThemedText>
 
-          <ThemedText variant="body" color="secondary" style={styles.paragraph}>
-            Here we’ll clarify what stays on-device, how encryption works, and how Livion ensures
-            information never leaves your control without explicit permission.
-          </ThemedText>
-
-          <ThemedText variant="body" color="secondary" style={styles.paragraph}>
-            Additional mock content can go here to help users understand the privacy model in
-            warm, simple language without legal jargon.
+          <ThemedText
+            variant="body"
+            color="secondary"
+            align="center"
+            style={styles.paragraph}
+          >
+            Here we’ll clarify what stays on-device, how encryption works...
           </ThemedText>
 
         </Animated.View>
@@ -135,25 +157,17 @@ export default function UserPromise() {
   );
 }
 
-/* ────────────────────────── */
-/*  Small Presentational Component  */
-/* ────────────────────────── */
-
 function ManifestoItem({ icon, textBold, text }: any) {
   return (
     <View style={styles.manifestoRow}>
       <View style={styles.iconContainer}>{icon}</View>
-      <ThemedText variant="body" style={styles.item}>
+      <ThemedText variant="body" style={styles.itemCentered}>
         <ThemedText weight="bold">{textBold}</ThemedText>
         {text}
       </ThemedText>
     </View>
   );
 }
-
-/* ────────────────────────── */
-/*  Styles  */
-/* ────────────────────────── */
 
 const styles = StyleSheet.create({
   safeArea: {
@@ -168,51 +182,56 @@ const styles = StyleSheet.create({
     paddingBottom: Spacing['2xl'],
   },
 
-  /* Back Button */
+  /* Back Button (updated) */
   backButton: {
-    marginBottom: Spacing.lg,
+    marginTop: 30,
+    marginBottom: 30,
   },
   backButtonText: {
-    textDecorationLine: 'underline',
-    fontSize: 16,
+    textDecorationLine: 'none',   // ← underline removed
+    fontSize: 18,                 // ← bigger
+    fontWeight: '600',            // ← slightly bold
   },
 
-  /* Title */
   title: {
     marginBottom: Spacing.xl,
     textAlign: 'center',
-    color: '#0f766e', // Teal 700
+    color: '#0f766e',
   },
 
-  section: {
+  /* Center content */
+  sectionCentered: {
     gap: Spacing.md,
-  },
-  item: {
-    lineHeight: 22,
+    alignItems: 'center',  // ← centers children
   },
 
-  /* Icons + text layout */
   manifestoRow: {
     flexDirection: 'row',
     gap: Spacing.md,
     alignItems: 'flex-start',
+    maxWidth: 320,          // keeps rows readable
   },
+
+  itemCentered: {
+    lineHeight: 22,
+    textAlign: 'left',
+    maxWidth: 300,
+  },
+
   iconContainer: {
     paddingTop: 3,
   },
 
-  /* Divider */
   divider: {
     height: 1,
     backgroundColor: '#e2e8f0',
     marginVertical: Spacing.xl,
   },
 
-  /* Privacy Section */
   subtitle: {
     marginBottom: Spacing.md,
-    color: '#4338ca', // Indigo 600
   },
+
   paragraph: {
     marginBottom: Spacing.md,
     lineHeight: 22,

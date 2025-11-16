@@ -13,8 +13,9 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { Button } from '../../../components/atoms/Button';
 import { ThemedText } from '../../../components/atoms/ThemedText';
 import { CareTaskTile } from '../../../components/molecules/CareTaskTile';
-import { BorderRadius, Spacing } from '../../../constants/Colors';
+import { BorderRadius, Colors, Spacing } from '../../../constants/Colors';
 import { useMockData } from '../../../hooks/useMockData';
+import { router } from 'expo-router';
 
 // ----------------------------------------------------
 // Componentă GlowyCard Reutilizată (Preluată din stilul Glossy)
@@ -67,6 +68,13 @@ export default function ClinicianDashboard() {
       
       <SafeAreaView style={styles.safeArea}>
         <ScrollView contentContainerStyle={styles.container} showsVerticalScrollIndicator={false}>
+
+          {/* Back Button */}
+                  <Pressable onPress={() => router.back()} style={styles.backButton}>
+                    <ThemedText variant="body" color="teal" style={styles.backButtonText}>
+                      ⪻ Back
+                    </ThemedText>
+                  </Pressable>
           
           <ThemedText variant="display" weight="bold" style={styles.header}>
             Clinician Dashboard
@@ -180,6 +188,14 @@ const styles = StyleSheet.create({
   subtitle: {
     marginBottom: Spacing.xl,
   },
+  backButton: {
+      alignSelf: 'flex-start',
+      marginBottom: Spacing.lg,
+    },
+    backButtonText: {
+      fontSize: 18,
+      color: Colors.primary.teal,
+    },
   
   // STAT GRID
   statGrid: {
