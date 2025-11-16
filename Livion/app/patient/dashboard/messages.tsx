@@ -9,13 +9,13 @@ import {
   View,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { Button } from '../../components/atoms/Button';
-import { InputField } from '../../components/atoms/InputField';
-import { ThemedText } from '../../components/atoms/ThemedText';
-import { MessageBubble } from '../../components/molecules/MessageBubble';
+import { Button } from '../../../components/atoms/Button';
+import { InputField } from '../../../components/atoms/InputField';
+import { ThemedText } from '../../../components/atoms/ThemedText';
+import { MessageBubble } from '../../../components/molecules/MessageBubble';
 
 // Importăm constantele necesare
-import { BorderRadius, Spacing } from '../../constants/Colors';
+import { BorderRadius, Spacing } from '../../../constants/Colors';
 
 const { width: SCREEN_W } = Dimensions.get('window');
 
@@ -133,7 +133,7 @@ const styles = StyleSheet.create({
   cardGlow: {
     ...StyleSheet.absoluteFillObject,
     borderRadius: BorderRadius.xl || 16,
-    backgroundColor: 'transparent',
+    backgroundColor: 'rgba(30, 27, 75, 0.4)',
     borderTopWidth: 1.2,
     borderLeftWidth: 1.2,
     borderColor: 'rgba(255,255,255,0.03)',

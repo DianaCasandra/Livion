@@ -27,7 +27,7 @@ export default function ClinicianLoginScreen() {
           </ThemedText>
           <InputField label="Work Email" placeholder="you@clinic.com" keyboardType="email-address" style={styles.input} />
           <InputField label="Password" placeholder="" secureTextEntry style={styles.input} />
-          <Button variant="primary" fullWidth style={styles.button} onPress={() => router.replace('/clinician/dashboard')}>
+          <Button variant="primary" fullWidth style={styles.button} onPress={() => router.replace('/clinician/dashboard/home')}>
             Sign In Securely
           </Button>
           <ThemedText variant="caption" color="tertiary" align="center" style={styles.footer}>

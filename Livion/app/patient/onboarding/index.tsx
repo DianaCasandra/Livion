@@ -24,7 +24,7 @@ export default function OnboardingTabs() {
         },
       }}
     >
-      <Tabs.Screen name="welcome" options={{ title: 'Welcome', tabBarButton: () => <TabLabel title="Welcome" /> }} />
+      
       <Tabs.Screen name="login" options={{ title: 'Login', tabBarButton: () => <TabLabel title="Login" /> }} />
       <Tabs.Screen name="consent" options={{ title: 'Consent', tabBarButton: () => <TabLabel title="Consent" /> }} />
       <Tabs.Screen name="dataconnections" options={{ title: 'Data', tabBarButton: () => <TabLabel title="Data" /> }} />

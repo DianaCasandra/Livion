@@ -11,8 +11,8 @@ import {
   StyleSheet,
   View,
 } from 'react-native';
-import { ThemedText } from '../../components/atoms/ThemedText';
-import { BorderRadius, Spacing } from '../../constants/Colors';
+import { ThemedText } from '../../../components/atoms/ThemedText';
+import { BorderRadius, Spacing } from '../../../constants/Colors';
 
 const { width: SCREEN_W, height: SCREEN_H } = Dimensions.get('window');
 
@@ -68,7 +68,6 @@ export default function HomeGlossyAnimated() {
       <Animated.View style={[styles.container, { opacity: titleOpacity, transform: [{ translateY: titleY }] }] }>
         <ThemedText variant="caption" style={styles.kicker}>DAILY PULSE</ThemedText>
         <ThemedText variant="display" weight="bold" style={styles.title}>Welcome back, Avery</ThemedText>
-        <ThemedText variant="body" color="secondary" style={styles.lead}>Your care team curated today's insights and gentle nudges just for you. Keep your rhythm steady.</ThemedText>
       </Animated.View>
 
       <Animated.View style={[styles.scrollArea, { opacity: cardsOpacity, transform: [{ translateY: cardsOffset }] }] }>
@@ -76,8 +75,7 @@ export default function HomeGlossyAnimated() {
         <GlowyCard compact>
           <View style={styles.rowBadges}>
             <Animated.View style={[styles.pulseDot, { transform: [{ scale: pulse }] }]} />
-            <ThemedText variant="body" color="inverse">2 insights this week</ThemedText>
-            <ThemedText variant="body" color="secondary" style={{ marginLeft: 12 }}>• 3 tasks to go</ThemedText>
+            <ThemedText variant="body" color="secondary">2 insights this week</ThemedText>
           </View>
         </GlowyCard>
 
@@ -183,12 +181,23 @@ const styles = StyleSheet.create({
   cardGlow: {
     ...StyleSheet.absoluteFillObject,
     borderRadius: BorderRadius.xl || 16,
-    backgroundColor: 'transparent',
+    backgroundColor: 'rgba(30, 27, 75, 0.4)',
     // subtle top-left white accent line
     borderTopWidth: 1.2,
     borderLeftWidth: 1.2,
     borderColor: 'rgba(255,255,255,0.03)',
   },
+
+  cardGlo: {
+    ...StyleSheet.absoluteFillObject,
+    borderRadius: BorderRadius.xl || 16,
+    backgroundColor: 'rgba(30, 27, 75, 0.1)',
+    // subtle top-left white accent line
+    borderTopWidth: 1.2,
+    borderLeftWidth: 1.2,
+    borderColor: 'rgba(255,255,255,0.03)',
+  },
+
   cardContent: {
     position: 'relative',
     zIndex: 2,

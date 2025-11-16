@@ -11,10 +11,10 @@ import {
   View,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { ThemedText } from '../../components/atoms/ThemedText';
-import { CareTaskTile } from '../../components/molecules/CareTaskTile';
-import { BorderRadius, Spacing } from '../../constants/Colors';
-import { useMockData } from '../../hooks/useMockData';
+import { ThemedText } from '../../../components/atoms/ThemedText';
+import { CareTaskTile } from '../../../components/molecules/CareTaskTile';
+import { BorderRadius, Spacing } from '../../../constants/Colors';
+import { useMockData } from '../../../hooks/useMockData';
 
 const { width: SCREEN_W } = Dimensions.get('window');
 
@@ -165,7 +165,7 @@ const styles = StyleSheet.create({
   cardGlow: {
     ...StyleSheet.absoluteFillObject,
     borderRadius: BorderRadius.xl || 16,
-    backgroundColor: 'transparent',
+    backgroundColor: 'rgba(245, 158, 11, )',
     borderTopWidth: 1.2,
     borderLeftWidth: 1.2,
     borderColor: 'rgba(255,255,255,0.03)',

@@ -1,8 +1,8 @@
-import { useState } from 'react';
 import { useRouter } from 'expo-router';
-import { SafeAreaView, ScrollView, StyleSheet, View, TouchableOpacity } from 'react-native';
-import { Chip } from '../../../components/atoms/Chip';
+import { useState } from 'react';
+import { SafeAreaView, ScrollView, StyleSheet, TouchableOpacity, View } from 'react-native';
 import { Button } from '../../../components/atoms/Button';
+import { Chip } from '../../../components/atoms/Chip';
 import { ThemedText } from '../../../components/atoms/ThemedText';
 import { BorderRadius, Colors, Spacing } from '../../../constants/Colors';
 
@@ -86,7 +86,7 @@ export default function RiskAssessmentScreen() {
             </View>
           )}
 
-          <Button variant="primary" fullWidth style={styles.button} onPress={() => router.replace('/patient/home')}>
+          <Button variant="primary" fullWidth style={styles.button} onPress={() => router.replace('/patient/dashboard/home')}>
             Finish Assessment
           </Button>
         </View>

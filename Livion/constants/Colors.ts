@@ -13,7 +13,7 @@ export const Colors = {
   primary: {
     teal: '#0d9488',      // Teal 600 - trust/health
     indigo: '#4f46e5',    // Indigo 600 - competence
-    darkNavy: '#0f172a',  // Deep navy background (Stardust-inspired)
+    darkNavy: '#0f172a',  // Deep navy background
     deepPurple: '#1e1b4b', // Deep purple for layered backgrounds
   },
 
@@ -36,7 +36,7 @@ export const Colors = {
   // Semantic Colors
   background: {
     primary: '#0f172a',   // Deep navy
-    secondary: '#1e293b', // Slate 800
+    secondary: '#3949AB', // Slate 800
     card: '#1e1b4b',      // Deep purple with transparency
     cardGlass: 'rgba(30, 27, 75, 0.6)', // Glassmorphism effect
     overlay: 'rgba(15, 23, 42, 0.95)',

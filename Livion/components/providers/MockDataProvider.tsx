@@ -28,6 +28,13 @@ export type ConsentRecord = {
   grantedDate: Date;
 };
 
+// ⭐ NEW TYPES added for Home UI
+export type PatientMetrics = {
+  steps: number | null;
+  sleep: number | null;   // hours
+  mood: string | null;    // textual summary
+};
+
 export type PatientData = {
   name: string;
   age: number;
@@ -35,6 +42,11 @@ export type PatientData = {
   insights: Insight[];
   careTasks: CareTask[];
   consents: ConsentRecord[];
+
+  // ⭐ NEW FIELDS FOR HOME SCREEN
+  metrics: PatientMetrics;
+  safetyMessage?: string;
+  statusSummary?: string;
 };
 
 // Mock Data
@@ -42,13 +54,30 @@ const mockPatientData: PatientData = {
   name: 'Jane Doe',
   age: 34,
   conditions: ['Type 2 Diabetes', 'Hypertension'],
+
+  // ⭐ ADDED: metrics block (required by header)
+  metrics: {
+    steps: 7321,
+    sleep: 7.2,
+    mood: 'Good',
+  },
+
+  // ⭐ ADDED: status summary for small header card
+  statusSummary: 'Stable',
+
+  // ⭐ ADDED: safety banner message
+  safetyMessage:
+    'Your care team has reviewed your latest readings. No urgent concerns — continue your routine and report any symptoms.',
+
   insights: [
     {
       id: '1',
       title: 'Blood Glucose Trend',
-      reason: 'Your morning blood glucose readings have been consistently higher this week.',
+      reason:
+        'Your morning blood glucose readings have been consistently higher this week.',
       source: 'Continuous Glucose Monitor',
-      evidence: 'Based on 7 days of CGM data showing average fasting glucose of 145 mg/dL, compared to your target range of 80-130 mg/dL. This pattern suggests potential need for medication adjustment or dietary review.',
+      evidence:
+        'Based on 7 days of CGM data showing average fasting glucose of 145 mg/dL, compared to your target range of 80-130 mg/dL. This pattern suggests potential need for medication adjustment or dietary review.',
       action: {
         label: 'Schedule Review',
         onPress: () => console.log('Schedule review clicked'),
@@ -57,7 +86,7 @@ const mockPatientData: PatientData = {
     {
       id: '2',
       title: 'Activity Achievement',
-      reason: 'You\'ve reached your weekly step goal 3 weeks in a row!',
+      reason: "You've reached your weekly step goal 3 weeks in a row!",
       source: 'Fitness Tracker',
       action: {
         label: 'View Progress',
@@ -65,6 +94,7 @@ const mockPatientData: PatientData = {
       },
     },
   ],
+
   careTasks: [
     {
       id: '1',
@@ -88,6 +118,7 @@ const mockPatientData: PatientData = {
       status: 'completed',
     },
   ],
+
   consents: [
     {
       id: '1',
@@ -109,9 +140,13 @@ type MockDataContextType = {
   updatePatientData: (data: Partial<PatientData>) => void;
 };
 
-const MockDataContext = createContext<MockDataContextType | undefined>(undefined);
+const MockDataContext = createContext<MockDataContextType | undefined>(
+  undefined
+);
 
-export const MockDataProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
+export const MockDataProvider: React.FC<{ children: ReactNode }> = ({
+  children,
+}) => {
   const [patientData] = React.useState<PatientData>(mockPatientData);
 
   const updatePatientData = (data: Partial<PatientData>) => {

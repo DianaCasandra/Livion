@@ -31,7 +31,7 @@ export default function PatientLoginScreen() {
           <InputField label="Role" placeholder="e.g: nurse, physician" secureTextEntry style={styles.input} />
           <InputField label="Set a Password" placeholder="" secureTextEntry style={styles.input} />
           <InputField label="Confirm password" placeholder="" secureTextEntry style={styles.input} />
-          <Button variant="primary" fullWidth style={styles.button} onPress={() => router.replace('/clinician/dashboard')}>
+          <Button variant="primary" fullWidth style={styles.button} onPress={() => router.replace('/clinician/dashboard/home')}>
             Sign In
           </Button>
           <ThemedText variant="caption" color="tertiary" align="center" style={styles.footer}>

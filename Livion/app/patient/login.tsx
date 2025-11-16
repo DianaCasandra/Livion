@@ -28,7 +28,7 @@ export default function PatientLoginScreen() {
           </ThemedText>
           <InputField label="Email / Phone " placeholder="" keyboardType="email-address" style={styles.input} />
           <InputField label="Password" placeholder="" secureTextEntry style={styles.input} />
-          <Button variant="primary" fullWidth style={styles.button} onPress={() => router.replace('/patient/home')}>
+          <Button variant="primary" fullWidth style={styles.button} onPress={() => router.replace('/patient/dashboard/home')}>
             Sign In
           </Button>
           <ThemedText variant="caption" color="tertiary" align="center" style={styles.footer}>
