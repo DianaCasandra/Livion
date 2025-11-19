@@ -1,197 +1,177 @@
 import { LinearGradient } from 'expo-linear-gradient';
-import React, { useRef } from 'react';
+import React, { useState } from 'react';
 import {
-  Animated,
-  Platform,
-  Pressable,
   ScrollView,
-  StatusBar,
   StyleSheet,
   View,
+  StatusBar,
+  Platform,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { Button } from '../../../components/atoms/Button';
 import { ThemedText } from '../../../components/atoms/ThemedText';
-import { BorderRadius, Spacing } from '../../../constants/Colors';
+import { InputField } from '../../../components/atoms/InputField';
+import { Button } from '../../../components/atoms/Button';
+import { BorderRadius, Colors, Spacing } from '../../../constants/Colors';
 
-// ----------------------------------------------------
-// Componentă GlowyCard Reutilizată (Preluată din stilul Glossy)
-// ----------------------------------------------------
-function GlowyCard({ children, onPress = () => {} }: any) {
-    const pressScale = useRef(new Animated.Value(1)).current;
+export default function ClinicianDocumentation() {
+  const [noteTitle, setNoteTitle] = useState('');
+  const [clinicalNote, setClinicalNote] = useState('');
+  const [assessment, setAssessment] = useState('');
+  const [plan, setPlan] = useState('');
 
-    const onPressIn = () => {
-        Animated.spring(pressScale, { toValue: 0.985, useNativeDriver: true, speed: 30 }).start();
-    };
-    const onPressOut = () => {
-        Animated.spring(pressScale, { toValue: 1, useNativeDriver: true, speed: 30 }).start();
-    };
-
-    return (
-        <Pressable onPressIn={onPressIn} onPressOut={onPressOut} onPress={onPress} style={{ marginBottom: Spacing['2xl'] }}>
-            <Animated.View style={[styles.cardBase, { transform: [{ scale: pressScale }] }]}>
-                {/* Glow overlay (white accent line) */}
-                <View style={styles.cardGlow} pointerEvents="none" />
-                <View style={styles.cardContent}>{children}</View>
-            </Animated.View>
-        </Pressable>
-    );
-}
-// ----------------------------------------------------
-
-export default function DocumentationScreen() {
   return (
     <View style={styles.root}>
       <StatusBar barStyle="light-content" translucent backgroundColor="transparent" />
 
-      {/* 1. Background Gradient (Stardust) */}
+      {/* background gradient */}
       <LinearGradient
-        colors={["#07203f", "#04363a", "#06233d"]} // Tonuri de Indigo și Teal
+        colors={['#050816', '#031824', '#031b2e']}
         style={StyleSheet.absoluteFill}
         start={[0, 0]}
         end={[1, 1]}
       />
 
-      {/* 2. Subtle Radial Glows */}
+      {/* glow overlays */}
       <View style={styles.glowTopRight} pointerEvents="none" />
       <View style={styles.glowBottomLeft} pointerEvents="none" />
-      
-      <SafeAreaView style={styles.safeArea}>
-        <ScrollView contentContainerStyle={styles.container} showsVerticalScrollIndicator={false}>
-          
+
+      <SafeAreaView style={styles.safearea}>
+        <ScrollView
+          showsVerticalScrollIndicator={false}
+          contentContainerStyle={styles.container}
+        >
+          {/* HEADER */}
           <ThemedText variant="display" weight="bold" style={styles.header}>
-            Clinical Documentation
-          </ThemedText>
-          <ThemedText variant="body" color="secondary" style={styles.subheader}>
-            Record visit notes and plan updates.
+            Documentation
           </ThemedText>
 
-          {/* Card 1: Visit Summary Draft (învelit în GlowyCard) */}
-          <GlowyCard>
-            <ThemedText variant="subtitle" weight="semibold" style={styles.sectionTitle}>
-              Visit Summary Draft
-            </ThemedText>
-            <ThemedText variant="body" color="secondary" style={styles.body}>
-              Oct 07, 2025 · Telehealth visit
-            </ThemedText>
-            <ThemedText variant="body" color="secondary" style={styles.body}>
-              Assessment: Glucose trends improving, continue current regimen.
-            </ThemedText>
-            <ThemedText variant="body" color="secondary" style={styles.body}>
-              Plan: Reassess in two weeks, monitor dietary journaling.
-            </ThemedText>
-            <Button variant="primary" fullWidth style={styles.button}>
-              Save to EHR
-            </Button>
-          </GlowyCard>
+          <ThemedText
+            variant="body"
+            color="secondary"
+            style={styles.subtitle}
+          >
+            Record structured notes for clinical encounters and patient updates.
+          </ThemedText>
 
-          {/* Card 2: Shared Notes (învelit în GlowyCard) */}
-          <GlowyCard>
-            <ThemedText variant="subtitle" weight="semibold" style={styles.sectionTitle}>
-              Shared Notes
-            </ThemedText>
-            <ThemedText variant="body" color="secondary" style={styles.body}>
-              Next care conference scheduled for Oct 10. Prepare data visualizations and update care plan for review.
-            </ThemedText>
-            <Button variant="outline" fullWidth style={styles.button}>
-              Download PDF
-            </Button>
-          </GlowyCard>
+          {/* CARD */}
+          <View style={styles.card}>
+            <View style={{ gap: Spacing.md }}>
+              <InputField
+                label="Note title"
+                value={noteTitle}
+                onChangeText={setNoteTitle}
+                placeholder="e.g. Weekly check-in summary"
+              />
 
-          {/* Padding pentru a preveni suprapunerea Navbar-ului fix (dacă este cazul) */}
-          <View style={{ height: Spacing['3xl'] + 60 }} /> 
+              <InputField
+                label="Clinical note"
+                multiline
+                value={clinicalNote}
+                onChangeText={setClinicalNote}
+                placeholder="Objective findings, symptoms, recent measurements..."
+              />
+
+              <InputField
+                label="Assessment"
+                multiline
+                value={assessment}
+                onChangeText={setAssessment}
+                placeholder="Interpretation, clinical judgement..."
+              />
+
+              <InputField
+                label="Plan"
+                multiline
+                value={plan}
+                onChangeText={setPlan}
+                placeholder="Next steps, follow-ups, medication adjustments..."
+              />
+            </View>
+          </View>
+
+          {/* ACTIONS */}
+          <View style={styles.actions}>
+            <Button variant="primary" fullWidth>
+              Save Note
+            </Button>
+
+            <Button variant="secondary" fullWidth>
+              Share With Care Team
+            </Button>
+          </View>
+
+          <View style={{ height: 90 }} />
         </ScrollView>
       </SafeAreaView>
     </View>
   );
 }
 
+/* -------------------------------------------------------------------------- */
+/*                                   STYLES                                   */
+/* -------------------------------------------------------------------------- */
+
 const styles = StyleSheet.create({
-  // STILURI GLOBALE ȘI LAYOUT
   root: {
     flex: 1,
-    backgroundColor: '#041025', // Fundal de rezervă
+    backgroundColor: Colors.background.primary,
     paddingTop: Platform.OS === 'android' ? StatusBar.currentHeight || 24 : 0,
   },
-  safeArea: {
+  safearea: {
     flex: 1,
     backgroundColor: 'transparent',
   },
   container: {
-    paddingHorizontal: Spacing.xl, // Folosim XL pentru a se potrivi cu celelalte pagini
+    paddingHorizontal: Spacing.lg,
     paddingTop: Spacing.lg,
-    paddingBottom: Spacing.lg, 
+    paddingBottom: Spacing.xl,
   },
+
   header: {
-    marginBottom: Spacing.sm,
-    color: '#fff', // Textul headerului alb pentru contrast
-    fontSize: 42,
-    lineHeight: 48,
+    color: '#fff',
+    marginBottom: Spacing.xs,
+    fontSize: 28,
+    lineHeight: 34,
   },
-  subheader: {
+  subtitle: {
     marginBottom: Spacing.xl,
+    fontSize: 13,
+    lineHeight: 18,
   },
-  
-  // Componente Glossy/Glassy Card (GlowyCard - Stil de bază pentru formă)
-  cardBase: {
-    backgroundColor: 'rgba(30, 27, 75, 0.4)', // Card de sticlă semitransparent
-    borderRadius: BorderRadius.xl || 16,
-    padding: Spacing.lg,
-    overflow: 'hidden',
+
+  card: {
+    backgroundColor: 'rgba(15, 23, 42, 0.66)',
+    paddingVertical: Spacing.lg,
+    paddingHorizontal: Spacing.lg,
+    borderRadius: BorderRadius.xl,
     borderWidth: 1,
     borderColor: 'rgba(255,255,255,0.06)',
-    // shadow
-    ...Platform.select({
-      ios: { shadowColor: '#a7f3d0', shadowOffset: { width: 0, height: 6 }, shadowOpacity: 0.08, shadowRadius: 18 },
-      android: { elevation: 6 },
-    }),
+    marginBottom: Spacing.xl,
   },
-  cardGlow: {
-    ...StyleSheet.absoluteFillObject,
-    borderRadius: BorderRadius.xl || 16,
-    backgroundColor: 'rgba(30, 27, 75, 0.4)', // Tonuri de Indigo și Teal
-    borderTopWidth: 1.2,
-    borderLeftWidth: 1.2,
-    borderColor: 'rgba(255,255,255,0.03)',
+
+  actions: {
+    marginTop: Spacing.md,
+    gap: Spacing.md,
   },
-  cardContent: {
-    position: 'relative',
-    zIndex: 2,
-  },
-  
-  // STILURI SPECIFICE
-  sectionTitle: {
-    marginBottom: Spacing.sm,
-    color: '#fff', // Titlurile din card sunt albe
-  },
-  body: {
-    marginBottom: Spacing.sm,
-  },
-  button: {
-    marginTop: Spacing.lg,
-  },
-  
-  // Glows (Preluate din HomeGlossyAnimated)
+
   glowTopRight: {
     position: 'absolute',
-    width: 400,
-    height: 400,
-    right: -120,
-    top: -60,
+    width: 360,
+    height: 360,
+    right: -130,
+    top: -120,
     borderRadius: 999,
-    backgroundColor: '#075985',
-    opacity: 0.08,
-    transform: [{ scale: 1.4 }],
+    backgroundColor: Colors.primary.indigo,
+    opacity: 0.10,
   },
   glowBottomLeft: {
     position: 'absolute',
-    width: 500,
-    height: 500,
-    left: -180,
-    bottom: -120,
+    width: 480,
+    height: 480,
+    left: -200,
+    bottom: -180,
     borderRadius: 999,
-    backgroundColor: '#0ea5a4',
-    opacity: 0.06,
-    transform: [{ scale: 1.2 }],
+    backgroundColor: Colors.primary.teal,
+    opacity: 0.08,
   },
 });

@@ -1,4 +1,5 @@
 import { LinearGradient } from 'expo-linear-gradient';
+import { router } from 'expo-router';
 import React, { useRef } from 'react';
 import {
   Animated,
@@ -15,37 +16,66 @@ import { ThemedText } from '../../../components/atoms/ThemedText';
 import { CareTaskTile } from '../../../components/molecules/CareTaskTile';
 import { BorderRadius, Colors, Spacing } from '../../../constants/Colors';
 import { useMockData } from '../../../hooks/useMockData';
-import { router } from 'expo-router';
 
-// ----------------------------------------------------
-// Componentă GlowyCard Reutilizată (Preluată din stilul Glossy)
-// ----------------------------------------------------
-function GlowyCard({ children, onPress = () => {}, compact = false, style }: any) {
-    const pressScale = useRef(new Animated.Value(1)).current;
+// ---------------------------------------------------------------------
+// GlowyCard
+// ---------------------------------------------------------------------
+function GlowyCard({ children, compact = false, onPress, style }: any) {
+  const pressScale = useRef(new Animated.Value(1)).current;
 
-    const onPressIn = () => {
-        Animated.spring(pressScale, { toValue: 0.985, useNativeDriver: true, speed: 30 }).start();
-    };
-    const onPressOut = () => {
-        Animated.spring(pressScale, { toValue: 1, useNativeDriver: true, speed: 30 }).start();
-    };
+  const onPressIn = () => {
+    if (!onPress) return;
+    Animated.spring(pressScale, {
+      toValue: 0.985,
+      useNativeDriver: true,
+      speed: 30,
+    }).start();
+  };
 
-    return (
-        // Am eliminat marginBottom: Spacing['2xl'] din Pressable și l-am lăsat la nivel de utilizare.
-        <Pressable onPressIn={onPressIn} onPressOut={onPressOut} onPress={onPress} disabled={!onPress} style={style}>
-            <Animated.View style={[
-                styles.cardBase, 
-                compact && styles.cardCompact,
-                { transform: [{ scale: pressScale }] }
-            ]}>
-                {/* Glow overlay (white accent line) */}
-                <View style={styles.cardGlow} pointerEvents="none" />
-                <View style={styles.cardContent}>{children}</View>
-            </Animated.View>
-        </Pressable>
-    );
+  const onPressOut = () => {
+    if (!onPress) return;
+    Animated.spring(pressScale, {
+      toValue: 1,
+      useNativeDriver: true,
+      speed: 30,
+    }).start();
+  };
+
+  return (
+    <Pressable
+      disabled={!onPress}
+      onPress={onPress}
+      onPressIn={onPress ? onPressIn : undefined}
+      onPressOut={onPress ? onPressOut : undefined}
+      style={style}
+    >
+      <Animated.View
+        style={[
+          styles.cardBase,
+          compact && styles.cardCompact,
+          { transform: [{ scale: pressScale }] },
+        ]}
+      >
+        <View style={styles.cardGlow} pointerEvents="none" />
+        <View style={styles.cardContent}>{children}</View>
+      </Animated.View>
+    </Pressable>
+  );
 }
-// ----------------------------------------------------
+
+// ---------------------------------------------------------------------
+// Static snapshot
+// ---------------------------------------------------------------------
+const cohortSnapshot = {
+  activePatients: 24,
+  stableToday: 16,
+  bpRecordedToday: 154,
+  fullyAdherentToday: 68,
+  missedGoalsYesterday: 12,
+  highRiskAlertsOpen: 5,
+};
+
+// ---------------------------------------------------------------------
 
 export default function ClinicianDashboard() {
   const { patientData } = useMockData();
@@ -54,235 +84,580 @@ export default function ClinicianDashboard() {
     <View style={styles.root}>
       <StatusBar barStyle="light-content" translucent backgroundColor="transparent" />
 
-      {/* 1. Background Gradient (Stardust) */}
       <LinearGradient
-        colors={["#07203f", "#04363a", "#06233d"]} // Tonuri de Indigo și Teal
+        colors={['#050816', '#031824', '#031b2e']}
         style={StyleSheet.absoluteFill}
         start={[0, 0]}
         end={[1, 1]}
       />
 
-      {/* 2. Subtle Radial Glows */}
-      <View style={styles.glowTopRight} pointerEvents="none" />
-      <View style={styles.glowBottomLeft} pointerEvents="none" />
-      
+      <View style={styles.glowTopRight} />
+      <View style={styles.glowBottomLeft} />
+
       <SafeAreaView style={styles.safeArea}>
         <ScrollView contentContainerStyle={styles.container} showsVerticalScrollIndicator={false}>
 
-          {/* Back Button */}
-                  <Pressable onPress={() => router.back()} style={styles.backButton}>
-                    <ThemedText variant="body" color="teal" style={styles.backButtonText}>
-                      ⪻ Back
-                    </ThemedText>
-                  </Pressable>
-          
-          <ThemedText variant="display" weight="bold" style={styles.header}>
-            Clinician Dashboard
+          {/* Back */}
+          <Pressable onPress={() => router.back()} style={styles.backButton}>
+            <ThemedText
+              variant="body"
+              color="teal"
+              style={[styles.backButtonText, { fontSize: 16 }]}
+            >
+              ⪻ Back
+            </ThemedText>
+          </Pressable>
+
+          {/* HEADER */}
+          <ThemedText
+            variant="display"
+            weight="bold"
+            style={[styles.header, { fontSize: 30, lineHeight: 36 }]}
+          >
+            Clinician dashboard
           </ThemedText>
-          <ThemedText variant="subtitle" color="secondary" style={styles.subtitle}>
-            Today's alerts and patient insights
+          <ThemedText
+            variant="body"
+            color="secondary"
+            style={[styles.subtitle, { fontSize: 13, lineHeight: 18 }]}
+          >
+            Today’s panel overview across your connected patients
           </ThemedText>
 
-          {/* Stat Grid */}
-          <View style={styles.statGrid}>
-            <GlowyCard style={{ flex: 1 }}>
-              <View style={styles.statContent}>
-                <ThemedText variant="heading" weight="bold" style={styles.statValue}>
-                  14
-                </ThemedText>
-                <ThemedText variant="body" color="secondary">
-                  Patients monitored
-                </ThemedText>
-              </View>
+          {/* STATS ROW */}
+          <View style={styles.statRow}>
+            {/* Active monitored */}
+            <GlowyCard compact style={styles.statCard}>
+              <ThemedText variant="caption" color="secondary" style={{ fontSize: 11 }}>
+                Active monitored
+              </ThemedText>
+              <ThemedText
+                variant="heading"
+                weight="bold"
+                style={[styles.statValue, { fontSize: 20 }]}
+              >
+                {cohortSnapshot.activePatients}
+              </ThemedText>
+              <ThemedText variant="caption" color="secondary" style={{ fontSize: 11 }}>
+                patients on remote monitoring
+              </ThemedText>
+
+              <Button
+                variant="secondary"
+                size="sm"
+                style={styles.smallButton}
+                textStyle={{ fontSize: 11 }}
+              >
+                See the patients
+              </Button>
             </GlowyCard>
-            
-            <GlowyCard style={{ flex: 1 }}>
-              <View style={styles.statContent}>
-                {/* Am adăugat culoarea albă pe gold aici pentru a menține contrastul bun pe fundalul dark glossy */}
-                <ThemedText variant="heading" weight="bold" style={[styles.statValue, { color: '#ffb700' }]}> 
-                  3
-                </ThemedText>
-                <ThemedText variant="body" color="secondary">
-                  Urgent reviews
-                </ThemedText>
-              </View>
+
+            {/* Stable today */}
+            <GlowyCard compact style={styles.statCard}>
+              <ThemedText variant="caption" color="secondary" style={{ fontSize: 11 }}>
+                Stable today
+              </ThemedText>
+              <ThemedText
+                variant="heading"
+                weight="bold"
+                style={[styles.statValue, { fontSize: 20 }]}
+              >
+                {cohortSnapshot.stableToday}
+              </ThemedText>
+              <ThemedText variant="caption" color="secondary" style={{ fontSize: 11 }}>
+                with vitals in range
+              </ThemedText>
+
+              <Button
+                variant="secondary"
+                size="sm"
+                style={styles.smallButton}
+                textStyle={{ fontSize: 11 }}
+              >
+                See the patients
+              </Button>
             </GlowyCard>
           </View>
 
-          {/* Priority Overview Section */}
+          {/* SNAPSHOT GRID */}
           <View style={styles.section}>
-            <ThemedText variant="heading" weight="semibold" style={styles.sectionTitle}>
-              Priority Overview
+            <ThemedText
+              variant="heading"
+              weight="semibold"
+              style={[styles.sectionTitle, { fontSize: 17 }]}
+            >
+              Today’s cohort snapshot
             </ThemedText>
-            {patientData.insights.map((insight) => (
-              <GlowyCard key={insight.id}>
-                <ThemedText variant="subtitle" weight="semibold" style={styles.insightTitle}>
+
+            <View style={styles.snapshotGrid}>
+              {/* BP */}
+              <GlowyCard compact style={styles.snapshotCard}>
+                <ThemedText variant="caption" color="secondary" style={{ fontSize: 11 }}>
+                  Blood pressure
+                </ThemedText>
+                <ThemedText
+                  variant="heading"
+                  weight="bold"
+                  style={{
+                    color: Colors.accent.gold,
+                    marginVertical: 4,
+                    fontSize: 20,
+                    lineHeight: 24,
+                  }}
+                >
+                  {cohortSnapshot.bpRecordedToday}
+                </ThemedText>
+                <ThemedText variant="caption" color="secondary" style={{ fontSize: 11 }}>
+                  patients recorded BP today
+                </ThemedText>
+
+                <Button
+                  variant="secondary"
+                  size="sm"
+                  style={styles.smallButton}
+                  textStyle={{ fontSize: 11 }}
+                >
+                  See the patients
+                </Button>
+              </GlowyCard>
+
+              {/* Adherence */}
+              <GlowyCard compact style={styles.snapshotCard}>
+                <ThemedText variant="caption" color="secondary" style={{ fontSize: 11 }}>
+                  Daily adherence
+                </ThemedText>
+                <ThemedText
+                  variant="heading"
+                  weight="bold"
+                  style={{
+                    color: '#fff',
+                    marginVertical: 4,
+                    fontSize: 20,
+                    lineHeight: 24,
+                  }}
+                >
+                  {cohortSnapshot.fullyAdherentToday}
+                </ThemedText>
+                <ThemedText variant="caption" color="secondary" style={{ fontSize: 11 }}>
+                  completed all tasks
+                </ThemedText>
+
+                <Button
+                  variant="secondary"
+                  size="sm"
+                  style={styles.smallButton}
+                  textStyle={{ fontSize: 11 }}
+                >
+                  See the patients
+                </Button>
+              </GlowyCard>
+
+              {/* Missed yesterday — NEGATIVE */}
+              <GlowyCard compact style={styles.snapshotCard}>
+                <ThemedText variant="caption" color="secondary" style={{ fontSize: 11 }}>
+                  Missed yesterday
+                </ThemedText>
+                <ThemedText
+                  variant="heading"
+                  weight="bold"
+                  style={{
+                    color: Colors.status.attention,
+                    marginVertical: 4,
+                    fontSize: 20,
+                    lineHeight: 24,
+                  }}
+                >
+                  {cohortSnapshot.missedGoalsYesterday}
+                </ThemedText>
+                <ThemedText variant="caption" color="secondary" style={{ fontSize: 11 }}>
+                  patients omitted goal
+                </ThemedText>
+
+                <Button
+                  variant="secondary"
+                  size="sm"
+                  style={styles.smallButton}
+                  textStyle={{ fontSize: 11 }}
+                >
+                  See the patients
+                </Button>
+                <Button
+                  variant="secondary"
+                  size="sm"
+                  style={styles.smallButton}
+                  textStyle={{ fontSize: 11 }}
+                >
+                  Reach by call
+                </Button>
+                <Button
+                  variant="secondary"
+                  size="sm"
+                  style={styles.smallButton}
+                  textStyle={{ fontSize: 11 }}
+                >
+                  Reach by message
+                </Button>
+              </GlowyCard>
+
+              {/* High-risk alerts — NEGATIVE */}
+              <GlowyCard compact style={styles.snapshotCard}>
+                <ThemedText variant="caption" color="secondary" style={{ fontSize: 11 }}>
+                  High-risk alerts
+                </ThemedText>
+                <ThemedText
+                  variant="heading"
+                  weight="bold"
+                  style={{
+                    color: Colors.status.action,
+                    marginVertical: 4,
+                    fontSize: 20,
+                    lineHeight: 24,
+                  }}
+                >
+                  {cohortSnapshot.highRiskAlertsOpen}
+                </ThemedText>
+                <ThemedText variant="caption" color="secondary" style={{ fontSize: 11 }}>
+                  escalations awaiting review
+                </ThemedText>
+
+                <Button
+                  variant="secondary"
+                  size="sm"
+                  style={styles.smallButton}
+                  textStyle={{ fontSize: 11 }}
+                >
+                  See the patients
+                </Button>
+                <Button
+                  variant="secondary"
+                  size="sm"
+                  style={styles.smallButton}
+                  textStyle={{ fontSize: 11 }}
+                >
+                  Reach by call
+                </Button>
+                <Button
+                  variant="secondary"
+                  size="sm"
+                  style={styles.smallButton}
+                  textStyle={{ fontSize: 11 }}
+                >
+                  Reach by message
+                </Button>
+              </GlowyCard>
+            </View>
+          </View>
+
+          {/* PRIORITY OVERVIEW */}
+          <View style={styles.section}>
+            <ThemedText
+              variant="heading"
+              weight="semibold"
+              style={[styles.sectionTitle, { fontSize: 17 }]}
+            >
+              Priority overview
+            </ThemedText>
+
+            {patientData?.insights?.map((insight) => (
+              <GlowyCard key={insight.id} style={styles.insightCard}>
+                <ThemedText
+                  variant="subtitle"
+                  weight="semibold"
+                  style={[styles.insightTitle, { fontSize: 15 }]}
+                >
                   {insight.title}
                 </ThemedText>
-                <ThemedText variant="body" color="secondary" style={styles.insightBody}>
+                <ThemedText
+                  variant="body"
+                  color="secondary"
+                  style={[styles.insightBody, { fontSize: 13, lineHeight: 18 }]}
+                >
                   {insight.reason}
                 </ThemedText>
-<Button
-  variant="secondary"
-  size="sm"
-  style={{ ...styles.reviewButton, backgroundColor: 'rgba(57, 73, 171, 0.5)', borderColor: '#3949AB' }}
->
-  Review patient
-</Button>
+
+                {insight.action && (
+                  <Button
+                    variant="secondary"
+                    size="sm"
+                    style={{
+                      ...styles.reviewButton,
+                      paddingVertical: 4,
+                    }}
+                    textStyle={{ fontSize: 11 }}
+                    onPress={insight.action.onPress}
+                  >
+                    {insight.action.label}
+                  </Button>
+                )}
+              </GlowyCard>
+            ))}
+          </View>
+
+          {/* TODAY’S WORKLIST */}
+          <View style={styles.section}>
+            <ThemedText
+              variant="heading"
+              weight="semibold"
+              style={[styles.sectionTitle, { fontSize: 17 }]}
+            >
+              Today’s worklist
+            </ThemedText>
+
+            {patientData?.careTasks?.map((task) => (
+              <GlowyCard key={task.id} onPress={() => { }} style={styles.taskCard}>
+
+                {/* Task Title Row */}
+                <View style={styles.taskHeaderRow}>
+                  <ThemedText
+                    variant="subtitle"
+                    weight="semibold"
+                    style={styles.taskTitle}
+                  >
+                    {task.title}
+                  </ThemedText>
+
+                  <View
+                    style={[
+                      styles.statusPill,
+                      task.status === 'due' && styles.statusDue,
+                      task.status === 'overdue' && styles.statusOverdue,
+                      task.status === 'completed' && styles.statusCompleted,
+                    ]}
+                  >
+                    <ThemedText
+                      variant="caption"
+                      weight="semibold"
+                      style={{ color: '#fff', fontSize: 11 }}
+                    >
+                      {task.status}
+                    </ThemedText>
+                  </View>
+                </View>
+
+                {/* Description */}
+                <ThemedText
+                  variant="body"
+                  color="secondary"
+                  style={styles.taskDescription}
+                >
+                  {task.description}
+                </ThemedText>
+
+                {/* Footer info */}
+                <View style={styles.taskFooterRow}>
+                  <ThemedText
+                    variant="caption"
+                    color="secondary"
+                    style={styles.taskDueDate}
+                  >
+                    Due: {typeof task.dueDate === 'string'
+  ? task.dueDate
+  : task.dueDate.toLocaleDateString()}
+
+                  </ThemedText>
+
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    style={styles.taskActionButton}
+                    textStyle={{ fontSize: 11 }}
+                  >
+                    Review
+                  </Button>
+                </View>
 
               </GlowyCard>
             ))}
           </View>
 
-          {/* Care Tasks Section */}
-          <View style={styles.section}>
-            <ThemedText variant="heading" weight="semibold" style={styles.sectionTitle}>
-              Care Tasks Requiring Follow-Up
-            </ThemedText>
-            {patientData.careTasks
-              .filter((task) => task.status !== 'completed')
-              .map((task) => (
-                <GlowyCard key={task.id} onPress={() => console.log('Task pressed:', task.id)}>
-                  {/* Presupunem că CareTaskTile este făcut să se integreze pe fundal transparent */}
-                  <CareTaskTile
-                    title={task.title}
-                    description={task.description}
-                    dueDate={task.dueDate}
-                    status={task.status}
-                    style={{ backgroundColor: 'transparent', borderWidth: 0, padding: 0 }}
-                  />
-                </GlowyCard>
-              ))}
-          </View>
-          
-          {/* Padding */}
-          <View style={{ height: Spacing['3xl'] + 60 }} /> 
+          <View style={{ height: Spacing['3xl'] }} />
         </ScrollView>
       </SafeAreaView>
     </View>
   );
 }
 
+// ---------------------------------------------------------------------
+
 const styles = StyleSheet.create({
-  // STILURI GLOBALE ȘI LAYOUT
   root: {
     flex: 1,
-    backgroundColor: '#041025', // Fundal de rezervă
+    backgroundColor: Colors.background.primary,
     paddingTop: Platform.OS === 'android' ? StatusBar.currentHeight || 24 : 0,
   },
-  safeArea: {
-    flex: 1,
-    backgroundColor: 'transparent',
-  },
+  safeArea: { flex: 1, backgroundColor: 'transparent' },
+
   container: {
-    paddingHorizontal: Spacing.xl, // Consistență cu celelalte pagini
+    paddingHorizontal: Spacing.lg,
     paddingTop: Spacing.lg,
-    paddingBottom: Spacing.lg, 
+    paddingBottom: Spacing.lg,
   },
+
+  backButton: {
+    alignSelf: 'flex-start',
+    marginTop: -30,
+    marginBottom: 20,
+  },
+  backButtonText: {
+  },
+
   header: {
-    marginBottom: Spacing.sm,
     color: '#fff',
-    fontSize: 42,
-    lineHeight: 48,
+    marginBottom: Spacing.xs,
   },
   subtitle: {
     marginBottom: Spacing.xl,
   },
-  backButton: {
-      alignSelf: 'flex-start',
-      marginBottom: Spacing.lg,
-    },
-    backButtonText: {
-      fontSize: 18,
-      color: Colors.primary.teal,
-    },
-  
-  // STAT GRID
-  statGrid: {
+
+  statRow: {
     flexDirection: 'row',
     gap: Spacing.md,
-    marginBottom: Spacing['2xl'],
+    marginBottom: Spacing.xl,
   },
-  statContent: {
-    // Conținutul cardului de statistică
-  },
+  statCard: { flex: 1 },
   statValue: {
     color: '#fff',
+    marginVertical: Spacing.xs,
   },
 
-  // CARD BASE (GlowyCard component style)
+  smallButton: {
+    marginTop: Spacing.xs,
+    paddingVertical: 3,
+    paddingHorizontal: Spacing.sm,
+    alignSelf: 'flex-start',
+  },
+
+  section: { marginBottom: Spacing.xl },
+  sectionTitle: { color: '#fff', marginBottom: Spacing.sm },
+
+  snapshotGrid: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    gap: Spacing.md,
+  },
+  snapshotCard: {
+    flexBasis: '47%',
+  },
+
+  insightCard: {
+    marginBottom: Spacing.md,
+  },
+  insightTitle: { color: '#fff' },
+  insightBody: { marginTop: Spacing.xs, marginBottom: Spacing.sm },
+  reviewButton: { alignSelf: 'flex-start', marginTop: Spacing.xs },
+
+  taskCard: {
+    marginBottom: Spacing.xs,
+  },
+
   cardBase: {
-    backgroundColor: 'rgba(30, 27, 75, 0.4)', // Card de sticlă semitransparent
-    borderRadius: BorderRadius.xl || 16,
-    padding: Spacing.lg,
-    overflow: 'hidden',
+    backgroundColor: 'rgba(15, 23, 42, 0.65)',
+    borderRadius: BorderRadius.xl,
+    paddingHorizontal: Spacing.md,
+    paddingVertical: Spacing.md,
     borderWidth: 1,
-    borderColor: 'rgba(255,255,255,0.06)',
-    // shadow
+    borderColor: 'rgba(255,255,255,0.08)',
+    overflow: 'hidden',
+
     ...Platform.select({
-      ios: { shadowColor: '#a7f3d0', shadowOffset: { width: 0, height: 6 }, shadowOpacity: 0.08, shadowRadius: 18 },
-      android: { elevation: 6 },
+      ios: {
+        shadowColor: '#000',
+        shadowOffset: { width: 0, height: 6 },
+        shadowOpacity: 0.18,
+        shadowRadius: 16,
+      },
+      android: {
+        elevation: 4,
+      },
     }),
   },
+
+  cardCompact: {
+    paddingVertical: Spacing.sm,
+    paddingHorizontal: Spacing.sm,
+  },
+
   cardGlow: {
     ...StyleSheet.absoluteFillObject,
-    borderRadius: BorderRadius.xl || 16,
-    backgroundColor: 'transparent',
-    borderTopWidth: 1.2,
-    borderLeftWidth: 1.2,
-    borderColor: 'rgba(255,255,255,0.03)',
+    borderRadius: BorderRadius.xl,
+    borderTopWidth: 1,
+    borderLeftWidth: 1,
+    borderColor: 'rgba(255,255,255,0.04)',
   },
-  cardContent: {
-    position: 'relative',
-    zIndex: 2,
-  },
-  cardCompact: {
-    padding: Spacing.md,
-  },
-  
-  // SECȚIUNI
-  section: {
-    marginBottom: Spacing['2xl'],
-  },
-  sectionTitle: {
-    color: '#fff',
-    marginBottom: Spacing.md,
-    paddingHorizontal: Spacing.xs,
-  },
-  
-  // INSIGHT CARD
-  insightTitle: {
-    color: '#fff',
-  },
-  insightBody: {
-    marginVertical: Spacing.sm,
-  },
-  reviewButton: {
-    alignSelf: 'flex-start',
-    marginTop: Spacing.sm,
-  },
-  
-  // GLOWS (Preluate din HomeGlossyAnimated)
+  cardContent: { position: 'relative', zIndex: 2 },
+
   glowTopRight: {
     position: 'absolute',
-    width: 400,
-    height: 400,
+    width: 360,
+    height: 360,
     right: -120,
-    top: -60,
+    top: -80,
     borderRadius: 999,
-    backgroundColor: '#075985',
-    opacity: 0.08,
-    transform: [{ scale: 1.4 }],
+    backgroundColor: Colors.primary.indigo,
+    opacity: 0.1,
   },
+
   glowBottomLeft: {
     position: 'absolute',
-    width: 500,
-    height: 500,
-    left: -180,
-    bottom: -120,
+    width: 520,
+    height: 520,
+    left: -200,
+    bottom: -160,
     borderRadius: 999,
-    backgroundColor: '#0ea5a4',
-    opacity: 0.06,
-    transform: [{ scale: 1.2 }],
+    backgroundColor: Colors.primary.teal,
+    opacity: 0.08,
   },
+
+  taskHeaderRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: Spacing.xs,
+  },
+
+  taskTitle: {
+    color: '#fff',
+    fontSize: 15,
+  },
+
+  statusPill: {
+    paddingVertical: 3,
+    paddingHorizontal: 8,
+    borderRadius: 999,
+  },
+
+  statusDue: {
+    backgroundColor: Colors.status.attention,
+  },
+
+  statusCompleted: {
+    backgroundColor: Colors.primary.teal,
+  },
+
+  statusOverdue: {
+    backgroundColor: Colors.status.action,
+  },
+
+  taskDescription: {
+    marginBottom: Spacing.sm,
+    fontSize: 13,
+    lineHeight: 18,
+  },
+
+  taskFooterRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginTop: Spacing.xs,
+  },
+
+  taskDueDate: {
+    fontSize: 12,
+  },
+
+  taskActionButton: {
+    paddingVertical: 4,
+    paddingHorizontal: Spacing.sm,
+  },
+
 });

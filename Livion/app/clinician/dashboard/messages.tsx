@@ -1,207 +1,192 @@
 import { LinearGradient } from 'expo-linear-gradient';
-import React, { useRef } from 'react';
+import React from 'react';
 import {
-  Animated,
-  Platform,
-  Pressable,
   ScrollView,
-  StatusBar,
   StyleSheet,
   View,
+  StatusBar,
+  Platform,
+  Pressable,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { Button } from '../../../components/atoms/Button';
-import { InputField } from '../../../components/atoms/InputField';
 import { ThemedText } from '../../../components/atoms/ThemedText';
+import { InputField } from '../../../components/atoms/InputField';
+import { Button } from '../../../components/atoms/Button';
 import { MessageBubble } from '../../../components/molecules/MessageBubble';
-import { BorderRadius, Spacing } from '../../../constants/Colors';
+import { BorderRadius, Colors, Spacing } from '../../../constants/Colors';
 
-// ----------------------------------------------------
-// Componentă GlowyCard Reutilizată (Preluată din stilul Glossy)
-// ----------------------------------------------------
-function GlowyCard({ children, onPress = () => {}, compact = false }: any) {
-    const pressScale = useRef(new Animated.Value(1)).current;
-
-    const onPressIn = () => {
-        Animated.spring(pressScale, { toValue: 0.985, useNativeDriver: true, speed: 30 }).start();
-    };
-    const onPressOut = () => {
-        Animated.spring(pressScale, { toValue: 1, useNativeDriver: true, speed: 30 }).start();
-    };
-
-    return (
-        <Pressable onPressIn={onPressIn} onPressOut={onPressOut} onPress={onPress} disabled={!onPress}>
-            <Animated.View style={[
-                styles.cardBase, 
-                compact && styles.cardCompact,
-                { transform: [{ scale: pressScale }] }
-            ]}>
-                {/* Glow overlay (white accent line) */}
-                <View style={styles.cardGlow} pointerEvents="none" />
-                <View style={styles.cardContent}>{children}</View>
-            </Animated.View>
-        </Pressable>
-    );
-}
-// ----------------------------------------------------
-
-export default function ClinicianMessagesScreen() {
+export default function ClinicianMessages() {
   return (
     <View style={styles.root}>
       <StatusBar barStyle="light-content" translucent backgroundColor="transparent" />
 
-      {/* 1. Background Gradient (Stardust) */}
+      {/* Background */}
       <LinearGradient
-        colors={["#07203f", "#04363a", "#06233d"]} // Tonuri de Indigo și Teal
+        colors={['#050816', '#031824', '#031b2e']}
         style={StyleSheet.absoluteFill}
         start={[0, 0]}
         end={[1, 1]}
       />
 
-      {/* 2. Subtle Radial Glows */}
-      <View style={styles.glowTopRight} pointerEvents="none" />
-      <View style={styles.glowBottomLeft} pointerEvents="none" />
-      
-      <SafeAreaView style={styles.safeArea}>
-        <ScrollView contentContainerStyle={styles.container} showsVerticalScrollIndicator={false}>
-          
+      {/* Soft glows */}
+      <View style={styles.glowTopRight} />
+      <View style={styles.glowBottomLeft} />
+
+      <SafeAreaView style={styles.safearea}>
+        <ScrollView
+          showsVerticalScrollIndicator={false}
+          contentContainerStyle={styles.container}
+        >
+          {/* Header */}
           <ThemedText variant="display" weight="bold" style={styles.header}>
-            Care Team Messages
-          </ThemedText>
-          <ThemedText variant="caption" color="tertiary" style={styles.subheader}>
-            Secure channel between clinicians and patients.
+            Messages
           </ThemedText>
 
-          {/* Firul de Mesaje (învelit în GlowyCard) */}
-          <GlowyCard>
-            <View style={styles.threadContent}>
+          {/* Switch patient chat */}
+          <Button
+            fullWidth
+            variant="outline"
+            style={styles.switchButton}
+          >
+            Switch Patient Chat
+          </Button>
+
+          <ThemedText
+            variant="body"
+            color="secondary"
+            style={styles.sectionIntro}
+          >
+            Conversation with patient: <ThemedText weight="bold">Daniel M.</ThemedText>
+          </ThemedText>
+
+          {/* ---------------------- THREAD ---------------------- */}
+          <View style={styles.threadCard}>
+            <View style={styles.threadInner}>
+
               <MessageBubble
-                message="Jane reported increased fatigue this morning."
-                sender="clinician"
-                senderName="Nurse Lee"
-                timestamp={new Date()}
-              />
-              <MessageBubble
-                message="Thanks, scheduling a check-in call at 3 PM."
+                message="Good morning, Daniel. I reviewed your readings from this week — trends look mostly stable. How are you feeling today?"
                 sender="clinician"
                 senderName="Dr. Harper"
                 timestamp={new Date()}
               />
+
               <MessageBubble
-                message="System alert: new CGM data available."
-                sender="system"
+                message="Hey doctor, I’ve been feeling more tired than usual. Blood pressure this morning was 138/92."
+                sender="user"
                 timestamp={new Date()}
               />
-            </View>
-          </GlowyCard>
 
-          {/* Zona de Compunere Mesaj (învelită în GlowyCard compact) */}
-          <GlowyCard compact>
-            <View style={styles.composerContent}>
-              <InputField placeholder="Compose message..." multiline style={styles.input} />
-              <Button variant="primary" fullWidth>
-                Send Message
-              </Button>
-            </View>
-          </GlowyCard>
+              <MessageBubble
+                message="Thanks for letting me know. Please continue monitoring twice daily. I also recommend increasing hydration today. If dizziness worsens, reach out immediately."
+                sender="clinician"
+                senderName="Care Team"
+                timestamp={new Date()}
+              />
 
-          {/* Padding pentru a preveni suprapunerea Navbar-ului fix (dacă este cazul) */}
-          <View style={{ height: Spacing['3xl'] + 60 }} /> 
+              <MessageBubble
+                message="Understood — I’ll keep you updated."
+                sender="user"
+                timestamp={new Date()}
+              />
+
+            </View>
+          </View>
+
+          {/* ---------------------- COMPOSER ---------------------- */}
+          <View style={styles.composer}>
+            <InputField
+              placeholder="Type your message..."
+              multiline
+            />
+            <Button
+              fullWidth
+              variant="primary"
+            >
+              Send to patient
+            </Button>
+          </View>
+
+          <View style={{ height: 90 }} />
         </ScrollView>
       </SafeAreaView>
     </View>
   );
 }
 
+/* -------------------------------------------------------------------------- */
+/*                                   STYLES                                   */
+/* -------------------------------------------------------------------------- */
+
 const styles = StyleSheet.create({
-  // STILURI GLOBALE ȘI LAYOUT
   root: {
     flex: 1,
-    backgroundColor: '#041025', // Fundal de rezervă
+    backgroundColor: Colors.background.primary,
     paddingTop: Platform.OS === 'android' ? StatusBar.currentHeight || 24 : 0,
   },
-  safeArea: {
+  safearea: {
     flex: 1,
     backgroundColor: 'transparent',
   },
   container: {
-    paddingHorizontal: Spacing.xl, // Folosim XL pentru a se potrivi cu celelalte pagini
+    paddingHorizontal: Spacing.lg,
     paddingTop: Spacing.lg,
-    paddingBottom: Spacing.lg, 
+    paddingBottom: Spacing.xl,
   },
+
   header: {
-    marginBottom: Spacing.xs,
-    color: '#fff', // Textul headerului alb pentru contrast
-    fontSize: 42,
-    lineHeight: 48,
+    color: '#fff',
+    marginBottom: Spacing.md,
+    fontSize: 28,
+    lineHeight: 34,
   },
-  subheader: {
-    marginBottom: Spacing.xl,
+
+  switchButton: {
+    marginBottom: Spacing.md,
+    paddingVertical: 8,
   },
-  
-  // Componente Glossy/Glassy Card (GlowyCard - Stil de bază pentru formă)
-  cardBase: {
-    backgroundColor: 'rgba(10,25,40,0.55)', // Card de sticlă semitransparent
-    borderRadius: BorderRadius.xl || 16,
+
+  sectionIntro: {
+    marginBottom: Spacing.lg,
+    fontSize: 13,
+    lineHeight: 18,
+  },
+
+  threadCard: {
+    backgroundColor: 'rgba(15, 23, 42, 0.65)',
     padding: Spacing.lg,
-    overflow: 'hidden',
+    borderRadius: BorderRadius.xl,
     borderWidth: 1,
     borderColor: 'rgba(255,255,255,0.06)',
-    // shadow
-    ...Platform.select({
-      ios: { shadowColor: '#a7f3d0', shadowOffset: { width: 0, height: 6 }, shadowOpacity: 0.08, shadowRadius: 18 },
-      android: { elevation: 6 },
-    }),
-    marginBottom: Spacing.lg, // Adăugăm un spațiu sub fiecare card
+    marginBottom: Spacing.xl,
   },
-  cardGlow: {
-    ...StyleSheet.absoluteFillObject,
-    borderRadius: BorderRadius.xl || 16,
-    backgroundColor: 'transparent',
-    borderTopWidth: 1.2,
-    borderLeftWidth: 1.2,
-    borderColor: 'rgba(255,255,255,0.03)',
-  },
-  cardContent: {
-    position: 'relative',
-    zIndex: 2,
-  },
-  cardCompact: {
-    borderRadius: BorderRadius.lg, // Facem cardul compozitor puțin mai mic
+  threadInner: {
+    gap: Spacing.md,
   },
 
-  // STILURI SPECIFICE
-  threadContent: {
-    gap: Spacing.md, // Spațiu între MessageBubble-uri
-  },
-  composerContent: {
-    // Conținutul din compozitor
-  },
-  input: {
-    marginBottom: Spacing.md,
+  composer: {
+    marginTop: Spacing.sm,
+    gap: Spacing.sm,
   },
 
-  // Glows (Preluate din HomeGlossyAnimated)
+  // Glows
   glowTopRight: {
     position: 'absolute',
-    width: 400,
-    height: 400,
+    width: 360,
+    height: 360,
     right: -120,
-    top: -60,
+    top: -80,
+    backgroundColor: Colors.primary.indigo,
+    opacity: 0.1,
     borderRadius: 999,
-    backgroundColor: '#075985',
-    opacity: 0.08,
-    transform: [{ scale: 1.4 }],
   },
   glowBottomLeft: {
     position: 'absolute',
-    width: 500,
-    height: 500,
-    left: -180,
-    bottom: -120,
+    width: 520,
+    height: 520,
+    left: -200,
+    bottom: -160,
+    backgroundColor: Colors.primary.teal,
+    opacity: 0.08,
     borderRadius: 999,
-    backgroundColor: '#0ea5a4',
-    opacity: 0.06,
-    transform: [{ scale: 1.2 }],
   },
 });

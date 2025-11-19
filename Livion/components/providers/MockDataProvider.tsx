@@ -82,7 +82,7 @@ const mockPatientData: PatientData = {
     {
       id: '2',
       title: 'Activity Achievement',
-      reason: "You've reached your weekly step goal 3 weeks in a row!",
+      reason: "10 patients reached their weekly step goal 3 weeks in a row!",
       source: 'Fitness Tracker',
       action: {
         label: 'View Progress',
@@ -108,8 +108,8 @@ const mockPatientData: PatientData = {
     },
     {
       id: '3',
-      title: 'Weekly Exercise Log',
-      description: 'Log your exercise activities for the week',
+      title: 'Weekly Exercise Log Review',
+      description: 'Review the commited exercise activities for the week',
       dueDate: new Date(Date.now() + 172800000), // 2 days from now
       status: 'completed',
     },

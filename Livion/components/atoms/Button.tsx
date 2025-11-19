@@ -16,6 +16,7 @@ export type ButtonProps = TouchableOpacityProps & {
   isLoading?: boolean;
   fullWidth?: boolean;
   style?: ViewStyle;
+  textStyle?: any;      
 };
 
 /**
@@ -31,6 +32,7 @@ export const Button: React.FC<ButtonProps> = ({
   fullWidth = false,
   disabled,
   style,
+  textStyle,         
   ...props
 }) => {
   const sizeStyles: Record<string, ViewStyle> = {
@@ -69,7 +71,7 @@ export const Button: React.FC<ButtonProps> = ({
       backgroundColor: 'transparent',
     },
     gradient: {
-      backgroundColor: Colors.primary.indigo, // Fallback
+      backgroundColor: Colors.primary.indigo, // fallback
       ...Shadows.glow,
     },
   };
@@ -94,8 +96,12 @@ export const Button: React.FC<ButtonProps> = ({
       activeOpacity={0.7}
     >
       {isLoading ? (
-        <ActivityIndicator 
-          color={variant === 'outline' || variant === 'ghost' ? Colors.primary.teal : Colors.text.inverse} 
+        <ActivityIndicator
+          color={
+            variant === 'outline' || variant === 'ghost'
+              ? Colors.primary.teal
+              : Colors.text.inverse
+          }
         />
       ) : (
         <ThemedText
@@ -103,6 +109,7 @@ export const Button: React.FC<ButtonProps> = ({
           color={getTextColor() as any}
           weight="semibold"
           align="center"
+          style={textStyle}    
         >
           {children}
         </ThemedText>
