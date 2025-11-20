@@ -1,9 +1,10 @@
-import { SafeAreaView, ScrollView, StyleSheet, View, Pressable } from 'react-native';
+import { LinearGradient } from 'expo-linear-gradient';
+import { router } from 'expo-router';
+import { SafeAreaView, ScrollView, StyleSheet, TouchableOpacity, View } from 'react-native';
 import { Button } from '../../components/atoms/Button';
 import { ThemedText } from '../../components/atoms/ThemedText';
 import { BorderRadius, Colors, Spacing } from '../../constants/Colors';
-import { router } from 'expo-router';
-import { LinearGradient } from 'expo-linear-gradient';
+import { Ionicons } from '@expo/vector-icons';
 
 export default function AdminDashboard() {
   return (
@@ -24,11 +25,9 @@ export default function AdminDashboard() {
         <ScrollView contentContainerStyle={styles.container}>
 
           {/* Back Button */}
-          <Pressable onPress={() => router.back()} style={styles.backButton}>
-            <ThemedText variant="body" color="teal" style={styles.backText}>
-              ⪻ Back
-            </ThemedText>
-          </Pressable>
+          <TouchableOpacity onPress={() => router.back()} style={styles.backButton}>
+            <Ionicons name="chevron-back" size={28} color="#fff" />
+          </TouchableOpacity>
 
           {/* Header */}
           <ThemedText variant="display" weight="bold" style={styles.header}>
@@ -187,9 +186,13 @@ const styles = StyleSheet.create({
   /* Back button */
   backButton: {
     alignSelf: 'flex-start',
-    marginBottom: Spacing.md,
-    marginTop: 10,
+    marginBottom: Spacing.lg,
+    marginTop: Spacing.md,
+    padding: 6,
+    borderRadius: 10,
+    backgroundColor: 'rgba(57, 73, 171, 0.22)',
   },
+
   backText: {
     fontSize: 14,
     color: Colors.primary.teal,

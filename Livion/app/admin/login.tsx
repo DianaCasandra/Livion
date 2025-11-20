@@ -1,3 +1,5 @@
+import { Ionicons } from '@expo/vector-icons';
+import { LinearGradient } from 'expo-linear-gradient';
 import { useRouter } from 'expo-router';
 import { SafeAreaView, ScrollView, StyleSheet, TouchableOpacity, View } from 'react-native';
 import { Button } from '../../components/atoms/Button';
@@ -5,90 +7,163 @@ import { InputField } from '../../components/atoms/InputField';
 import { ThemedText } from '../../components/atoms/ThemedText';
 import { BorderRadius, Colors, Spacing } from '../../constants/Colors';
 
-export default function PatientLoginScreen() {
+export default function AdminLoginScreen() {
   const router = useRouter();
 
   return (
-    <SafeAreaView style={styles.safeArea}>
-      <ScrollView contentContainerStyle={styles.container}>
+    <View style={styles.root}>
+      {/* Gradient background */}
+      <LinearGradient
+        colors={['#08131c', '#0b1e29', '#0d2533']}
+        style={StyleSheet.absoluteFill}
+        start={[0, 0]}
+        end={[1, 1]}
+      />
 
-        <TouchableOpacity
-          onPress={() => router.back()}
-          style={styles.backButton}
-        >
-          <ThemedText variant="body" color="teal" style={styles.backButtonText}>
-            ⪻ Back to Onboarding
-          </ThemedText>
-        </TouchableOpacity>
+      {/* Glow effects */}
+      <View style={styles.glowTopRight} />
+      <View style={styles.glowBottomLeft} />
 
+      <SafeAreaView style={styles.safeArea}>
+        <ScrollView contentContainerStyle={styles.container}>
 
-        <View style={styles.card}>
-          <ThemedText variant="display" weight="bold" align="center" style={styles.title}>
-            Admin/Compliance Login
-          </ThemedText>
-          <InputField label="Email" placeholder="" style={styles.input} />
-          <InputField label="Password" placeholder="" secureTextEntry style={styles.input} />
-          <InputField label="Token" placeholder="" secureTextEntry style={styles.input} />
-          <Button variant="primary" fullWidth style={styles.button} onPress={() => router.replace('/admin/dashboard')}>
-            Sign In Securely
-          </Button>
-          <ThemedText variant="caption" color="tertiary" align="center" style={styles.footer}>
-            Protected under HIPAA and GDPR. Contact support for access issues.
-          </ThemedText>
-          
-        </View>
-      </ScrollView>
-    </SafeAreaView>
+          {/* Back Icon */}
+          <TouchableOpacity onPress={() => router.back()} style={styles.backButton}>
+            <Ionicons name="chevron-back" size={28} color="#fff" />
+          </TouchableOpacity>
+
+          {/* Main Card */}
+          <View style={styles.card}>
+            <ThemedText
+              variant="display"
+              weight="bold"
+              align="center"
+              style={styles.title}
+            >
+              Admin / Compliance Login
+            </ThemedText>
+
+            <InputField
+              label="Email"
+              placeholder="you@company.com"
+              keyboardType="email-address"
+              style={styles.input}
+            />
+
+            <InputField
+              label="Password"
+              placeholder=""
+              secureTextEntry
+              style={styles.input}
+            />
+
+            <InputField
+              label="Token"
+              placeholder=""
+              secureTextEntry
+              style={styles.input}
+            />
+
+            <Button
+              variant="primary"
+              size="lg"
+              fullWidth
+              style={styles.signInButton}
+              textStyle={{ textAlign: "center" }}
+              onPress={() => router.replace('/admin/dashboard')}
+            >
+              <ThemedText variant="label" weight="semibold" style={{ color: "#fff", textAlign: "center" }}>
+                Sign In Securely
+              </ThemedText>
+            </Button>
+
+            <ThemedText
+              variant="caption"
+              color="tertiary"
+              align="center"
+              style={styles.footer}
+            >
+              Protected under HIPAA and GDPR. Contact support for access issues.
+            </ThemedText>
+          </View>
+        </ScrollView>
+      </SafeAreaView>
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
-  safeArea: {
+  root: {
     flex: 1,
     backgroundColor: Colors.background.primary,
   },
+  safeArea: { flex: 1 },
   container: {
     flexGrow: 1,
-    justifyContent: 'center',
     padding: Spacing.xl,
-
+    paddingTop: Spacing.lg,
+    alignItems: 'center',
   },
+
+  backButton: {
+    alignSelf: 'flex-start',
+    marginBottom: Spacing.lg,
+    marginTop: Spacing.md,
+    padding: 6,
+    borderRadius: 10,
+    backgroundColor: 'rgba(57, 73, 171, 0.22)',
+  },
+
   card: {
     padding: Spacing.xl,
     borderRadius: BorderRadius.xl,
-    backgroundColor: Colors.background.cardGlass,
-    borderColor: Colors.border.medium,
-    borderWidth: 3,
-    alignItems: 'center', // <-- center all children horizontally
+    backgroundColor: 'rgba(15,23,42,0.6)',
+    borderColor: 'rgba(255,255,255,0.08)',
+    borderWidth: 1,
+    width: '100%',
+    alignItems: 'center',
+  },
+
+  title: {
+    marginBottom: Spacing.md,
+    color: '#fff',
   },
 
   input: {
     marginTop: Spacing.md,
-    width: '109%',          // <-- make it responsive but not overflowing
-    maxWidth: 400,         // optional: prevents overly wide inputs on large screens
-    marginLeft: -10,
+    width: "100%",
   },
 
-  title: {
-    marginBottom: Spacing.xl,
-  },
-  button: {
+  signInButton: {
     marginTop: Spacing.lg,
+    paddingVertical: Spacing.md,
+    borderRadius: BorderRadius.lg,
   },
+
   footer: {
     marginTop: Spacing.lg,
+    textAlign: 'center',
   },
-  backButton: {
-    paddingVertical: 20,
-    paddingHorizontal: -30,
+
+  glowTopRight: {
+    position: 'absolute',
+    width: 400,
+    height: 400,
+    right: -150,
+    top: -100,
+    borderRadius: 999,
+    backgroundColor: Colors.primary.indigo,
+    opacity: 0.12,
   },
-  backButtonText: {
-    marginBottom: Spacing.md,
-  },
-  linkButton: {
-    marginTop: Spacing.sm,
-  },
-  linkText: {
-    marginTop: Spacing.sm,
+
+  glowBottomLeft: {
+    position: 'absolute',
+    width: 480,
+    height: 480,
+    left: -200,
+    bottom: -160,
+    borderRadius: 999,
+    backgroundColor: '#3949AB',
+    opacity: 0.1,
   },
 });

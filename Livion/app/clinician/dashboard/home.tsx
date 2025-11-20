@@ -1,3 +1,4 @@
+import { Ionicons } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
 import { router } from 'expo-router';
 import React, { useRef } from 'react';
@@ -8,19 +9,19 @@ import {
   ScrollView,
   StatusBar,
   StyleSheet,
+  TouchableOpacity,
   View,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Button } from '../../../components/atoms/Button';
 import { ThemedText } from '../../../components/atoms/ThemedText';
-import { CareTaskTile } from '../../../components/molecules/CareTaskTile';
 import { BorderRadius, Colors, Spacing } from '../../../constants/Colors';
 import { useMockData } from '../../../hooks/useMockData';
 
 // ---------------------------------------------------------------------
 // GlowyCard
 // ---------------------------------------------------------------------
-function GlowyCard({ children, compact = false, onPress, style }: any) {
+function GlowyCard({ children, compact = false, onPress, style, glowColor }: any) {
   const pressScale = useRef(new Animated.Value(1)).current;
 
   const onPressIn = () => {
@@ -56,12 +57,23 @@ function GlowyCard({ children, compact = false, onPress, style }: any) {
           { transform: [{ scale: pressScale }] },
         ]}
       >
-        <View style={styles.cardGlow} pointerEvents="none" />
+        {/* Glow */}
+        <View
+          style={[
+            styles.cardGlow,
+            glowColor && {
+              backgroundColor: glowColor,
+              opacity: 0.25,   // ajustează pentru intensitate
+            },
+          ]}
+          pointerEvents="none"
+        />
         <View style={styles.cardContent}>{children}</View>
       </Animated.View>
     </Pressable>
   );
 }
+
 
 // ---------------------------------------------------------------------
 // Static snapshot
@@ -98,15 +110,9 @@ export default function ClinicianDashboard() {
         <ScrollView contentContainerStyle={styles.container} showsVerticalScrollIndicator={false}>
 
           {/* Back */}
-          <Pressable onPress={() => router.back()} style={styles.backButton}>
-            <ThemedText
-              variant="body"
-              color="teal"
-              style={[styles.backButtonText, { fontSize: 16 }]}
-            >
-              ⪻ Back
-            </ThemedText>
-          </Pressable>
+          <TouchableOpacity onPress={() => router.back()} style={styles.backButton}>
+            <Ionicons name="chevron-back" size={28} color="#fff" />
+          </TouchableOpacity>
 
           {/* HEADER */}
           <ThemedText
@@ -128,17 +134,17 @@ export default function ClinicianDashboard() {
           <View style={styles.statRow}>
             {/* Active monitored */}
             <GlowyCard compact style={styles.statCard}>
-              <ThemedText variant="caption" color="secondary" style={{ fontSize: 11 }}>
+              <ThemedText variant="caption" color="secondary" style={{ fontSize: 14, fontWeight: 'bold', marginVertical: 4, marginHorizontal: 2 }}>
                 Active monitored
               </ThemedText>
               <ThemedText
                 variant="heading"
                 weight="bold"
-                style={[styles.statValue, { fontSize: 20 }]}
+                style={[styles.statValue, { fontSize: 20, marginHorizontal: 2 }]}
               >
                 {cohortSnapshot.activePatients}
               </ThemedText>
-              <ThemedText variant="caption" color="secondary" style={{ fontSize: 11 }}>
+              <ThemedText variant="caption" color="secondary" style={{ fontSize: 11, marginHorizontal: 2}}>
                 patients on remote monitoring
               </ThemedText>
 
@@ -154,17 +160,17 @@ export default function ClinicianDashboard() {
 
             {/* Stable today */}
             <GlowyCard compact style={styles.statCard}>
-              <ThemedText variant="caption" color="secondary" style={{ fontSize: 11 }}>
+              <ThemedText variant="caption" color="secondary" style={{  fontSize: 14, fontWeight: 'bold', marginVertical: 4, marginHorizontal: 2 }}>
                 Stable today
               </ThemedText>
               <ThemedText
                 variant="heading"
                 weight="bold"
-                style={[styles.statValue, { fontSize: 20 }]}
+                style={[styles.statValue, { fontSize: 20 , marginHorizontal: 2}]}
               >
                 {cohortSnapshot.stableToday}
               </ThemedText>
-              <ThemedText variant="caption" color="secondary" style={{ fontSize: 11 }}>
+              <ThemedText variant="caption" color="secondary" style={{ fontSize: 11, marginHorizontal: 2, marginBottom: 4 }}>
                 with vitals in range
               </ThemedText>
 
@@ -172,7 +178,7 @@ export default function ClinicianDashboard() {
                 variant="secondary"
                 size="sm"
                 style={styles.smallButton}
-                textStyle={{ fontSize: 11 }}
+                textStyle={{ fontSize: 11 ,}}
               >
                 See the patients
               </Button>
@@ -192,7 +198,7 @@ export default function ClinicianDashboard() {
             <View style={styles.snapshotGrid}>
               {/* BP */}
               <GlowyCard compact style={styles.snapshotCard}>
-                <ThemedText variant="caption" color="secondary" style={{ fontSize: 11 }}>
+                <ThemedText variant="caption" color="secondary" style={{  fontSize: 14, fontWeight: 'bold', marginVertical: 4, marginHorizontal: 2  }}>
                   Blood pressure
                 </ThemedText>
                 <ThemedText
@@ -200,14 +206,15 @@ export default function ClinicianDashboard() {
                   weight="bold"
                   style={{
                     color: Colors.accent.gold,
-                    marginVertical: 4,
+                    marginHorizontal: 2 , 
+                    marginBottom: 4,
                     fontSize: 20,
                     lineHeight: 24,
                   }}
                 >
                   {cohortSnapshot.bpRecordedToday}
                 </ThemedText>
-                <ThemedText variant="caption" color="secondary" style={{ fontSize: 11 }}>
+                <ThemedText variant="caption" color="secondary" style={{ fontSize: 11 , marginHorizontal: 2 , marginBottom: 4 }}>
                   patients recorded BP today
                 </ThemedText>
 
@@ -215,7 +222,7 @@ export default function ClinicianDashboard() {
                   variant="secondary"
                   size="sm"
                   style={styles.smallButton}
-                  textStyle={{ fontSize: 11 }}
+                  textStyle={{ fontSize: 11 , }}
                 >
                   See the patients
                 </Button>
@@ -223,7 +230,7 @@ export default function ClinicianDashboard() {
 
               {/* Adherence */}
               <GlowyCard compact style={styles.snapshotCard}>
-                <ThemedText variant="caption" color="secondary" style={{ fontSize: 11 }}>
+                <ThemedText variant="caption" color="secondary" style={{ fontSize: 14, fontWeight: 'bold', marginVertical: 4, marginHorizontal: 2 }}>
                   Daily adherence
                 </ThemedText>
                 <ThemedText
@@ -231,14 +238,15 @@ export default function ClinicianDashboard() {
                   weight="bold"
                   style={{
                     color: '#fff',
-                    marginVertical: 4,
+                    marginHorizontal: 2 , 
+                    marginBottom: 4 ,
                     fontSize: 20,
                     lineHeight: 24,
                   }}
                 >
                   {cohortSnapshot.fullyAdherentToday}
                 </ThemedText>
-                <ThemedText variant="caption" color="secondary" style={{ fontSize: 11 }}>
+                <ThemedText variant="caption" color="secondary" style={{ fontSize: 11 , marginHorizontal: 2 , marginBottom: 4 }}>
                   completed all tasks
                 </ThemedText>
 
@@ -254,7 +262,7 @@ export default function ClinicianDashboard() {
 
               {/* Missed yesterday — NEGATIVE */}
               <GlowyCard compact style={styles.snapshotCard}>
-                <ThemedText variant="caption" color="secondary" style={{ fontSize: 11 }}>
+                <ThemedText variant="caption" color="secondary" style={{  fontSize: 14, fontWeight: 'bold', marginVertical: 4, marginHorizontal: 2 }}>
                   Missed yesterday
                 </ThemedText>
                 <ThemedText
@@ -263,13 +271,14 @@ export default function ClinicianDashboard() {
                   style={{
                     color: Colors.status.attention,
                     marginVertical: 4,
+                    marginHorizontal: 2,
                     fontSize: 20,
                     lineHeight: 24,
                   }}
                 >
                   {cohortSnapshot.missedGoalsYesterday}
                 </ThemedText>
-                <ThemedText variant="caption" color="secondary" style={{ fontSize: 11 }}>
+                <ThemedText variant="caption" color="secondary" style={{ fontSize: 11 , marginVertical: 4, marginHorizontal: 2 }}>
                   patients omitted goal
                 </ThemedText>
 
@@ -300,8 +309,8 @@ export default function ClinicianDashboard() {
               </GlowyCard>
 
               {/* High-risk alerts — NEGATIVE */}
-              <GlowyCard compact style={styles.snapshotCard}>
-                <ThemedText variant="caption" color="secondary" style={{ fontSize: 11 }}>
+              <GlowyCard compact style={styles.snapshotCard} glowColor="#ef4444">
+                <ThemedText variant="caption" color="secondary" style={{  fontSize: 14, fontWeight: 'bold', marginVertical: 4, marginHorizontal: 2 }}>
                   High-risk alerts
                 </ThemedText>
                 <ThemedText
@@ -310,13 +319,14 @@ export default function ClinicianDashboard() {
                   style={{
                     color: Colors.status.action,
                     marginVertical: 4,
+                    marginHorizontal: 2,
                     fontSize: 20,
                     lineHeight: 24,
                   }}
                 >
                   {cohortSnapshot.highRiskAlertsOpen}
                 </ThemedText>
-                <ThemedText variant="caption" color="secondary" style={{ fontSize: 11 }}>
+                <ThemedText variant="caption" color="secondary" style={{ fontSize: 11 ,marginVertical: 4, marginHorizontal: 2  }}>
                   escalations awaiting review
                 </ThemedText>
 
@@ -383,7 +393,7 @@ export default function ClinicianDashboard() {
                       ...styles.reviewButton,
                       paddingVertical: 4,
                     }}
-                    textStyle={{ fontSize: 11 }}
+                    textStyle={{ fontSize: 11, color: '#fff' }}
                     onPress={insight.action.onPress}
                   >
                     {insight.action.label}
@@ -492,12 +502,6 @@ const styles = StyleSheet.create({
     paddingTop: Spacing.lg,
     paddingBottom: Spacing.lg,
   },
-
-  backButton: {
-    alignSelf: 'flex-start',
-    marginTop: -30,
-    marginBottom: 20,
-  },
   backButtonText: {
   },
 
@@ -521,13 +525,14 @@ const styles = StyleSheet.create({
   },
 
   smallButton: {
-    marginTop: Spacing.xs,
-    paddingVertical: 3,
+    marginTop: Spacing.sm,
+    paddingVertical: 4,
     paddingHorizontal: Spacing.sm,
     alignSelf: 'flex-start',
+    backgroundColor: 'rgba(13, 148, 136, 0.8)',
   },
 
-  section: { marginBottom: Spacing.xl },
+  section: { marginBottom: Spacing.xs },
   sectionTitle: { color: '#fff', marginBottom: Spacing.sm },
 
   snapshotGrid: {
@@ -544,10 +549,21 @@ const styles = StyleSheet.create({
   },
   insightTitle: { color: '#fff' },
   insightBody: { marginTop: Spacing.xs, marginBottom: Spacing.sm },
-  reviewButton: { alignSelf: 'flex-start', marginTop: Spacing.xs },
+  reviewButton: { alignSelf: 'flex-start', marginTop: Spacing.xs, backgroundColor: 'rgba(79, 70, 229, 0.4)'
+  },
 
   taskCard: {
     marginBottom: Spacing.xs,
+  },
+
+  
+  backButton: {
+    alignSelf: 'flex-start',
+    marginBottom: Spacing.lg,
+    marginTop: Spacing.md,
+    padding: 5,
+    borderRadius: 10,
+    backgroundColor: 'rgba(57, 73, 171, 0.22)',
   },
 
   cardBase: {
@@ -659,5 +675,14 @@ const styles = StyleSheet.create({
     paddingVertical: 4,
     paddingHorizontal: Spacing.sm,
   },
+
+  highRiskGlow: {
+  ...StyleSheet.absoluteFillObject,
+  borderRadius: BorderRadius.xl,
+  borderTopWidth: 1,
+  borderLeftWidth: 1,
+  borderColor: 'rgba(255,0,0,0.4)', // glow roșu
+},
+
 
 });

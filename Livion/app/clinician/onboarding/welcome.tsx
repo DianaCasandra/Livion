@@ -1,3 +1,4 @@
+import { Ionicons } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useRouter } from 'expo-router';
 import { useEffect, useRef } from 'react';
@@ -61,11 +62,9 @@ export default function WelcomeScreen() {
       <SafeAreaView style={{ flex: 1 }}>
         <ScrollView contentContainerStyle={styles.contentContainer}>
           <View style={styles.topSection}>
-            <TouchableOpacity onPress={() => router.back()} style={styles.backButton}>
-              <ThemedText variant="body" color="teal" style={styles.backButtonText}>
-                ⪻ Back to Onboarding
-              </ThemedText>
-            </TouchableOpacity>
+          <TouchableOpacity onPress={() => router.back()} style={styles.backButton}>
+            <Ionicons name="chevron-back" size={28} color="#fff" />
+          </TouchableOpacity>
           </View>
 
           <View style={styles.middleSection}>
@@ -120,6 +119,14 @@ const styles = StyleSheet.create({
     paddingTop: 25,
     width: '100%',
   },
+    backButton: {
+    alignSelf: 'flex-start',
+    marginBottom: Spacing.lg,
+    marginTop: Spacing.md,
+    padding: 5,
+    borderRadius: 10,
+    backgroundColor: 'rgba(57, 73, 171, 0.22)',
+  },
   middleSection: {
     flex: 1,
     justifyContent: 'center',
@@ -141,7 +148,6 @@ const styles = StyleSheet.create({
   },
   linkText: { textDecorationLine: 'underline', fontSize: 15 },
   button: { marginTop: Spacing.xl },
-  backButton: { paddingVertical: 15, paddingHorizontal: -30 },
   backButtonText: { fontSize: 16 },
   blobBlue: {
     position: 'absolute',

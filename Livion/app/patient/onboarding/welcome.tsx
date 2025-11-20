@@ -15,6 +15,7 @@ import {
 import { Button } from '../../../components/atoms/Button';
 import { ThemedText } from '../../../components/atoms/ThemedText';
 import { Spacing } from '../../../constants/Colors';
+import { Ionicons } from '@expo/vector-icons';
 
 const { width: SCREEN_W, height: SCREEN_H } = Dimensions.get('window');
 
@@ -65,11 +66,10 @@ export default function WelcomeScreen() {
         <ScrollView contentContainerStyle={styles.container}>
           {/* Top Back Button */}
           <View style={styles.topSection}>
-            <TouchableOpacity onPress={() => router.back()} style={styles.backButton}>
-              <ThemedText variant="body" color="teal" style={styles.backButtonText}>
-                ⪻ Back to Onboarding
-              </ThemedText>
-            </TouchableOpacity>
+
+          <TouchableOpacity onPress={() => router.back()} style={styles.backButton}>
+            <Ionicons name="chevron-back" size={28} color="#fff" />
+          </TouchableOpacity>
           </View>
 
           {/* Middle Section */}
@@ -152,9 +152,17 @@ const styles = StyleSheet.create({
   linkButton: { paddingVertical: 6, paddingHorizontal: 8 },
   linkText: { textDecorationLine: 'underline', fontSize: 15 },
   button: { marginTop: Spacing.xl },
-  backButton: { paddingVertical: 15, paddingHorizontal: -30 },
   backButtonText: { fontSize: 16 },
 
+  
+  backButton: {
+    alignSelf: 'flex-start',
+    marginBottom: Spacing.lg,
+    marginTop: Spacing.md,
+        padding: 4,
+    borderRadius: 10,
+    backgroundColor: 'rgba(57, 73, 171, 0.2)',
+  },
   blobBlue: {
     position: 'absolute',
     width: 450,

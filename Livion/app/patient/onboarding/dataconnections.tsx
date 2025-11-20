@@ -1,18 +1,19 @@
-import { useState } from 'react';
+import { LinearGradient } from 'expo-linear-gradient';
 import { useRouter } from 'expo-router';
+import { useState } from 'react';
 import {
+  Image,
   SafeAreaView,
   ScrollView,
   StyleSheet,
-  View,
   TouchableOpacity,
-  Image,
+  View
 } from 'react-native';
-import { LinearGradient } from 'expo-linear-gradient';
 import { Button } from '../../../components/atoms/Button';
 import { Chip } from '../../../components/atoms/Chip';
 import { ThemedText } from '../../../components/atoms/ThemedText';
-import { BorderRadius, Colors, Spacing } from '../../../constants/Colors';
+import { BorderRadius, Spacing } from '../../../constants/Colors';
+import { Ionicons } from '@expo/vector-icons';
 
 export default function DataConnectionsScreen() {
   const router = useRouter();
@@ -44,10 +45,8 @@ export default function DataConnectionsScreen() {
         >
 
           {/* Back */}
-          <TouchableOpacity onPress={() => router.back()} style={styles.backButton}>
-            <ThemedText variant="body" color="teal" style={styles.backButtonText}>
-              ⪻ Back
-            </ThemedText>
+        <TouchableOpacity onPress={() => router.back()} style={styles.backButton}>
+            <Ionicons name="chevron-back" size={28} color="#fff" />
           </TouchableOpacity>
 
           {/* Hero card */}
@@ -184,7 +183,7 @@ export default function DataConnectionsScreen() {
 const styles = StyleSheet.create({
   root: {
     flex: 1,
-    backgroundColor: Colors.background.primary,
+    backgroundColor: '#3949AB',
   },
 
   safeArea: {
@@ -196,11 +195,14 @@ const styles = StyleSheet.create({
     paddingVertical: Spacing.lg,
   },
 
-  backButton: {
-    alignSelf: 'flex-start',
-    marginBottom: Spacing.lg,
-    marginTop: 30,
-  },
+  backButton: { 
+        alignSelf: 'flex-start', // Important: Nu FullWidth
+        marginBottom: Spacing.lg, 
+        marginTop: Spacing.md,
+          padding: 5,
+    borderRadius: 10,
+    backgroundColor: 'rgba(57, 73, 171, 0.22)',// Fundal semi-transparent
+    },
   backButtonText: {
     fontSize: 16,
   },
@@ -286,7 +288,7 @@ const styles = StyleSheet.create({
     right: -150,
     top: -100,
     borderRadius: 999,
-    backgroundColor: Colors.primary.indigo,
+    backgroundColor: '#3949AB',
     opacity: 0.12,
   },
 
@@ -297,7 +299,7 @@ const styles = StyleSheet.create({
     left: -200,
     bottom: -160,
     borderRadius: 999,
-    backgroundColor: Colors.primary.teal,
+    backgroundColor: '#3949AB',
     opacity: 0.10,
   },
 });

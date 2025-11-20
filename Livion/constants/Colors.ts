@@ -39,7 +39,7 @@ export const Colors = {
     primary: '#0f172a',   // Deep navy
     secondary: '#3949AB', // Slate 800
     card: '#1e1b4b',      // Deep purple with transparency
-    cardGlass: '#1e1b4b99', // Glassmorphism effect
+    cardGlass: 'rgba(30, 27, 75, 0.6)', // Glassmorphism effect
     overlay: 'rgba(15, 23, 42, 0.95)',
   },
 
@@ -51,9 +51,9 @@ export const Colors = {
   },
 
   border: {
-    subtle: 'rgba(203, 213, 225, 0.1)', // Very subtle borders
-    medium: 'rgba(203, 213, 225, 0.2)',
-    strong: 'rgba(203, 213, 225, 0.3)',
+    subtle: '#cbd5e11a', // Very subtle borders
+    medium: '#cbd5e133',
+    strong: '#cbd5e14d',
     gradient: 'linear-gradient(135deg, rgba(167, 139, 250, 0.3), rgba(34, 211, 238, 0.3))',
   },
 

@@ -10,11 +10,13 @@ import {
   ScrollView,
   StatusBar,
   StyleSheet,
+  TouchableOpacity,
   View,
 } from 'react-native';
 import { ThemedText } from '../../../components/atoms/ThemedText';
 import { BorderRadius, Colors, Spacing } from '../../../constants/Colors';
 import { InsightModal } from '../../../components/atoms/InsightModal';
+import { Ionicons } from '@expo/vector-icons';
 
 const { width: SCREEN_WIDTH } = Dimensions.get('window');
 
@@ -178,11 +180,9 @@ export default function PatientDashboardHome() {
         showsVerticalScrollIndicator={false}
       >
         {/* Back */}
-        <Pressable onPress={() => router.back()} style={styles.backButton}>
-          <ThemedText variant="body" color="teal" style={styles.backButtonTextNoUnderline}>
-            ⪻ Back
-          </ThemedText>
-        </Pressable>
+          <TouchableOpacity onPress={() => router.back()} style={styles.backButton}>
+            <Ionicons name="chevron-back" size={28} color="#fff" />
+          </TouchableOpacity>
 
         {/* Header */}
         <Animated.View
@@ -191,9 +191,6 @@ export default function PatientDashboardHome() {
             { opacity: titleOpacity, transform: [{ translateY: titleY }] },
           ]}
         >
-          <ThemedText variant="caption" color="secondary">
-            Daily pulse
-          </ThemedText>
 
           <ThemedText
             variant="display"
@@ -364,7 +361,7 @@ export default function PatientDashboardHome() {
               }
             >
               <ThemedText variant="caption" color="secondary">
-                Why this?
+                See insights
               </ThemedText>
             </Pressable>
           </GlowyCard>
@@ -404,7 +401,7 @@ export default function PatientDashboardHome() {
               }
             >
               <ThemedText variant="caption" color="secondary">
-                Why this?
+                See insights
               </ThemedText>
             </Pressable>
           </GlowyCard>
@@ -462,6 +459,9 @@ const styles = StyleSheet.create({
     alignSelf: 'flex-start',
     marginTop: 12,
     marginBottom: Spacing.md,
+      padding: 5,
+    borderRadius: 10,
+    backgroundColor: 'rgba(57, 73, 171, 0.22)',
   },
 
   backButtonTextNoUnderline: {

@@ -45,6 +45,7 @@ export const CareTaskTile: React.FC<CareTaskTileProps> = ({
   const formatDueDate = (date: Date) => {
     const today = new Date();
     const tomorrow = new Date(today);
+    
     tomorrow.setDate(tomorrow.getDate() + 1);
 
     if (date.toDateString() === today.toDateString()) {
@@ -68,9 +69,13 @@ export const CareTaskTile: React.FC<CareTaskTileProps> = ({
     >
       {/* Header: Icon & Status */}
       <View style={styles.header}>
-        <View style={styles.iconContainer}>
+        <View style={[
+                styles.iconContainer,
+                // Schimbă fundalul containerului pentru starea finalizată (opțional)
+                status === 'completed' && styles.iconContainerCompleted, 
+            ]}>
           <Icon
-            name={status === 'completed' ? 'checkCircle' : 'clipboard'}
+            name={status === 'completed' ? 'checkCircle' : 'alertCircle'}
             color={status === 'completed' ? Colors.status.ok : Colors.primary.teal}
             size={24}
           />
@@ -79,7 +84,11 @@ export const CareTaskTile: React.FC<CareTaskTileProps> = ({
       </View>
 
       {/* Title */}
-      <ThemedText variant="subtitle" weight="semibold" style={styles.title}>
+      <ThemedText variant="subtitle" weight="semibold" style={[
+            styles.title,
+            // Adaugă stil de text tăiat pentru sarcini finalizate (opțional)
+            status === 'completed' && styles.titleCompleted, 
+        ]}>
         {title}
       </ThemedText>
 
@@ -166,4 +175,15 @@ const styles = StyleSheet.create({
   snoozeText: {
     marginLeft: Spacing.xs,
   },
+  iconContainerCompleted: {
+    backgroundColor: `${Colors.status.ok}15`, // Fundal subtil de verde
+  },
+
+  
+  // Stil nou pentru textul sarcinii finalizate
+  titleCompleted: {
+    textDecorationLine: 'line-through', // Taie textul
+    color: Colors.text.tertiary, // Estompează textul
+  },
+  
 });

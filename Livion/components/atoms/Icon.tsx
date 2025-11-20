@@ -9,23 +9,20 @@ export type IconProps = {
   style?: ViewStyle;
 };
 
-/**
- * Icon Component
- * Simple, rounded icons; no fear imagery
- * 
- * Note: In a real app, you would use a library like:
- * - @expo/vector-icons
- * - react-native-vector-icons
- * 
- * This is a placeholder implementation
- */
 export const Icon: React.FC<IconProps> = ({
   name,
   size = 24,
   color = Colors.text.primary,
   style,
 }) => {
-  // Placeholder: In real implementation, render actual icon
+  // Verificăm dacă numele pictogramei solicitate sugerează starea 'COMPLETED'
+  const isCompletedPlaceholder = name === 'checkCircle';
+  
+  // Determinăm culorile pentru placeholder
+  const placeholderColor = color;
+  const placeholderBackgroundColor = isCompletedPlaceholder ? placeholderColor : `${placeholderColor}20`;
+  const placeholderBorderWidth = isCompletedPlaceholder ? 0 : 2; // Fără chenar dacă e plin
+
   return (
     <View
       style={[
@@ -33,15 +30,16 @@ export const Icon: React.FC<IconProps> = ({
         {
           width: size,
           height: size,
-          backgroundColor: `${color}20`,
-          borderColor: color,
+          // Aplicăm culorile și stilul condițional
+          backgroundColor: placeholderBackgroundColor,
+          borderColor: placeholderColor,
+          borderWidth: placeholderBorderWidth,
         },
         style,
       ]}
     />
   );
 };
-
 const styles = StyleSheet.create({
   placeholder: {
     borderRadius: 999,

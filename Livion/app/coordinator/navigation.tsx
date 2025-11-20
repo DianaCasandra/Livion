@@ -1,4 +1,6 @@
+import { Ionicons } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
+import { router } from 'expo-router';
 import React, { useRef } from 'react';
 import {
   Animated,
@@ -7,15 +9,14 @@ import {
   ScrollView,
   StatusBar,
   StyleSheet,
-  View,
   TouchableOpacity,
+  View,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Button } from '../../components/atoms/Button';
 import { InputField } from '../../components/atoms/InputField';
 import { ThemedText } from '../../components/atoms/ThemedText';
 import { BorderRadius, Colors, Spacing } from '../../constants/Colors';
-import { router } from 'expo-router';
 
 // ----------------------------------------------------
 // GlowyCard Component
@@ -73,9 +74,7 @@ export default function CarePlanAuthoringScreen() {
           
           {/* Back button */}
           <TouchableOpacity onPress={() => router.back()} style={styles.backButton}>
-            <ThemedText variant="body" style={styles.backButtonText}>
-              ⪻ Back
-            </ThemedText>
+            <Ionicons name="chevron-back" size={28} color="#fff" />
           </TouchableOpacity>
 
           {/* Header */}
@@ -163,10 +162,14 @@ const styles = StyleSheet.create({
   },
 
   backButton: {
-    paddingVertical: 8,
-    marginBottom: 10,
     alignSelf: 'flex-start',
+    marginBottom: Spacing.lg,
+    marginTop: Spacing.md,
+    padding: 6,
+    borderRadius: 10,
+    backgroundColor: 'rgba(57, 73, 171, 0.22)',
   },
+
 
   backButtonText: {
     fontSize: 16,

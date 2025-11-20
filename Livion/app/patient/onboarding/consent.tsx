@@ -1,5 +1,6 @@
+import { Ionicons } from '@expo/vector-icons';
+import { LinearGradient } from 'expo-linear-gradient';
 import { useRouter } from 'expo-router';
-import { ArrowLeft, ArrowRight } from 'lucide-react-native';
 import { useState } from 'react';
 import {
   SafeAreaView,
@@ -16,7 +17,6 @@ import { BorderRadius, Colors, Spacing } from '../../../constants/Colors';
 export default function ConsentScreen() {
   const router = useRouter();
 
-  // Toggles
   const [dataSources, setDataSources] = useState(false);
   const [wearables, setWearables] = useState(false);
   const [ehr, setEhr] = useState(false);
@@ -29,152 +29,147 @@ export default function ConsentScreen() {
   const [purposeBinding, setPurposeBinding] = useState(false);
 
   return (
-    <SafeAreaView style={styles.safeArea}>
-      <ScrollView contentContainerStyle={styles.container}>
+    <View style={styles.root}>
+      <LinearGradient
+        colors={['#08131c', '#0b1e29', '#0d2533']}
+        style={StyleSheet.absoluteFill}
+        start={[0, 0]}
+        end={[1, 1]}
+      />
 
-        <TouchableOpacity
-          onPress={() => router.back()}
-          style={styles.backButton}
-        >
-          <ThemedText variant="body" color="teal" style={styles.backButton}>
-            ⪻ Back
-          </ThemedText>
-        </TouchableOpacity>
+      <View style={styles.glowTopRight} />
+      <View style={styles.glowBottomLeft} />
 
+      <SafeAreaView style={styles.safeArea}>
+        <ScrollView contentContainerStyle={styles.container}>
 
-        <View style={styles.card}>
-          <ThemedText variant="display" weight="bold" style={styles.title}>
-            Consent & Preferences
-          </ThemedText>
+          {/* Back Button */}
+          <TouchableOpacity onPress={() => router.back()} style={styles.backButton}>
+            <Ionicons name="chevron-back" size={28} color="#fff" />
+          </TouchableOpacity>
 
-          <ThemedText variant="body" color="secondary" style={styles.body}>
-            Adjust what you want Livion to use or access. You can modify these anytime.
-          </ThemedText>
+          {/* Main Card */}
+          <View style={styles.card}>
+            <ThemedText variant="display" weight="bold" style={styles.title} align="center">
+              Consent & Preferences
+            </ThemedText>
 
-          {/* ─────────────────────────────── */}
-          {/* Data Sources */}
-          {/* ─────────────────────────────── */}
-          <View style={styles.section}>
-            <ToggleRow
-              label="Data Sources"
-              value={dataSources}
-              onValueChange={() => setDataSources(prev => !prev)}
-            />
+            <ThemedText variant="body" color="secondary" style={styles.body} align="center">
+              Adjust what you want Livion to use or access. You can modify these anytime.
+            </ThemedText>
 
-            {dataSources && (
-              <View style={styles.subToggleGroup}>
-                <ToggleRow
-                  label="Wearables"
-                  value={wearables}
-                  onValueChange={() => setWearables(prev => !prev)}
-                  small
-                />
-                <ToggleRow
-                  label="EHR"
-                  value={ehr}
-                  onValueChange={() => setEhr(prev => !prev)}
-                  small
-                />
-              </View>
-            )}
+            {/* Data Sources */}
+            <View style={styles.section}>
+              <ToggleRow
+                label="Data Sources"
+                value={dataSources}
+                onValueChange={() => setDataSources(prev => !prev)}
+                centerText
+              />
+
+              {dataSources && (
+                <View style={styles.subToggleGroup}>
+                  <ToggleRow
+                    label="Wearables"
+                    value={wearables}
+                    onValueChange={() => setWearables(prev => !prev)}
+                    small
+                    centerText
+                  />
+                  <ToggleRow
+                    label="EHR"
+                    value={ehr}
+                    onValueChange={() => setEhr(prev => !prev)}
+                    small
+                    centerText
+                  />
+                </View>
+              )}
+            </View>
+
+            {/* Sharing Scopes */}
+            <ThemedText
+              variant="heading"
+              weight="semibold"
+              color="teal"
+              align="center"
+              style={styles.subtitle}
+            >
+              Sharing Scopes
+            </ThemedText>
+
+            <View style={styles.section}>
+              <ToggleRow label="Private" value={privateShare} onValueChange={() => setPrivateShare(prev => !prev)} centerText />
+              <ToggleRow label="Circle" value={circleShare} onValueChange={() => setCircleShare(prev => !prev)} centerText />
+              <ToggleRow label="Clinician" value={clinicianShare} onValueChange={() => setClinicianShare(prev => !prev)} centerText />
+            </View>
+
+            {/* Additional Toggles */}
+            <View style={styles.section}>
+              <ToggleRow label="Research opt-in" value={research} onValueChange={() => setResearch(prev => !prev)} centerText />
+              <ToggleRow label="Purpose binding & data minimization" value={purposeBinding} onValueChange={() => setPurposeBinding(prev => !prev)} centerText />
+            </View>
+
+            {/* NEXT Button */}
+            <Button
+              variant="primary"
+              fullWidth
+              style={styles.nextButton}
+              textStyle={{ textAlign: "center" }}
+              onPress={() => router.push('/patient/onboarding/dataconnections')}
+            >
+                            <ThemedText variant="label" weight="semibold" style={{ color: "#0f172a", textAlign: "center" }}>
+                Continue
+              </ThemedText> </Button>
           </View>
 
-          {/* ─────────────────────────────── */}
-          {/* Sharing Scopes */}
-          {/* ─────────────────────────────── */}
+          {/* Disclaimer */}
           <ThemedText
-            variant="heading"
-            weight="semibold"
-            color="teal"
+            variant="caption"
+            color="tertiary"
             align="center"
-            style={styles.subtitle}
+            style={styles.disclaimer}
           >
-            Sharing Scopes
+            You can adjust all consent settings later from your profile.
           </ThemedText>
 
-          <View style={styles.section}>
-            <ToggleRow
-              label="Private"
-              value={privateShare}
-              onValueChange={() => setPrivateShare(prev => !prev)}
-            />
-            <ToggleRow
-              label="Circle"
-              value={circleShare}
-              onValueChange={() => setCircleShare(prev => !prev)}
-            />
-            <ToggleRow
-              label="Clinician"
-              value={clinicianShare}
-              onValueChange={() => setClinicianShare(prev => !prev)}
-            />
-          </View>
-
-          {/* ─────────────────────────────── */}
-          {/* Additional Toggles */}
-          {/* ─────────────────────────────── */}
-          <View style={styles.section}>
-            <ToggleRow
-              label="Research opt-in"
-              value={research}
-              onValueChange={() => setResearch(prev => !prev)}
-            />
-
-            <ToggleRow
-              label="Purpose binding & data minimization"
-              value={purposeBinding}
-              onValueChange={() => setPurposeBinding(prev => !prev)}
-            />
-          </View>
-
-          {/* NEXT Button */}
-          <Button
-            variant="primary"
-            fullWidth
-            style={styles.nextButton}
-            onPress={() => router.push('/patient/onboarding/dataconnections')}
-          >
-            Continue
-          </Button>
-        </View>
-
-        {/* Disclaimer */}
-        <ThemedText
-          variant="caption"
-          color="tertiary"
-          align="center"
-          style={styles.disclaimer}
-        >
-          You can adjust all consent settings later from your profile.
-        </ThemedText>
-      </ScrollView>
-    </SafeAreaView>
+        </ScrollView>
+      </SafeAreaView>
+    </View>
   );
 }
 
-/* ──────────────────────────────── */
-/*  Component: Toggle Row           */
-/* ──────────────────────────────── */
+
+/* ─────────────────────────────── */
+/* ToggleRow Component */
+/* ─────────────────────────────── */
 
 function ToggleRow({
   label,
   value,
   onValueChange,
   small = false,
+  centerText = false,
 }: {
   label: string;
   value: boolean;
   onValueChange: () => void;
   small?: boolean;
+  centerText?: boolean;
 }) {
   return (
     <View style={[styles.toggleRow, small && styles.smallToggleRow]}>
       <ThemedText
         variant="body"
-        style={[styles.toggleLabel, small && styles.smallToggleLabel]}
+        style={[
+          styles.toggleLabel,
+          small && styles.smallToggleLabel,
+          { color: '#ffffff', textAlign: centerText ? 'center' : 'left' }
+        ]}
       >
         {label}
       </ThemedText>
+
       <Switch
         value={value}
         onValueChange={onValueChange}
@@ -185,38 +180,47 @@ function ToggleRow({
   );
 }
 
-/* ──────────────────────────────── */
-/*  Styles                           */
-/* ──────────────────────────────── */
+
+/* ─────────────────────────────── */
+/* Styles */
+/* ─────────────────────────────── */
 
 const styles = StyleSheet.create({
-  safeArea: {
+  root: {
     flex: 1,
     backgroundColor: Colors.background.primary,
   },
+  safeArea: { flex: 1 },
+
   container: {
     flexGrow: 1,
     padding: Spacing.xl,
     paddingTop: Spacing.lg,
+    alignItems: 'center',
   },
 
   backButton: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginBottom: 15,
-    marginTop: 15,
+    alignSelf: 'flex-start',
+    marginBottom: Spacing.lg,
+    marginTop: Spacing.md,
+     padding: 5,
+    borderRadius: 10,
+    backgroundColor: 'rgba(57, 73, 171, 0.22)',
   },
 
   card: {
     padding: Spacing.xl,
     borderRadius: BorderRadius.xl,
-    backgroundColor: Colors.background.cardGlass,
-    borderColor: Colors.border.medium,
+    backgroundColor: 'rgba(15,23,42,0.6)',
+    borderColor: 'rgba(255,255,255,0.08)',
     borderWidth: 1,
+    width: '100%',
+    alignItems: 'center',
   },
 
   title: {
     marginBottom: Spacing.md,
+    color: '#fff',
     textAlign: 'center',
   },
   body: {
@@ -227,44 +231,74 @@ const styles = StyleSheet.create({
   section: {
     marginBottom: Spacing.xl,
     gap: Spacing.md,
+    width: '100%',
   },
 
   subtitle: {
     marginBottom: Spacing.md,
+    color: Colors.primary.teal,
+    textAlign: 'center',
   },
 
   toggleRow: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    marginBottom: -17,
+    paddingVertical: Spacing.sm,
   },
+
   smallToggleRow: {
     paddingLeft: Spacing.lg,
   },
+
   toggleLabel: {
-    flexShrink: 1,
+    flex: 1,
     marginRight: Spacing.md,
+    textAlign: 'center',
   },
+
   smallToggleLabel: {
     fontSize: 14,
   },
 
-  /* Sub-toggles for data sources */
   subToggleGroup: {
-    marginTop: -Spacing.sm,
-    gap: Spacing.sm,
+    marginTop: Spacing.xs,
+    gap: Spacing.xs,
+    backgroundColor: 'rgba(255,255,255,0.03)',
+    borderRadius: BorderRadius.md,
+    paddingVertical: Spacing.sm,
+    paddingRight: Spacing.sm,
   },
 
   nextButton: {
     marginTop: Spacing.lg,
-    flexDirection: 'row',
-    justifyContent: 'center',
-    gap: 8,
   },
 
   disclaimer: {
     marginBottom: 25,
     marginTop: 15,
+    textAlign: 'center',
+  },
+
+  glowTopRight: {
+    position: 'absolute',
+    width: 400,
+    height: 400,
+    right: -150,
+    top: -100,
+    borderRadius: 999,
+    backgroundColor: Colors.primary.indigo,
+    opacity: 0.12,
+  },
+
+  glowBottomLeft: {
+    position: 'absolute',
+    width: 480,
+    height: 480,
+    left: -200,
+    bottom: -160,
+    borderRadius: 999,
+    backgroundColor: '#3949AB',
+    opacity: 0.1,
   },
 });
