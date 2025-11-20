@@ -1,3 +1,4 @@
+import { Ionicons } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useRouter } from 'expo-router';
 import { Activity, Heart, Sparkles } from 'lucide-react-native';
@@ -13,10 +14,9 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
+import { InsightModal } from '../../../components/atoms/InsightModal';
 import { ThemedText } from '../../../components/atoms/ThemedText';
 import { BorderRadius, Colors, Spacing } from '../../../constants/Colors';
-import { InsightModal } from '../../../components/atoms/InsightModal';
-import { Ionicons } from '@expo/vector-icons';
 
 const { width: SCREEN_WIDTH } = Dimensions.get('window');
 
