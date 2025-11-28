@@ -1,10 +1,11 @@
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { useRoute } from '@react-navigation/native';
 
-import PatientAuthStack from './PatientAuthStack';
-import ClinicianAuthStack from './ClinicianAuthStack';
-import CoordinatorAuthStack from './CoordinatorAuthStack';
-import AdminAuthStack from './AdminAuthStack';
+import PatientAuthStack from './auth-stacks/patientAuthStack';
+
+// import ClinicianAuthStack from './auth-stacks/ClinicianAuthStack';
+// import CoordinatorAuthStack from './auth-stacks/CoordinatorAuthStack';
+// import AdminAuthStack from './auth-stacks/AdminAuthStack';
 
 const Stack = createNativeStackNavigator();
 
@@ -17,7 +18,7 @@ export default function RoleAuthStack() {
       {role === 'patient' && (
         <Stack.Screen name="PatientAuth" component={PatientAuthStack} />
       )}
-      {role === 'clinician' && (
+      {/* {role === 'clinician' && (
         <Stack.Screen name="ClinicianAuth" component={ClinicianAuthStack} />
       )}
       {role === 'coordinator' && (
@@ -25,7 +26,7 @@ export default function RoleAuthStack() {
       )}
       {role === 'admin' && (
         <Stack.Screen name="AdminAuth" component={AdminAuthStack} />
-      )}
+      )} */}
     </Stack.Navigator>
   );
 }

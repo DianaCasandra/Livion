@@ -7,6 +7,7 @@
         "icon": "./assets/images/icon.png",
         "scheme": "livion",
         "userInterfaceStyle": "automatic",
+        "entryPoint": "./App.tsx",
         "newArchEnabled": true,
         "ios": {
             "supportsTablet": true
@@ -26,7 +27,7 @@
             "favicon": "./assets/images/icon.png"
         },
         "splash": {
-            "image": "./assets/images/splash-icon.png",
+            "image": "./assets/images/splash-image.png",
             "resizeMode": "contain",
             "backgroundColor": "#ffffff",
             "dark": {
@@ -34,7 +35,6 @@
             }
         },
         "experiments": {
-            "typedRoutes": true,
             "reactCompiler": true
         }
     }

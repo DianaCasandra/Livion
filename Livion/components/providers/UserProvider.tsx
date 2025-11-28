@@ -27,16 +27,22 @@ export const UserProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   const [user, setUser] = useState<User | null>(null);
   const [isLoading, setIsLoading] = useState(true);
 
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      setUser({
-        isAuthenticated: false,
-        role: 'patient'
-      });
-      setIsLoading(false);
-    }, 1000);
+  // useEffect(() => {
+  //   const timer = setTimeout(() => {
+  //     setUser({
+  //       isAuthenticated: false,
+  //       role: 'patient'
+  //     });
+  //     setIsLoading(false);
+  //   }, 1000);
 
-    return () => clearTimeout(timer);
+  //   return () => clearTimeout(timer);
+  // }, []);
+
+  useEffect(() => {
+  // No default user
+   setUser(null);
+  setIsLoading(false);
   }, []);
 
   const loginAsPatient = () => {
