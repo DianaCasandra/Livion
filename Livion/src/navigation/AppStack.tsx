@@ -1,7 +1,7 @@
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { useUser } from '../../components/providers/UserProvider';
 
-import PatientStack from './app-stacks/patientStack';
+import PatientStack from './app-stacks/PatientStack';
 // import ClinicianStack from './ClinicianStack';
 // import AdminStack from './AdminStack';
 // import CoordinatorStack from './CoordinatorStack';

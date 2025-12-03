@@ -3,9 +3,12 @@ import { LinearGradient } from 'expo-linear-gradient';
 import { useRouter } from 'expo-router';
 import { Activity, Heart, Sparkles } from 'lucide-react-native';
 import React, { useEffect, useRef, useState } from 'react';
+
 import {
   Animated,
   Dimensions,
+  Image,
+  Modal,
   Platform,
   Pressable,
   ScrollView,
@@ -72,10 +75,17 @@ function GlowyCard({ children, compact = false, onPress, style }: GlowyCardProps
 
 export default function PatientDashboardHome() {
   const router = useRouter();
-
-  // Modal state for AI explanation
   const [modalVisible, setModalVisible] = useState(false);
   const [modalMessage, setModalMessage] = useState('');
+  const [generatedImageUrl, setGeneratedImageUrl] = useState<string | null>(null);
+  const [imageModalVisible, setImageModalVisible] = useState(false);
+
+  // Subtle entrance animation
+  const titleY = useRef(new Animated.Value(16)).current;
+  const titleOpacity = useRef(new Animated.Value(0)).current;
+  const cardsOffset = useRef(new Animated.Value(24)).current;
+  const cardsOpacity = useRef(new Animated.Value(0)).current;
+  const pulse = useRef(new Animated.Value(1)).current;
 
   async function askLocalAI(question: string) {
     try {
@@ -100,80 +110,121 @@ export default function PatientDashboardHome() {
     }
   }
 
-  // Subtle entrance animation
-  const titleY = useRef(new Animated.Value(16)).current;
-  const titleOpacity = useRef(new Animated.Value(0)).current;
-  const cardsOffset = useRef(new Animated.Value(24)).current;
-  const cardsOpacity = useRef(new Animated.Value(0)).current;
+ async function generateImage(prompt: string) {
+    try {
+      const response = await fetch(
+        'https://jolliest-joshingly-shaneka.ngrok-free.dev/generate-image',
+        {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ prompt, prompt_node_id: '6', output_node_id: '9' }),
+        }
+      );
+      const data = await response.json();
 
-  const pulse = useRef(new Animated.Value(1)).current;
+      let imageUri: string | null = null;
+      if (data.image_url) imageUri = data.image_url;
+      else if (data.image_base64) imageUri = `data:image/png;base64,${data.image_base64}`;
+
+      if (imageUri) {
+        setGeneratedImageUrl(imageUri);
+        setImageModalVisible(true); // <<< deschide popup-ul
+        setModalMessage('Image generated successfully!');
+      } else {
+        setModalMessage(data.message || 'No usable image returned.');
+      }
+      setModalVisible(true);
+      return imageUri;
+    } catch (error) {
+      setModalMessage('Could not generate image.');
+      setModalVisible(true);
+      return null;
+    }
+  }
 
   useEffect(() => {
     Animated.sequence([
       Animated.parallel([
-        Animated.timing(titleY, {
-          toValue: 0,
-          duration: 260,
-          useNativeDriver: true,
-        }),
-        Animated.timing(titleOpacity, {
-          toValue: 1,
-          duration: 260,
-          useNativeDriver: true,
-        }),
+        Animated.timing(titleY, { toValue: 0, duration: 260, useNativeDriver: true }),
+        Animated.timing(titleOpacity, { toValue: 1, duration: 260, useNativeDriver: true }),
       ]),
       Animated.parallel([
-        Animated.timing(cardsOffset, {
-          toValue: 0,
-          duration: 260,
-          useNativeDriver: true,
-        }),
-        Animated.timing(cardsOpacity, {
-          toValue: 1,
-          duration: 260,
-          useNativeDriver: true,
-        }),
+        Animated.timing(cardsOffset, { toValue: 0, duration: 260, useNativeDriver: true }),
+        Animated.timing(cardsOpacity, { toValue: 1, duration: 260, useNativeDriver: true }),
       ]),
     ]).start();
 
     Animated.loop(
       Animated.sequence([
-        Animated.timing(pulse, {
-          toValue: 1.18,
-          duration: 900,
-          useNativeDriver: true,
-        }),
-        Animated.timing(pulse, {
-          toValue: 1,
-          duration: 900,
-          useNativeDriver: true,
-        }),
-      ]),
+        Animated.timing(pulse, { toValue: 1.18, duration: 900, useNativeDriver: true }),
+        Animated.timing(pulse, { toValue: 1, duration: 900, useNativeDriver: true }),
+      ])
     ).start();
   }, [cardsOffset, cardsOpacity, pulse, titleOpacity, titleY]);
 
   return (
     <View style={styles.root}>
       <StatusBar hidden />
-
-      {/* Background gradient */}
-      <LinearGradient
-        colors={['#050816', '#031824', '#031b2e']}
-        style={StyleSheet.absoluteFill}
-        start={[0, 0]}
-        end={[1, 1]}
-      />
-
-      {/* Glows */}
+      <LinearGradient colors={['#050816', '#031824', '#031b2e']} style={StyleSheet.absoluteFill} start={[0,0]} end={[1,1]} />
       <View style={styles.glowTopRight} pointerEvents="none" />
       <View style={styles.glowBottomLeft} pointerEvents="none" />
 
-      {/* AI insight modal */}
-      <InsightModal
-        visible={modalVisible}
-        onClose={() => setModalVisible(false)}
-        message={modalMessage}
-      />
+      {/* Modal AI */}
+      <InsightModal visible={modalVisible} onClose={() => setModalVisible(false)} message={modalMessage} />
+
+      {/* Popup imagine */}
+     {/* Popup imagine */}
+{/* Popup imagine */}
+<Modal
+  visible={imageModalVisible}
+  transparent
+  animationType="fade"
+  onRequestClose={() => setImageModalVisible(false)}
+>
+  <View style={{
+    flex: 1,
+    backgroundColor: 'rgba(0,0,0,0.85)',
+    justifyContent: 'center',
+    alignItems: 'center',
+    padding: Spacing.lg,
+  }}>
+    <View style={{ 
+      backgroundColor: 'rgba(15,23,42,0.95)', 
+      borderRadius: BorderRadius.xl, 
+      padding: Spacing.md, 
+      maxWidth: SCREEN_WIDTH - 32,
+      maxHeight: '80%',
+    }}>
+      {generatedImageUrl ? (
+        <Image
+          source={{ uri: generatedImageUrl.replace(/\r?\n|\r/g, '') }} // elimină newline-uri
+          style={{
+            width: SCREEN_WIDTH - 64,
+            height: 250, // sau orice înălțime vrei
+            borderRadius: 16,
+            resizeMode: 'contain', // păstrează proporțiile
+          }}
+        />
+      ) : (
+        <ThemedText variant="body" color="secondary">No image to display</ThemedText>
+      )}
+
+      <Pressable
+        onPress={() => setImageModalVisible(false)}
+        style={{ 
+          marginTop: Spacing.md, 
+          alignSelf: 'center', 
+          paddingVertical: 8, 
+          paddingHorizontal: 16, 
+          backgroundColor: 'rgba(255,255,255,0.1)', 
+          borderRadius: 12 
+        }}
+      >
+        <ThemedText variant="body" color="secondary">Close</ThemedText>
+      </Pressable>
+    </View>
+  </View>
+</Modal>
 
       <ScrollView
         contentContainerStyle={styles.scrollContainer}
@@ -422,26 +473,47 @@ export default function PatientDashboardHome() {
             Small actions, big impact
           </ThemedText>
 
-          <GlowyCard compact>
-            <ThemedText variant="body" style={[styles.planItem, { fontSize: 13 }]}>
-              • Take blood pressure reading before 22:00
-            </ThemedText>
-            <ThemedText variant="body" style={[styles.planItem, { fontSize: 13 }]}>
-              • 10 minute walk after lunch
-            </ThemedText>
-            <ThemedText variant="body" style={[styles.planItem, { fontSize: 13 }]}>
-              • Log mood & symptoms once today
-            </ThemedText>
-          </GlowyCard>
+         <GlowyCard compact>
+  <ThemedText variant="body" style={[styles.planItem, { fontSize: 13 }]}>
+    • Take blood pressure reading before 22:00
+  </ThemedText>
+  <ThemedText variant="body" style={[styles.planItem, { fontSize: 13 }]}>
+    • 10 minute walk after lunch
+  </ThemedText>
+  <ThemedText variant="body" style={[styles.planItem, { fontSize: 13 }]}>
+    • Log mood & symptoms once today
+  </ThemedText>
+</GlowyCard>
 
-          <View style={{ height: Spacing['3xl'] }} />
+{/* ⭐ EXTRA BUTTON PENTRU TESTARE IMAGE GENERATION ⭐ */}
+<Pressable
+          onPress={() => generateImage("Test image from dashboard")}
+          style={{
+            marginTop: 20,
+            alignSelf: 'center',
+            paddingVertical: 10,
+            paddingHorizontal: 20,
+            backgroundColor: 'rgba(255,255,255,0.12)',
+            borderRadius: 14,
+            borderWidth: 1,
+            borderColor: 'rgba(255,255,255,0.25)',
+            shadowColor: '#ffffff',
+            shadowOpacity: 0.15,
+            shadowOffset: { width: 0, height: 4 },
+            shadowRadius: 10,
+          }}
+        >
+          <ThemedText variant="subtitle" weight="semibold" color="secondary">
+            Generate Test Image
+          </ThemedText>
+        </Pressable>
         </Animated.View>
+
+        <View style={{ height: Spacing['3xl'] }} />
       </ScrollView>
     </View>
   );
 }
-
-/* ------------------------------ STYLES ------------------------------ */
 
 const styles = StyleSheet.create({
   root: {

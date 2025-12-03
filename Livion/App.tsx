@@ -1,5 +1,5 @@
 import { NavigationContainer } from '@react-navigation/native';
-import RootNavigator from './src/navigation/rootNavigator';
+import RootNavigator from './src/navigation/RootNavigator';
 import { UserProvider, MockDataProvider } from '@/components/providers';
 import { ThemeProvider } from '@/components/providers/ThemeProvider';
 

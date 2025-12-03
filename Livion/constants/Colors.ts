@@ -11,11 +11,13 @@
 export const Colors = {
   // Primary Colors
   primary: {
-    teal: '#0d9488',      // Teal 600 - trust/health
-    indigo: '#4f46e5',    // Indigo 600 - competence
-    darkNavy: '#0f172a',  // Deep navy background
+    teal: '#03d0c5',      // Teal 600 - trust/health
+    indigo: '#ff6e1e',    // Indigo 600 - competence
+    darkNavy: '#ffffff',  // Deep navy background
     deepPurple: '#1e1b4b', // Deep purple for layered backgrounds
     white: '#ffffff',    // Pure white for contrast
+    mint: '#05e6dbff', // Mint accent color
+    amber: '#ff6e1e', // Warm amber accent
   },
 
   // Accent Colors

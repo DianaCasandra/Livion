@@ -1,32 +1,39 @@
+import { RouteProp, useRoute } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import { useRoute } from '@react-navigation/native';
 
-import PatientAuthStack from './auth-stacks/patientAuthStack';
+import PatientAuthStack from './auth-stacks/PatientAuthStack';
 
-// import ClinicianAuthStack from './auth-stacks/ClinicianAuthStack';
-// import CoordinatorAuthStack from './auth-stacks/CoordinatorAuthStack';
-// import AdminAuthStack from './auth-stacks/AdminAuthStack';
+type RoleAuthParams = {
+  RoleAuth: {
+    role: string;
+    initial: "login" | "onboarding";
+  };
+};
 
 const Stack = createNativeStackNavigator();
 
 export default function RoleAuthStack() {
-  const route = useRoute();
-  const { role } = route.params as { role: string };
+  const route = useRoute<RouteProp<RoleAuthParams, 'RoleAuth'>>();
+  const { role, initial } = route.params;
 
   return (
     <Stack.Navigator screenOptions={{ headerShown: false }}>
       {role === 'patient' && (
-        <Stack.Screen name="PatientAuth" component={PatientAuthStack} />
+        <Stack.Screen
+          name="PatientAuth"
+          options={{ headerShown: false }}
+        >
+          {() => <PatientAuthStack initial={initial} />}
+        </Stack.Screen>
       )}
+
+      {/* Aici re-activezi când ai celelalte stackuri: */}
       {/* {role === 'clinician' && (
-        <Stack.Screen name="ClinicianAuth" component={ClinicianAuthStack} />
-      )}
-      {role === 'coordinator' && (
-        <Stack.Screen name="CoordinatorAuth" component={CoordinatorAuthStack} />
-      )}
-      {role === 'admin' && (
-        <Stack.Screen name="AdminAuth" component={AdminAuthStack} />
+        <Stack.Screen name="ClinicianAuth">
+          {() => <ClinicianAuthStack initial={initial} />}
+        </Stack.Screen>
       )} */}
+
     </Stack.Navigator>
   );
 }

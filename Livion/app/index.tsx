@@ -1,181 +1,120 @@
-import { LinearGradient } from 'expo-linear-gradient';
-import { Href, useRouter } from 'expo-router';
-import { useEffect, useRef, useState } from 'react';
-import {
-  Animated,
-  Dimensions,
-  Platform,
-  SafeAreaView,
-  ScrollView,
-  StatusBar,
-  StyleSheet,
-  View,
-} from 'react-native';
-import { Button } from '../components/atoms/Button';
-import { ThemedText } from '../components/atoms/ThemedText';
-import { BorderRadius, Colors, Spacing } from '../constants/Colors';
-
-const { width: SCREEN_W, height: SCREEN_H } = Dimensions.get('window');
+import { Ionicons } from "@expo/vector-icons";
+import { Href, useRouter } from "expo-router";
+import { Pressable, SafeAreaView, StatusBar, StyleSheet, View } from "react-native";
+import { Button } from "../components/atoms/Button";
+import { ThemedText } from "../components/atoms/ThemedText";
+import { BorderRadius, Colors, Spacing } from "../constants/Colors";
 
 export default function LandingPage() {
-  const [expandedRole, setExpandedRole] = useState<string | null>(null);
   const router = useRouter();
-
-  const anim1 = useRef(new Animated.Value(0)).current;
-  const anim2 = useRef(new Animated.Value(0)).current;
-
-  useEffect(() => {
-    const loopAnimation = (anim: Animated.Value, delay: number) => {
-      Animated.loop(
-        Animated.sequence([
-          Animated.timing(anim, {
-            toValue: 1,
-            duration: 9000,
-            delay,
-            useNativeDriver: false,
-          }),
-          Animated.timing(anim, {
-            toValue: 0,
-            duration: 9000,
-            useNativeDriver: false,
-          }),
-        ])
-      ).start();
-    };
-
-    loopAnimation(anim1, 0);
-    loopAnimation(anim2, 2000);
-  }, []);
-
-  const blob1Style = {
-    transform: [
-      {
-        translateX: anim1.interpolate({
-          inputRange: [0, 1],
-          outputRange: [-50, 50],
-        }),
-      },
-      {
-        translateY: anim1.interpolate({
-          inputRange: [0, 1],
-          outputRange: [-30, 30],
-        }),
-      },
-    ],
-  };
-
-  const blob2Style = {
-    transform: [
-      {
-        translateX: anim2.interpolate({
-          inputRange: [0, 1],
-          outputRange: [40, -40],
-        }),
-      },
-      {
-        translateY: anim2.interpolate({
-          inputRange: [0, 1],
-          outputRange: [60, -60],
-        }),
-      },
-    ],
-  };
-
-  const roles = [
-    { key: 'patient', label: 'Patient', twoOptions: true },
-    { key: 'clinician', label: 'Clinician', twoOptions: true },
-    { key: 'coordinator', label: 'Care Coordinator', twoOptions: false },
-    { key: 'admin', label: 'Admin', twoOptions: false },
-  ];
-
-  const toggleRole = (role: string) => {
-    setExpandedRole(prev => (prev === role ? null : role));
-  };
 
   return (
     <View style={styles.root}>
       <StatusBar barStyle="light-content" translucent backgroundColor="transparent" />
 
-      <LinearGradient
-        colors={["#07203f", "#04363a", "#06233d"]}
-        style={StyleSheet.absoluteFill}
-      />
+      <SafeAreaView style={{ flex: 1 }}>
+        <View style={styles.container}>
+          {/* TITLE */}
+          <ThemedText variant="display" weight="bold" style={styles.title}>
+            Livion
+          </ThemedText>
 
-      <Animated.View style={[styles.blobBlue, blob1Style]} />
-      <Animated.View style={[styles.blobTeal, blob2Style]} />
+          <ThemedText variant="body" style={styles.subtitle}>
+            Your health story. Yours to share.
+          </ThemedText>
 
-      <SafeAreaView style={styles.safeAreaContent}>
-        <ScrollView contentContainerStyle={styles.container}>
-          <View style={styles.card}>
+          {/* PATIENT CARD */}
+          <View style={styles.roleCard}>
+            <Ionicons name="person-circle-outline" size={40} color="white" />
 
-            <ThemedText variant="display" weight="bold" style={styles.title}>
-              Livion
-            </ThemedText>
-
-            <ThemedText variant="body" style={[styles.subtitle, { color: '#0d948866' }]}>
-              Powered by Minai
-            </ThemedText>
-
-            <ThemedText variant="heading" style={[styles.sectionLabel, { color: '#3949AB' }]}>
-              Choose your role
-            </ThemedText>
-
-            <View style={styles.rolesContainer}>
-              {roles.map(role => (
-                <View key={role.key} style={styles.roleWrapper}>
-                  
-                  {/* BUTTON INTER */}
-                  <Button
-                    variant="primary"
-                    fullWidth
-                    onPress={() => toggleRole(role.key)}
-                  >
-                    {role.label}
-                  </Button>
-
-                  {expandedRole === role.key && (
-                    <View style={styles.subButtonsContainer}>
-                      {role.twoOptions ? (
-                        <>
-                          <Button
-                            variant="secondary"
-                            style={styles.subButton}
-                            onPress={() =>
-                              router.push(`/${role.key}/onboarding/welcome` as Href)
-                            }
-                          >
-                            Onboarding
-                          </Button>
-
-                          <Button
-                            variant="secondary"
-                            style={styles.subButton}
-                            onPress={() =>
-                              router.push(`/${role.key}/login` as Href)
-                            }
-                          >
-                            Login
-                          </Button>
-                        </>
-                      ) : (
-                        <Button
-                          variant="secondary"
-                          style={styles.subButton}
-                          onPress={() =>
-                            router.push(`/${role.key}/login` as Href)
-                          }
-                        >
-                          Login
-                        </Button>
-                      )}
-                    </View>
-                  )}
-                </View>
-              ))}
+            <View style={styles.cardHeader}>
+              <ThemedText variant="heading" weight="semibold" style={styles.cardTitle}>
+                I'm a Patient
+              </ThemedText>
+              <ThemedText variant="body" style={styles.cardDesc}>
+                Track health, connect with care team
+              </ThemedText>
             </View>
 
+            <View style={styles.cardButtons}>
+              <Button
+                variant="primary"
+                fullWidth
+                onPress={() => router.push("/patient/onboarding/welcome" as Href)}
+              >
+                Get Started
+              </Button>
+
+              <Button
+                variant="secondary"
+                fullWidth
+                onPress={() => router.push("/patient/login" as Href)}
+              >
+                Sign In
+              </Button>
+            </View>
           </View>
-        </ScrollView>
+
+          {/* PROVIDER CARD */}
+          <View style={styles.roleCard}>
+            <Ionicons name="medkit-outline" size={40} color="white" />
+
+            <View style={styles.cardHeader}>
+              <ThemedText variant="heading" weight="semibold" style={styles.cardTitle}>
+                I'm a Healthcare Provider
+              </ThemedText>
+
+              <ThemedText variant="body" style={styles.cardDesc}>
+                Manage patients, care plans & insights
+              </ThemedText>
+            </View>
+
+            <View style={styles.cardButtons}>
+              <Button
+                variant="primary"
+                fullWidth
+                onPress={() => router.push("/clinician/onboarding/welcome" as Href)}
+              >
+                Get Started
+              </Button>
+
+              <Button
+                variant="secondary"
+                fullWidth
+                onPress={() => router.push("/clinician/login" as Href)}
+              >
+                Sign In
+              </Button>
+            </View>
+          </View>
+
+          {/* FOOTER */}
+          <View style={styles.footer}>
+            <ThemedText variant="body" style={styles.footerLabel}>
+              OTHER ROLES
+            </ThemedText>
+
+            <View style={styles.footerLinks}>
+              <Pressable onPress={() => router.push("/coordinator/login" as Href)}>
+                <ThemedText variant="body" style={styles.footerLink}>
+                  Care Coordinator
+                </ThemedText>
+              </Pressable>
+
+              <ThemedText variant="body" style={styles.footerDot}>•</ThemedText>
+
+              <Pressable onPress={() => router.push("/admin/login" as Href)}>
+                <ThemedText variant="body" style={styles.footerLink}>
+                  Administrator
+                </ThemedText>
+              </Pressable>
+            </View>
+
+            <ThemedText variant="caption" style={styles.poweredBy}>
+              Powered by Minai™ AI
+            </ThemedText>
+          </View>
+        </View>
       </SafeAreaView>
     </View>
   );
@@ -184,74 +123,84 @@ export default function LandingPage() {
 const styles = StyleSheet.create({
   root: {
     flex: 1,
-    backgroundColor: '#041025',
-    paddingTop: Platform.OS === 'android' ? StatusBar.currentHeight || 24 : 0,
+    backgroundColor: '#f3f3f3',
   },
-  safeAreaContent: { flex: 1 },
+
   container: {
-    flexGrow: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    padding: Spacing.xl,
-  },
-  card: {
-    padding: Spacing.xl,
-    borderRadius: BorderRadius.xl,
-    backgroundColor: Colors.background.cardGlass,
-    borderColor: Colors.border.medium,
-    borderWidth: 3,
-    width: '100%',
-    maxWidth: 400,
-    alignItems: 'center',
-  },
-  title: {
-    marginBottom: Spacing.sm,
-    color: Colors.primary.teal,
-  },
-  subtitle: {
-    marginBottom: Spacing.lg,
-    fontSize: 16,
-  },
-  sectionLabel: {
-    marginBottom: Spacing.lg,
-    color: '#5C6BC0',
-    fontSize: 20,
-    fontWeight: '700',
-  },
-  rolesContainer: {
-    width: '100%',
-    maxWidth: 340,
+    flex: 1,
+    padding: Spacing.lg,
+    paddingBottom: 290,
+    paddingTop: 290,
+    justifyContent: "center",
+    alignItems: "center",
     gap: Spacing.lg,
   },
-  roleWrapper: { gap: Spacing.sm },
-  subButtonsContainer: {
-    marginTop: Spacing.sm,
+
+  title: {
+    color: Colors.primary.teal,
+    fontSize: 38,
+  },
+
+  subtitle: {
+    fontSize: 14,
+    color: "#d1e0e080",
+    marginBottom: Spacing.sm,
+  },
+
+  roleCard: {
+    width: "100%",
+    maxWidth: 380,
+    borderRadius: BorderRadius.lg,
+    backgroundColor: Colors.background.cardGlass,
+    padding: Spacing.lg,
+    borderWidth: 2,
+    borderColor: "#ffffff22",
     gap: Spacing.sm,
-    width: '100%',
-    alignItems: 'center',
   },
-  subButton: {
-    minWidth: '70%',
-    backgroundColor: '#3949AB',
+
+  cardHeader: { marginTop: Spacing.xs },
+
+  cardTitle: {
+    color: "white",
+    fontSize: 20,
   },
-  blobBlue: {
-    position: 'absolute',
-    width: 450,
-    height: 450,
-    borderRadius: 999,
-    backgroundColor: '#075985',
-    opacity: 0.12,
-    top: -150,
-    right: -120,
+
+  cardDesc: {
+    color: "#b3c3d4aa",
+    fontSize: 13,
   },
-  blobTeal: {
-    position: 'absolute',
-    width: 500,
-    height: 500,
-    borderRadius: 999,
-    backgroundColor: '#0ea5a4',
-    opacity: 0.10,
-    bottom: -130,
-    left: -170,
+
+  cardButtons: {
+    marginTop: Spacing.sm,
+    gap: Spacing.xs,
+  },
+
+  footer: {
+    alignItems: "center",
+    marginTop: Spacing.md,
+  },
+
+  footerLabel: {
+    color: "#b3c3d488",
+  },
+
+  footerLinks: {
+    flexDirection: "row",
+    gap: 8,
+    marginTop: 4,
+  },
+
+  footerLink: {
+    color: Colors.primary.mint,
+    textDecorationLine: "underline",
+  },
+
+  footerDot: {
+    color: "#7a8da0",
+  },
+
+  poweredBy: {
+    color: "#0d948866",
+    marginTop: 6,
   },
 });

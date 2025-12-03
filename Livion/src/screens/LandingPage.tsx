@@ -1,5 +1,5 @@
 import { LinearGradient } from 'expo-linear-gradient';
-import { useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import {
   Animated,
   Dimensions,
@@ -10,12 +10,13 @@ import {
   StyleSheet,
   View,
 } from 'react-native';
+
 import { useNavigation } from '@react-navigation/native';
+import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 
 import { Button } from '../../components/atoms/Button';
 import { ThemedText } from '../../components/atoms/ThemedText';
 import { BorderRadius, Colors, Spacing } from '../../constants/Colors';
-import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 
 const { width: SCREEN_W, height: SCREEN_H } = Dimensions.get('window');
 
@@ -23,15 +24,15 @@ type AuthStackParamList = {
   Landing: undefined;
   RoleAuth: {
     role: string;
-    initial: "login" | "onboarding";
+    initial: 'login' | 'onboarding';
   };
 };
+
 type LandingNav = NativeStackNavigationProp<AuthStackParamList, 'Landing'>;
 
 export default function LandingPage() {
   const [expandedRole, setExpandedRole] = useState<string | null>(null);
   const navigation = useNavigation<LandingNav>();
-
 
   const anim1 = useRef(new Animated.Value(0)).current;
   const anim2 = useRef(new Animated.Value(0)).current;
@@ -58,6 +59,27 @@ export default function LandingPage() {
     loopAnimation(anim1, 0);
     loopAnimation(anim2, 2000);
   }, []);
+
+  // -------------------------------
+  // 🔥 Navigare curată și sigură
+  // -------------------------------
+  const goToRoleAuth = useCallback(
+    (role: string, initial: 'login' | 'onboarding') => {
+      navigation.navigate('RoleAuth', { role, initial });
+    },
+    [navigation]
+  );
+
+  const roles = [
+    { key: 'patient', label: 'Patient', twoOptions: true },
+    { key: 'clinician', label: 'Clinician', twoOptions: true },
+    { key: 'coordinator', label: 'Care Coordinator', twoOptions: false },
+    { key: 'admin', label: 'Admin', twoOptions: false },
+  ];
+
+  const toggleRole = (role: string) => {
+    setExpandedRole(prev => (prev === role ? null : role));
+  };
 
   const blob1Style = {
     transform: [
@@ -93,23 +115,12 @@ export default function LandingPage() {
     ],
   };
 
-  const roles = [
-    { key: 'patient', label: 'Patient', twoOptions: true },
-    { key: 'clinician', label: 'Clinician', twoOptions: true },
-    { key: 'coordinator', label: 'Care Coordinator', twoOptions: false },
-    { key: 'admin', label: 'Admin', twoOptions: false },
-  ];
-
-  const toggleRole = (role: string) => {
-    setExpandedRole(prev => (prev === role ? null : role));
-  };
-
   return (
     <View style={styles.root}>
       <StatusBar barStyle="light-content" translucent backgroundColor="transparent" />
 
       <LinearGradient
-        colors={["#07203f", "#04363a", "#06233d"]}
+        colors={['#07203f', '#04363a', '#06233d']}
         style={StyleSheet.absoluteFill}
       />
 
@@ -128,7 +139,10 @@ export default function LandingPage() {
               Powered by Minai
             </ThemedText>
 
-            <ThemedText variant="heading" style={[styles.sectionLabel, { color: '#3949AB' }]}>
+            <ThemedText
+              variant="heading"
+              style={[styles.sectionLabel, { color: '#3949AB' }]}
+            >
               Choose your role
             </ThemedText>
 
@@ -136,7 +150,6 @@ export default function LandingPage() {
               {roles.map(role => (
                 <View key={role.key} style={styles.roleWrapper}>
                   
-                  {/* BUTTON INTER */}
                   <Button
                     variant="primary"
                     fullWidth
@@ -152,25 +165,14 @@ export default function LandingPage() {
                           <Button
                             variant="secondary"
                             style={styles.subButton}
-                          //  onPress={() =>
-                          //     navigation.navigate("RoleAuth", {
-                          //       role: role.key,
-                          //       initial: "onboarding"
-                          //     })
-                          //   }
-
+                            onPress={() => goToRoleAuth(role.key, 'onboarding')}
                           >
                             Onboarding
                           </Button>
 
                           <Button
                             variant="secondary"
-                            onPress={() =>
-                                navigation.navigate('RoleAuth', {
-                                  role: role.key,
-                                  initial: 'login'
-                                })
-                            }
+                            onPress={() => goToRoleAuth(role.key, 'login')}
                           >
                             Login
                           </Button>
@@ -179,12 +181,7 @@ export default function LandingPage() {
                         <Button
                           variant="secondary"
                           style={styles.subButton}
-                          onPress={() =>
-                              navigation.navigate('RoleAuth', {
-                                role: role.key,
-                                initial: 'login'
-                              })
-                            }
+                          onPress={() => goToRoleAuth(role.key, 'login')}
                         >
                           Login
                         </Button>
@@ -194,7 +191,6 @@ export default function LandingPage() {
                 </View>
               ))}
             </View>
-
           </View>
         </ScrollView>
       </SafeAreaView>
@@ -202,6 +198,10 @@ export default function LandingPage() {
   );
 }
 
+
+// -------------------------------
+// 🔹 Aceleași stiluri (neschimbate)
+// -------------------------------
 const styles = StyleSheet.create({
   root: {
     flex: 1,
@@ -271,7 +271,7 @@ const styles = StyleSheet.create({
     height: 500,
     borderRadius: 999,
     backgroundColor: '#0ea5a4',
-    opacity: 0.10,
+    opacity: 0.1,
     bottom: -130,
     left: -170,
   },

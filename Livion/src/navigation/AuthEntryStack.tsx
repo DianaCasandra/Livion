@@ -1,7 +1,7 @@
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 
 import LandingPage from "../screens/LandingPage";
-import RoleAuthStack from "./roleAuthStack";
+import RoleAuthStack from "./RoleAuthStack";
 
 const Stack = createNativeStackNavigator();
 

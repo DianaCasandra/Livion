@@ -94,7 +94,7 @@ export default function PatientRegisterScreen() {
               Already have an account?
             </ThemedText>
 
-            <TouchableOpacity onPress={() => router.push('/patient/login')} style={{ marginTop: Spacing.xs }}>
+            <TouchableOpacity onPress={() => router.push('/patient/login')} style={{ marginTop: Spacing.xs , marginBottom: Spacing.lg *2}}>
               <ThemedText variant="caption" color="teal" weight="semibold" align="center">
                 Log in here
               </ThemedText>

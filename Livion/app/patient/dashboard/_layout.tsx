@@ -1,3 +1,4 @@
+import { MockDataProvider } from '@/components/providers';
 import { Stack } from 'expo-router';
 import React from 'react';
 import { View } from 'react-native';
@@ -5,6 +6,7 @@ import BottomNavbar from '../../../components/organisms/BottomNavbarPatient';
 
 export default function PatientLayout() {
   return (
+    <MockDataProvider>
     // Folosim o singură View pentru a conține atât paginile (Stack), cât și Navbar-ul
     <View style={{ flex: 1 }}>
       
@@ -15,5 +17,6 @@ export default function PatientLayout() {
       {/* 2. Navbar-ul, care rămâne fix deasupra Stack-ului */}
       <BottomNavbar />
     </View>
+    </MockDataProvider>
   );
 }

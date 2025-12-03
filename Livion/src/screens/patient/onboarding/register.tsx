@@ -1,26 +1,18 @@
-import { useUser } from '@/components/providers';
 import { Ionicons } from '@expo/vector-icons';
-import { useNavigation } from '@react-navigation/native';
 import { LinearGradient } from 'expo-linear-gradient';
-import {
-  SafeAreaView,
-  ScrollView,
-  StyleSheet,
-  TouchableOpacity,
-  View,
-} from 'react-native';
-import { Button } from '../../../../components/atoms/Button';
-import { InputField } from '../../../../components/atoms/InputField';
-import { ThemedText } from '../../../../components/atoms/ThemedText';
-import { BorderRadius, Colors, Spacing } from '../../../../constants/Colors';
+import { useRouter } from 'expo-router';
+import { SafeAreaView, ScrollView, StyleSheet, TouchableOpacity, View } from 'react-native';
+import { Button } from '@/components/atoms/Button';
+import { InputField } from '@/components/atoms/InputField';
+import { ThemedText } from '@/components/atoms/ThemedText';
+import { BorderRadius, Colors, Spacing } from '@/constants/Colors';
 
-export default function PatientLoginScreen() {
-  const navigation = useNavigation();
-
-  const { loginAsPatient } = useUser();
+export default function PatientRegisterScreen() {
+  const router = useRouter();
 
   return (
     <View style={styles.root}>
+      {/* Gradient background */}
       <LinearGradient
         colors={['#08131c', '#0b1e29', '#0d2533']}
         style={StyleSheet.absoluteFill}
@@ -28,6 +20,7 @@ export default function PatientLoginScreen() {
         end={[1, 1]}
       />
 
+      {/* Glow effects */}
       <View style={styles.glowTopRight} />
       <View style={styles.glowBottomLeft} />
 
@@ -35,43 +28,78 @@ export default function PatientLoginScreen() {
         <ScrollView contentContainerStyle={styles.container}>
 
           {/* Back Icon Button */}
-          <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
+          <TouchableOpacity onPress={() => router.back()} style={styles.backButton}>
             <Ionicons name="chevron-back" size={28} color="#fff" />
           </TouchableOpacity>
 
+          {/* Main Card */}
           <View style={styles.card}>
             <ThemedText variant="display" weight="bold" align="center" style={styles.title}>
-              Patient Login
+              Patient Register
             </ThemedText>
 
             <ThemedText variant="body" color="secondary" align="center" style={styles.subtitle}>
-              Welcome back to Livion. Your data remains safe and encrypted.
+              Create your Livion account. Your data is encrypted and secure.
             </ThemedText>
 
-            <InputField label="Email / Phone" placeholder="" keyboardType="email-address" style={styles.input} />
-            <InputField label="Password" placeholder="" secureTextEntry style={styles.input} />
+            <InputField
+              label="Email / Phone"
+              placeholder=""
+              keyboardType="email-address"
+              style={styles.input}
+            />
 
+            <InputField
+              label="Set a Password"
+              placeholder=""
+              secureTextEntry
+              style={styles.input}
+            />
+
+            <InputField
+              label="Confirm Password"
+              placeholder=""
+              secureTextEntry
+              style={styles.input}
+            />
+
+            <InputField
+              label="Bank ID (optional)"
+              placeholder=""
+              style={styles.input}
+            />
+
+            {/* Continue Button */}
             <Button
               variant="primary"
               fullWidth
-              style={styles.loginButton}
+              style={styles.nextButton}
               textStyle={{ textAlign: "center" }}
-               onPress={() => {
-                loginAsPatient();           // 1. Set user as authenticated
-                navigation.reset({
-                index: 0,
-                routes: [{ name: "App" as never }]
-              });  // 2. Switch to the main app stack
-              }}
+              onPress={() => router.replace('/patient/onboarding/consent')}
             >
-              <ThemedText variant="label" weight="semibold" style={{ color: "#0f172a", textAlign: "center" }}>
-                Sign In
-              </ThemedText> </Button>
+                            <ThemedText variant="label" weight="semibold" style={{ color: "#0f172a", textAlign: "center" }}>
+                Continue
+              </ThemedText>
+            </Button>
           </View>
 
+          {/* Disclaimer */}
           <ThemedText variant="caption" color="tertiary" align="center" style={styles.footer}>
-            Thank you for choosing Livion.
+            By continuing, you agree to Livion’s data use policy.
           </ThemedText>
+
+          {/* Already have account */}
+          <View style={{ alignItems: "center", marginTop: Spacing.sm }}>
+            <ThemedText variant="caption" color="tertiary" align="center">
+              Already have an account?
+            </ThemedText>
+
+            <TouchableOpacity onPress={() => router.push('/patient/login')} style={{ marginTop: Spacing.xs , marginBottom: Spacing.lg *2}}>
+              <ThemedText variant="caption" color="teal" weight="semibold" align="center">
+                Log in here
+              </ThemedText>
+            </TouchableOpacity>
+          </View>
 
         </ScrollView>
       </SafeAreaView>
@@ -79,7 +107,6 @@ export default function PatientLoginScreen() {
   );
 }
 
-/* Styles */
 const styles = StyleSheet.create({
   root: {
     flex: 1,
@@ -127,13 +154,13 @@ const styles = StyleSheet.create({
     width: "100%",
   },
 
-  loginButton: {
+  nextButton: {
     marginTop: Spacing.xl,
   },
 
   footer: {
-    marginTop: 20,
-    marginBottom: 20,
+    marginBottom: 25,
+    marginTop: 15,
   },
 
   glowTopRight: {
