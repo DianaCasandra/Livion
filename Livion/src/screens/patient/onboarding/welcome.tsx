@@ -1,9 +1,8 @@
 import { Button } from '@/components/atoms/Button';
 import { ThemedText } from '@/components/atoms/ThemedText';
 import { Spacing } from '@/constants/Colors';
-import { Ionicons } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
-import { useRouter } from 'expo-router';
+import { useNavigation } from '@react-navigation/native';
 import { useEffect, useRef } from 'react';
 import {
   Animated,
@@ -20,7 +19,7 @@ import {
 const { width: SCREEN_W, height: SCREEN_H } = Dimensions.get('window');
 
 export default function WelcomeScreen() {
-  const router = useRouter();
+  const navigation = useNavigation();
   const anim1 = useRef(new Animated.Value(0)).current;
   const anim2 = useRef(new Animated.Value(0)).current;
 
@@ -66,12 +65,8 @@ export default function WelcomeScreen() {
       <SafeAreaView style={styles.safeAreaContent}>
         <ScrollView contentContainerStyle={styles.container}>
 
-          {/* Top Back Button */}
-          <View style={styles.topSection}>
-            <TouchableOpacity onPress={() => router.back()} style={styles.backButton}>
-              <Ionicons name="chevron-back" size={28} color="#ff6e1e" />
-            </TouchableOpacity>
-          </View>
+          {/* Top Section */}
+          <View style={styles.topSection} />
 
           {/* Middle Section */}
           <View style={styles.middleSection}>
@@ -84,7 +79,7 @@ export default function WelcomeScreen() {
             </ThemedText>
 
             <TouchableOpacity
-              onPress={() => router.replace('/')}
+              onPress={() => navigation.navigate('UserPromise' as never)}
               style={styles.linkButton}
             >
               <ThemedText
@@ -103,7 +98,7 @@ export default function WelcomeScreen() {
               variant="primary"
               size="lg"
               fullWidth
-              onPress={() => router.push('/patient/onboarding/register')}
+              onPress={() => navigation.navigate('Register' as never)}
               style={{ ...styles.button, backgroundColor: '#ff6d1e9a' }} // accent principal
             >
               Get Started

@@ -1,35 +1,68 @@
 import { Ionicons } from '@expo/vector-icons';
-import { LinearGradient } from 'expo-linear-gradient';
-import { useRouter } from 'expo-router';
-import { SafeAreaView, ScrollView, StyleSheet, TouchableOpacity, View } from 'react-native';
+import { useNavigation } from '@react-navigation/native';
+import { useRef, useEffect } from 'react';
+import { Animated, Platform, SafeAreaView, ScrollView, StatusBar, StyleSheet, TouchableOpacity, View } from 'react-native';
 import { Button } from '@/components/atoms/Button';
 import { InputField } from '@/components/atoms/InputField';
 import { ThemedText } from '@/components/atoms/ThemedText';
-import { BorderRadius, Colors, Spacing } from '@/constants/Colors';
+import { BorderRadius, Spacing } from '@/constants/Colors';
+
+const COLORS = {
+  background: '#f7f7f7',
+  teal: '#03d0c5',
+  amber: '#ff6e1e',
+  textPrimary: '#1a1a2e',
+  textSecondary: '#64748b',
+};
 
 export default function PatientRegisterScreen() {
-  const router = useRouter();
+  const navigation = useNavigation();
+
+  // Animated blobs
+  const anim1 = useRef(new Animated.Value(0)).current;
+  const anim2 = useRef(new Animated.Value(0)).current;
+
+  useEffect(() => {
+    const loopAnimation = (anim: Animated.Value, delay: number) => {
+      Animated.loop(
+        Animated.sequence([
+          Animated.timing(anim, { toValue: 1, duration: 8000, delay, useNativeDriver: true }),
+          Animated.timing(anim, { toValue: 0, duration: 8000, useNativeDriver: true }),
+        ])
+      ).start();
+    };
+    loopAnimation(anim1, 0);
+    loopAnimation(anim2, 1500);
+  }, []);
+
+  const blob1Style = {
+    transform: [
+      { translateX: anim1.interpolate({ inputRange: [0, 1], outputRange: [-40, 40] }) },
+      { translateY: anim1.interpolate({ inputRange: [0, 1], outputRange: [-20, 20] }) },
+    ],
+  };
+
+  const blob2Style = {
+    transform: [
+      { translateX: anim2.interpolate({ inputRange: [0, 1], outputRange: [30, -30] }) },
+      { translateY: anim2.interpolate({ inputRange: [0, 1], outputRange: [40, -40] }) },
+    ],
+  };
 
   return (
     <View style={styles.root}>
-      {/* Gradient background */}
-      <LinearGradient
-        colors={['#08131c', '#0b1e29', '#0d2533']}
-        style={StyleSheet.absoluteFill}
-        start={[0, 0]}
-        end={[1, 1]}
-      />
+      <StatusBar barStyle="dark-content" backgroundColor={COLORS.background} />
 
-      {/* Glow effects */}
-      <View style={styles.glowTopRight} />
-      <View style={styles.glowBottomLeft} />
+      {/* Animated blobs */}
+      <Animated.View style={[styles.blobTeal, blob1Style]} />
+      <Animated.View style={[styles.blobAmber, blob2Style]} />
 
       <SafeAreaView style={styles.safeArea}>
         <ScrollView contentContainerStyle={styles.container}>
 
           {/* Back Icon Button */}
-          <TouchableOpacity onPress={() => router.back()} style={styles.backButton}>
-            <Ionicons name="chevron-back" size={28} color="#fff" />
+          <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
+            <Ionicons name="chevron-back" size={28} color={COLORS.textPrimary} />
           </TouchableOpacity>
 
           {/* Main Card */}
@@ -38,7 +71,7 @@ export default function PatientRegisterScreen() {
               Patient Register
             </ThemedText>
 
-            <ThemedText variant="body" color="secondary" align="center" style={styles.subtitle}>
+            <ThemedText variant="body" align="center" style={styles.subtitle}>
               Create your Livion account. Your data is encrypted and secure.
             </ThemedText>
 
@@ -75,31 +108,19 @@ export default function PatientRegisterScreen() {
               fullWidth
               style={styles.nextButton}
               textStyle={{ textAlign: "center" }}
-              onPress={() => router.replace('/patient/onboarding/consent')}
+              onPress={() => navigation.navigate('Consent' as never)}
             >
-                            <ThemedText variant="label" weight="semibold" style={{ color: "#0f172a", textAlign: "center" }}>
+              <ThemedText variant="label" weight="semibold" style={{ color: "#fff", textAlign: "center" }}>
                 Continue
               </ThemedText>
             </Button>
           </View>
 
           {/* Disclaimer */}
-          <ThemedText variant="caption" color="tertiary" align="center" style={styles.footer}>
-            By continuing, you agree to Livion’s data use policy.
+          <ThemedText variant="caption" align="center" style={styles.footer}>
+            By continuing, you agree to Livion's data use policy.
           </ThemedText>
 
-          {/* Already have account */}
-          <View style={{ alignItems: "center", marginTop: Spacing.sm }}>
-            <ThemedText variant="caption" color="tertiary" align="center">
-              Already have an account?
-            </ThemedText>
-
-            <TouchableOpacity onPress={() => router.push('/patient/login')} style={{ marginTop: Spacing.xs , marginBottom: Spacing.lg *2}}>
-              <ThemedText variant="caption" color="teal" weight="semibold" align="center">
-                Log in here
-              </ThemedText>
-            </TouchableOpacity>
-          </View>
 
         </ScrollView>
       </SafeAreaView>
@@ -110,7 +131,8 @@ export default function PatientRegisterScreen() {
 const styles = StyleSheet.create({
   root: {
     flex: 1,
-    backgroundColor: Colors.background.primary,
+    backgroundColor: COLORS.background,
+    paddingTop: Platform.OS === 'android' ? StatusBar.currentHeight || 24 : 0,
   },
   safeArea: { flex: 1 },
 
@@ -125,28 +147,39 @@ const styles = StyleSheet.create({
     alignSelf: 'flex-start',
     marginBottom: Spacing.lg,
     marginTop: Spacing.md,
-    padding: 5,
-    borderRadius: 10,
-    backgroundColor: 'rgba(57, 73, 171, 0.22)',
+    padding: 8,
+    borderRadius: 14,
+    backgroundColor: 'rgba(255, 255, 255, 0.7)',
+    borderWidth: 1,
+    borderColor: 'rgba(255, 255, 255, 0.9)',
+    ...Platform.select({
+      ios: { shadowColor: '#000', shadowOpacity: 0.08, shadowOffset: { width: 0, height: 4 }, shadowRadius: 12 },
+      android: { elevation: 3 },
+    }),
   },
 
   card: {
     padding: Spacing.xl,
-    borderRadius: BorderRadius.xl,
-    backgroundColor: 'rgba(15,23,42,0.6)',
-    borderColor: 'rgba(255,255,255,0.08)',
+    borderRadius: 28,
+    backgroundColor: 'rgba(255, 255, 255, 0.72)',
+    borderColor: 'rgba(255, 255, 255, 0.8)',
     borderWidth: 1,
     width: '100%',
     alignItems: 'center',
+    ...Platform.select({
+      ios: { shadowColor: '#000', shadowOpacity: 0.1, shadowOffset: { width: 0, height: 10 }, shadowRadius: 30 },
+      android: { elevation: 6 },
+    }),
   },
 
   title: {
     marginBottom: Spacing.sm,
-    color: '#fff',
+    color: COLORS.textPrimary,
   },
 
   subtitle: {
     marginBottom: Spacing.xl,
+    color: COLORS.textSecondary,
   },
 
   input: {
@@ -156,32 +189,34 @@ const styles = StyleSheet.create({
 
   nextButton: {
     marginTop: Spacing.xl,
+    backgroundColor: COLORS.teal,
   },
 
   footer: {
     marginBottom: 25,
     marginTop: 15,
+    color: COLORS.textSecondary,
   },
 
-  glowTopRight: {
+  blobTeal: {
     position: 'absolute',
     width: 400,
     height: 400,
-    right: -150,
-    top: -100,
+    right: -120,
+    top: -80,
     borderRadius: 999,
-    backgroundColor: Colors.primary.indigo,
+    backgroundColor: COLORS.teal,
     opacity: 0.12,
   },
 
-  glowBottomLeft: {
+  blobAmber: {
     position: 'absolute',
-    width: 480,
-    height: 480,
-    left: -200,
-    bottom: -160,
+    width: 450,
+    height: 450,
+    left: -180,
+    bottom: -100,
     borderRadius: 999,
-    backgroundColor: '#3949AB',
-    opacity: 0.1,
+    backgroundColor: COLORS.amber,
+    opacity: 0.10,
   },
 });

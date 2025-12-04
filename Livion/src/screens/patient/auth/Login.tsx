@@ -60,7 +60,7 @@ export default function PatientLoginScreen() {
                 loginAsPatient();
                 navigation.reset({
                   index: 0,
-                  routes: [{ name: "App" as never }],
+                  routes: [{ name: "Home" as never }],
                 });
               }}
             >

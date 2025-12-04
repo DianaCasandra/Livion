@@ -1,10 +1,12 @@
 import { Ionicons } from '@expo/vector-icons';
-import { LinearGradient } from 'expo-linear-gradient';
-import { useRouter } from 'expo-router';
-import { useState } from 'react';
+import { useNavigation } from '@react-navigation/native';
+import { useState, useRef, useEffect } from 'react';
 import {
+  Animated,
+  Platform,
   SafeAreaView,
   ScrollView,
+  StatusBar,
   StyleSheet,
   Switch,
   TouchableOpacity,
@@ -12,10 +14,19 @@ import {
 } from 'react-native';
 import { Button } from '@/components/atoms/Button';
 import { ThemedText } from '@/components/atoms/ThemedText';
-import { BorderRadius, Colors, Spacing } from '@/constants/Colors';
+import { BorderRadius, Spacing } from '@/constants/Colors';
+
+const COLORS = {
+  background: '#f7f7f7',
+  teal: '#03d0c5',
+  tealLight: '#e6faf9',
+  amber: '#ff6e1e',
+  textPrimary: '#1a1a2e',
+  textSecondary: '#64748b',
+};
 
 export default function ConsentScreen() {
-  const router = useRouter();
+  const navigation = useNavigation();
 
   const [dataSources, setDataSources] = useState(false);
   const [wearables, setWearables] = useState(false);
@@ -28,24 +39,51 @@ export default function ConsentScreen() {
   const [research, setResearch] = useState(false);
   const [purposeBinding, setPurposeBinding] = useState(false);
 
+  // Animated blobs
+  const anim1 = useRef(new Animated.Value(0)).current;
+  const anim2 = useRef(new Animated.Value(0)).current;
+
+  useEffect(() => {
+    const loopAnimation = (anim: Animated.Value, delay: number) => {
+      Animated.loop(
+        Animated.sequence([
+          Animated.timing(anim, { toValue: 1, duration: 8000, delay, useNativeDriver: true }),
+          Animated.timing(anim, { toValue: 0, duration: 8000, useNativeDriver: true }),
+        ])
+      ).start();
+    };
+    loopAnimation(anim1, 0);
+    loopAnimation(anim2, 1500);
+  }, []);
+
+  const blob1Style = {
+    transform: [
+      { translateX: anim1.interpolate({ inputRange: [0, 1], outputRange: [-40, 40] }) },
+      { translateY: anim1.interpolate({ inputRange: [0, 1], outputRange: [-20, 20] }) },
+    ],
+  };
+
+  const blob2Style = {
+    transform: [
+      { translateX: anim2.interpolate({ inputRange: [0, 1], outputRange: [30, -30] }) },
+      { translateY: anim2.interpolate({ inputRange: [0, 1], outputRange: [40, -40] }) },
+    ],
+  };
+
   return (
     <View style={styles.root}>
-      <LinearGradient
-        colors={['#08131c', '#0b1e29', '#0d2533']}
-        style={StyleSheet.absoluteFill}
-        start={[0, 0]}
-        end={[1, 1]}
-      />
+      <StatusBar barStyle="dark-content" backgroundColor={COLORS.background} />
 
-      <View style={styles.glowTopRight} />
-      <View style={styles.glowBottomLeft} />
+      {/* Animated blobs */}
+      <Animated.View style={[styles.blobTeal, blob1Style]} />
+      <Animated.View style={[styles.blobAmber, blob2Style]} />
 
       <SafeAreaView style={styles.safeArea}>
         <ScrollView contentContainerStyle={styles.container}>
 
           {/* Back Button */}
-          <TouchableOpacity onPress={() => router.back()} style={styles.backButton}>
-            <Ionicons name="chevron-back" size={28} color="#fff" />
+          <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
+            <Ionicons name="chevron-back" size={28} color={COLORS.textPrimary} />
           </TouchableOpacity>
 
           {/* Main Card */}
@@ -54,7 +92,7 @@ export default function ConsentScreen() {
               Consent & Preferences
             </ThemedText>
 
-            <ThemedText variant="body" color="secondary" style={styles.body} align="center">
+            <ThemedText variant="body" style={styles.body} align="center">
               Adjust what you want Livion to use or access. You can modify these anytime.
             </ThemedText>
 
@@ -91,7 +129,6 @@ export default function ConsentScreen() {
             <ThemedText
               variant="heading"
               weight="semibold"
-              color="teal"
               align="center"
               style={styles.subtitle}
             >
@@ -116,17 +153,17 @@ export default function ConsentScreen() {
               fullWidth
               style={styles.nextButton}
               textStyle={{ textAlign: "center" }}
-              onPress={() => router.push('/patient/onboarding/dataconnections')}
+              onPress={() => navigation.navigate('DataConnections' as never)}
             >
-                            <ThemedText variant="label" weight="semibold" style={{ color: "#0f172a", textAlign: "center" }}>
+              <ThemedText variant="label" weight="semibold" style={{ color: "#fff", textAlign: "center" }}>
                 Continue
-              </ThemedText> </Button>
+              </ThemedText>
+            </Button>
           </View>
 
           {/* Disclaimer */}
           <ThemedText
             variant="caption"
-            color="tertiary"
             align="center"
             style={styles.disclaimer}
           >
@@ -164,7 +201,7 @@ function ToggleRow({
         style={[
           styles.toggleLabel,
           small && styles.smallToggleLabel,
-          { color: '#ffffff', textAlign: centerText ? 'center' : 'left' }
+          { color: COLORS.textPrimary, textAlign: centerText ? 'center' : 'left' }
         ]}
       >
         {label}
@@ -173,8 +210,8 @@ function ToggleRow({
       <Switch
         value={value}
         onValueChange={onValueChange}
-        thumbColor={value ? '#0d9488' : '#e2e8f0'}
-        trackColor={{ true: '#99f6e4', false: '#cbd5e1' }}
+        thumbColor={value ? COLORS.teal : '#e2e8f0'}
+        trackColor={{ true: COLORS.tealLight, false: '#cbd5e1' }}
       />
     </View>
   );
@@ -188,7 +225,8 @@ function ToggleRow({
 const styles = StyleSheet.create({
   root: {
     flex: 1,
-    backgroundColor: Colors.background.primary,
+    backgroundColor: COLORS.background,
+    paddingTop: Platform.OS === 'android' ? StatusBar.currentHeight || 24 : 0,
   },
   safeArea: { flex: 1 },
 
@@ -203,29 +241,40 @@ const styles = StyleSheet.create({
     alignSelf: 'flex-start',
     marginBottom: Spacing.lg,
     marginTop: Spacing.md,
-     padding: 5,
-    borderRadius: 10,
-    backgroundColor: 'rgba(57, 73, 171, 0.22)',
+    padding: 8,
+    borderRadius: 14,
+    backgroundColor: 'rgba(255, 255, 255, 0.7)',
+    borderWidth: 1,
+    borderColor: 'rgba(255, 255, 255, 0.9)',
+    ...Platform.select({
+      ios: { shadowColor: '#000', shadowOpacity: 0.08, shadowOffset: { width: 0, height: 4 }, shadowRadius: 12 },
+      android: { elevation: 3 },
+    }),
   },
 
   card: {
     padding: Spacing.xl,
-    borderRadius: BorderRadius.xl,
-    backgroundColor: 'rgba(15,23,42,0.6)',
-    borderColor: 'rgba(255,255,255,0.08)',
+    borderRadius: 28,
+    backgroundColor: 'rgba(255, 255, 255, 0.72)',
+    borderColor: 'rgba(255, 255, 255, 0.8)',
     borderWidth: 1,
     width: '100%',
     alignItems: 'center',
+    ...Platform.select({
+      ios: { shadowColor: '#000', shadowOpacity: 0.1, shadowOffset: { width: 0, height: 10 }, shadowRadius: 30 },
+      android: { elevation: 6 },
+    }),
   },
 
   title: {
     marginBottom: Spacing.md,
-    color: '#fff',
+    color: COLORS.textPrimary,
     textAlign: 'center',
   },
   body: {
     marginBottom: Spacing.xl,
     textAlign: 'center',
+    color: COLORS.textSecondary,
   },
 
   section: {
@@ -236,7 +285,7 @@ const styles = StyleSheet.create({
 
   subtitle: {
     marginBottom: Spacing.md,
-    color: Colors.primary.teal,
+    color: COLORS.teal,
     textAlign: 'center',
   },
 
@@ -245,6 +294,11 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     alignItems: 'center',
     paddingVertical: Spacing.sm,
+    paddingHorizontal: Spacing.md,
+    backgroundColor: 'rgba(255, 255, 255, 0.5)',
+    borderRadius: 14,
+    borderWidth: 1,
+    borderColor: 'rgba(255, 255, 255, 0.7)',
   },
 
   smallToggleRow: {
@@ -264,41 +318,43 @@ const styles = StyleSheet.create({
   subToggleGroup: {
     marginTop: Spacing.xs,
     gap: Spacing.xs,
-    backgroundColor: 'rgba(255,255,255,0.03)',
+    backgroundColor: 'rgba(255, 255, 255, 0.3)',
     borderRadius: BorderRadius.md,
     paddingVertical: Spacing.sm,
-    paddingRight: Spacing.sm,
+    paddingHorizontal: Spacing.sm,
   },
 
   nextButton: {
     marginTop: Spacing.lg,
+    backgroundColor: COLORS.teal,
   },
 
   disclaimer: {
     marginBottom: 25,
     marginTop: 15,
     textAlign: 'center',
+    color: COLORS.textSecondary,
   },
 
-  glowTopRight: {
+  blobTeal: {
     position: 'absolute',
     width: 400,
     height: 400,
-    right: -150,
-    top: -100,
+    right: -120,
+    top: -80,
     borderRadius: 999,
-    backgroundColor: Colors.primary.indigo,
+    backgroundColor: COLORS.teal,
     opacity: 0.12,
   },
 
-  glowBottomLeft: {
+  blobAmber: {
     position: 'absolute',
-    width: 480,
-    height: 480,
-    left: -200,
-    bottom: -160,
+    width: 450,
+    height: 450,
+    left: -180,
+    bottom: -100,
     borderRadius: 999,
-    backgroundColor: '#3949AB',
-    opacity: 0.1,
+    backgroundColor: COLORS.amber,
+    opacity: 0.10,
   },
 });

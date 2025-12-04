@@ -37,7 +37,7 @@ function GlowyContainer({ children, style }: any) {
 const peerCirclePosts = [
   {
     id: '1',
-    author: 'Anna • pseudonymous',
+    author: 'Anna pseudonymous',
     type: 'achievement',
     text: 'Today I finally reached my 10,000 step goal three days in a row 🎉',
     meta: 'Activity · 2h ago',
@@ -46,7 +46,7 @@ const peerCirclePosts = [
   },
   {
     id: '2',
-    author: 'Claudiu • pseudonymous',
+    author: 'Claudiu pseudonymous',
     type: 'resource',
     text: 'Just shared a new study about cholesterol and evening snacking. It helped me understand my numbers better.',
     meta: 'Education · 5h ago',
