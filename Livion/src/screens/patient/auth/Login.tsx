@@ -1,7 +1,6 @@
 import { useUser } from '@/components/providers';
 import { Ionicons } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
-import { LinearGradient } from 'expo-linear-gradient';
 import {
   SafeAreaView,
   ScrollView,
@@ -12,149 +11,136 @@ import {
 import { Button } from '../../../../components/atoms/Button';
 import { InputField } from '../../../../components/atoms/InputField';
 import { ThemedText } from '../../../../components/atoms/ThemedText';
-import { BorderRadius, Colors, Spacing } from '../../../../constants/Colors';
 
 export default function PatientLoginScreen() {
   const navigation = useNavigation();
-
   const { loginAsPatient } = useUser();
 
   return (
     <View style={styles.root}>
-      <LinearGradient
-        colors={['#08131c', '#0b1e29', '#0d2533']}
-        style={StyleSheet.absoluteFill}
-        start={[0, 0]}
-        end={[1, 1]}
-      />
-
-      <View style={styles.glowTopRight} />
-      <View style={styles.glowBottomLeft} />
-
-      <SafeAreaView style={styles.safeArea}>
+      <SafeAreaView style={{ flex: 1 }}>
         <ScrollView contentContainerStyle={styles.container}>
 
-          {/* Back Icon Button */}
-          <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
-            <Ionicons name="chevron-back" size={28} color="#fff" />
+          {/* Back Button */}
+          <TouchableOpacity
+            onPress={() => navigation.goBack()}
+            style={styles.backButton}
+          >
+            <Ionicons name="chevron-back" size={26} color="#333" />
           </TouchableOpacity>
 
+          {/* White Card */}
           <View style={styles.card}>
-            <ThemedText variant="display" weight="bold" align="center" style={styles.title}>
-              Patient Login
+            <ThemedText variant="display" weight="bold" style={styles.title}>
+              Autentificare pacient
             </ThemedText>
 
-            <ThemedText variant="body" color="secondary" align="center" style={styles.subtitle}>
-              Welcome back to Livion. Your data remains safe and encrypted.
+            <ThemedText variant="body" color="secondary" style={styles.subtitle}>
+              Conectează-te pentru a accesa datele tale medicale.
             </ThemedText>
 
-            <InputField label="Email / Phone" placeholder="" keyboardType="email-address" style={styles.input} />
-            <InputField label="Password" placeholder="" secureTextEntry style={styles.input} />
+            <InputField
+              label="Email / Telefon"
+              placeholder=""
+              keyboardType="email-address"
+              style={styles.input}
+            />
+            <InputField
+              label="Parolă"
+              placeholder=""
+              secureTextEntry
+              style={styles.input}
+            />
 
             <Button
               variant="primary"
               fullWidth
               style={styles.loginButton}
-              textStyle={{ textAlign: "center" }}
-               onPress={() => {
-                loginAsPatient();           // 1. Set user as authenticated
+              onPress={() => {
+                loginAsPatient();
                 navigation.reset({
-                index: 0,
-                routes: [{ name: "App" as never }]
-              });  // 2. Switch to the main app stack
+                  index: 0,
+                  routes: [{ name: "App" as never }],
+                });
               }}
             >
-              <ThemedText variant="label" weight="semibold" style={{ color: "#0f172a", textAlign: "center" }}>
-                Sign In
-              </ThemedText> </Button>
+              <ThemedText
+                variant="label"
+                weight="semibold"
+                style={styles.loginText}
+              >
+                Conectare
+              </ThemedText>
+            </Button>
           </View>
 
-          <ThemedText variant="caption" color="tertiary" align="center" style={styles.footer}>
-            Thank you for choosing Livion.
+          <ThemedText
+            variant="caption"
+            color="tertiary"
+            align="center"
+            style={styles.footer}
+          >
+            Mulțumim că folosești Livion.
           </ThemedText>
-
         </ScrollView>
       </SafeAreaView>
     </View>
   );
 }
 
-/* Styles */
+/* ------- Styles (Regina Maria style) ------- */
 const styles = StyleSheet.create({
   root: {
     flex: 1,
-    backgroundColor: Colors.background.primary,
+    backgroundColor: '#f7f7f7',
   },
-  safeArea: { flex: 1 },
 
   container: {
     flexGrow: 1,
-    padding: Spacing.xl,
-    paddingTop: Spacing.lg,
-    alignItems: 'center',
+    padding: 24,
   },
 
   backButton: {
-    alignSelf: 'flex-start',
-    marginBottom: Spacing.lg,
-    marginTop: Spacing.md,
-    padding: 5,
-    borderRadius: 10,
-    backgroundColor: 'rgba(57, 73, 171, 0.22)',
+    padding: 6,
+    marginBottom: 20,
   },
 
   card: {
-    padding: Spacing.xl,
-    borderRadius: BorderRadius.xl,
-    backgroundColor: 'rgba(15,23,42,0.6)',
-    borderColor: 'rgba(255,255,255,0.08)',
+    backgroundColor: '#fff',
+    borderRadius: 20,
     borderWidth: 1,
-    width: '100%',
-    alignItems: 'center',
+    borderColor: '#e5e7eb',
+    padding: 24,
   },
 
   title: {
-    marginBottom: Spacing.sm,
-    color: '#fff',
+    fontSize: 24,
+    color: '#111',
+    marginBottom: 8,
   },
 
   subtitle: {
-    marginBottom: Spacing.xl,
+    marginBottom: 24,
+    fontSize: 14,
   },
 
   input: {
-    marginTop: Spacing.md,
-    width: "100%",
+    marginTop: 16,
   },
 
   loginButton: {
-    marginTop: Spacing.xl,
+    marginTop: 24,
+    backgroundColor: '#03d0c5',
+    borderRadius: 12,
+    paddingVertical: 14,
+  },
+
+  loginText: {
+    color: '#fff',
+    textAlign: "center",
   },
 
   footer: {
     marginTop: 20,
-    marginBottom: 20,
-  },
-
-  glowTopRight: {
-    position: 'absolute',
-    width: 400,
-    height: 400,
-    right: -150,
-    top: -100,
-    borderRadius: 999,
-    backgroundColor: Colors.primary.indigo,
-    opacity: 0.12,
-  },
-
-  glowBottomLeft: {
-    position: 'absolute',
-    width: 480,
-    height: 480,
-    left: -200,
-    bottom: -160,
-    borderRadius: 999,
-    backgroundColor: '#3949AB',
-    opacity: 0.1,
   },
 });

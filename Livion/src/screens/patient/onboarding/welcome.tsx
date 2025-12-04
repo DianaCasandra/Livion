@@ -33,6 +33,7 @@ export default function WelcomeScreen() {
         ])
       ).start();
     };
+
     loopAnimation(anim1, 0);
     loopAnimation(anim2, 2000);
   }, []);
@@ -56,7 +57,7 @@ export default function WelcomeScreen() {
       <StatusBar barStyle="light-content" translucent backgroundColor="transparent" />
 
       {/* Gradient background */}
-      <LinearGradient colors={["#07203f", "#04363a", "#06233d"]} style={StyleSheet.absoluteFill} />
+      <LinearGradient colors={["#f7f7f7", "#f7f7f7", "#f7f7f7"]} style={StyleSheet.absoluteFill} />
 
       {/* Animated blobs */}
       <Animated.View style={[styles.blobBlue, blob1Style]} />
@@ -64,30 +65,33 @@ export default function WelcomeScreen() {
 
       <SafeAreaView style={styles.safeAreaContent}>
         <ScrollView contentContainerStyle={styles.container}>
+
           {/* Top Back Button */}
           <View style={styles.topSection}>
-
-          <TouchableOpacity onPress={() => router.back()} style={styles.backButton}>
-            <Ionicons name="chevron-back" size={28} color="#fff" />
-          </TouchableOpacity>
+            <TouchableOpacity onPress={() => router.back()} style={styles.backButton}>
+              <Ionicons name="chevron-back" size={28} color="#ff6e1e" />
+            </TouchableOpacity>
           </View>
 
           {/* Middle Section */}
           <View style={styles.middleSection}>
             <ThemedText
               variant="heading"
-              color="secondary"
               align="center"
-              style={styles.softTitle}
+              style={[styles.softTitle, { color: "#03d0c5" }]} // teal secundar
             >
               Your health story. Yours to share.
             </ThemedText>
 
             <TouchableOpacity
-              onPress={() => router.push('/patient/onboarding/userpromise')}
+              onPress={() => router.replace('/')}
               style={styles.linkButton}
             >
-              <ThemedText variant="body" color="teal" align="center" style={styles.linkText}>
+              <ThemedText
+                variant="body"
+                align="center"
+                style={[styles.linkText, { color: "#ff6e1e" }]} // indigo principal
+              >
                 User Promise & Privacy Explainer
               </ThemedText>
             </TouchableOpacity>
@@ -100,11 +104,12 @@ export default function WelcomeScreen() {
               size="lg"
               fullWidth
               onPress={() => router.push('/patient/onboarding/register')}
-              style={styles.button}
+              style={{ ...styles.button, backgroundColor: '#ff6d1e9a' }} // accent principal
             >
               Get Started
             </Button>
           </View>
+
         </ScrollView>
       </SafeAreaView>
     </View>
@@ -114,28 +119,33 @@ export default function WelcomeScreen() {
 const styles = StyleSheet.create({
   root: {
     flex: 1,
-    backgroundColor: '#0f172a',
+    backgroundColor: '#f7f7f7',
     paddingTop: Platform.OS === 'android' ? StatusBar.currentHeight || 24 : 0,
   },
+
   safeAreaContent: { flex: 1 },
+
   container: {
     flexGrow: 1,
     justifyContent: 'center',
     alignItems: 'center',
     padding: Spacing.xl,
   },
+
   topSection: {
     flex: 1,
     justifyContent: 'flex-start',
     paddingTop: 25,
     width: '100%',
   },
+
   middleSection: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
     width: '100%',
   },
+
   bottomSection: {
     flex: 1,
     justifyContent: 'flex-end',
@@ -143,42 +153,50 @@ const styles = StyleSheet.create({
     paddingBottom: 40,
     width: '100%',
   },
+
   softTitle: {
     marginBottom: Spacing.lg,
-    opacity: 0.9,
+    opacity: 0.95,
     fontSize: 20,
     lineHeight: 28,
   },
-  linkButton: { paddingVertical: 6, paddingHorizontal: 8 },
-  linkText: { textDecorationLine: 'underline', fontSize: 15 },
-  button: { marginTop: Spacing.xl },
-  backButtonText: { fontSize: 16 },
 
-  
+  linkButton: { paddingVertical: 6, paddingHorizontal: 8 },
+
+  linkText: {
+    textDecorationLine: 'underline',
+    fontSize: 15,
+    fontWeight: '500',
+  },
+
+  button: { marginTop: Spacing.xl },
+
   backButton: {
     alignSelf: 'flex-start',
     marginBottom: Spacing.lg,
     marginTop: Spacing.md,
-        padding: 4,
+    padding: 6,
     borderRadius: 10,
-    backgroundColor: 'rgba(57, 73, 171, 0.2)',
+    backgroundColor: 'rgba(255, 110, 30, 0.12)', // indigo principal transparent
   },
+
   blobBlue: {
     position: 'absolute',
     width: 450,
     height: 450,
     borderRadius: 999,
-    backgroundColor: '#075985',
+    backgroundColor: '#03a098ff',
     opacity: 0.12,
     top: -150,
     right: -120,
   },
+
   blobTeal: {
     position: 'absolute',
     width: 500,
     height: 500,
     borderRadius: 999,
-    backgroundColor: '#0ea5a4',
+    backgroundColor: '#03d0c5',
     opacity: 0.10,
     bottom: -130,
     left: -170,

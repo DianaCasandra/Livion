@@ -1,9 +1,5 @@
-import { LinearGradient } from 'expo-linear-gradient';
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import {
-  Animated,
-  Dimensions,
-  Platform,
   SafeAreaView,
   ScrollView,
   StatusBar,
@@ -16,9 +12,6 @@ import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 
 import { Button } from '../../components/atoms/Button';
 import { ThemedText } from '../../components/atoms/ThemedText';
-import { BorderRadius, Colors, Spacing } from '../../constants/Colors';
-
-const { width: SCREEN_W, height: SCREEN_H } = Dimensions.get('window');
 
 type AuthStackParamList = {
   Landing: undefined;
@@ -34,35 +27,6 @@ export default function LandingPage() {
   const [expandedRole, setExpandedRole] = useState<string | null>(null);
   const navigation = useNavigation<LandingNav>();
 
-  const anim1 = useRef(new Animated.Value(0)).current;
-  const anim2 = useRef(new Animated.Value(0)).current;
-
-  useEffect(() => {
-    const loopAnimation = (anim: Animated.Value, delay: number) => {
-      Animated.loop(
-        Animated.sequence([
-          Animated.timing(anim, {
-            toValue: 1,
-            duration: 9000,
-            delay,
-            useNativeDriver: false,
-          }),
-          Animated.timing(anim, {
-            toValue: 0,
-            duration: 9000,
-            useNativeDriver: false,
-          }),
-        ])
-      ).start();
-    };
-
-    loopAnimation(anim1, 0);
-    loopAnimation(anim2, 2000);
-  }, []);
-
-  // -------------------------------
-  // 🔥 Navigare curată și sigură
-  // -------------------------------
   const goToRoleAuth = useCallback(
     (role: string, initial: 'login' | 'onboarding') => {
       navigation.navigate('RoleAuth', { role, initial });
@@ -81,83 +45,41 @@ export default function LandingPage() {
     setExpandedRole(prev => (prev === role ? null : role));
   };
 
-  const blob1Style = {
-    transform: [
-      {
-        translateX: anim1.interpolate({
-          inputRange: [0, 1],
-          outputRange: [-50, 50],
-        }),
-      },
-      {
-        translateY: anim1.interpolate({
-          inputRange: [0, 1],
-          outputRange: [-30, 30],
-        }),
-      },
-    ],
-  };
-
-  const blob2Style = {
-    transform: [
-      {
-        translateX: anim2.interpolate({
-          inputRange: [0, 1],
-          outputRange: [40, -40],
-        }),
-      },
-      {
-        translateY: anim2.interpolate({
-          inputRange: [0, 1],
-          outputRange: [60, -60],
-        }),
-      },
-    ],
-  };
-
   return (
     <View style={styles.root}>
-      <StatusBar barStyle="light-content" translucent backgroundColor="transparent" />
-
-      <LinearGradient
-        colors={['#07203f', '#04363a', '#06233d']}
-        style={StyleSheet.absoluteFill}
-      />
-
-      <Animated.View style={[styles.blobBlue, blob1Style]} />
-      <Animated.View style={[styles.blobTeal, blob2Style]} />
+      <StatusBar barStyle="dark-content" backgroundColor="#f7f7f7" />
 
       <SafeAreaView style={styles.safeAreaContent}>
         <ScrollView contentContainerStyle={styles.container}>
+          
           <View style={styles.card}>
-
             <ThemedText variant="display" weight="bold" style={styles.title}>
               Livion
             </ThemedText>
 
-            <ThemedText variant="body" style={[styles.subtitle, { color: '#0d948866' }]}>
+            <ThemedText variant="body" style={styles.subtitle}>
               Powered by Minai
             </ThemedText>
 
-            <ThemedText
-              variant="heading"
-              style={[styles.sectionLabel, { color: '#3949AB' }]}
-            >
-              Choose your role
+            <ThemedText variant="heading" style={styles.sectionLabel}>
+              Alege rolul tău
             </ThemedText>
 
             <View style={styles.rolesContainer}>
               {roles.map(role => (
                 <View key={role.key} style={styles.roleWrapper}>
                   
+                  {/* Main role button (orange) */}
                   <Button
                     variant="primary"
                     fullWidth
+                    style={styles.roleButton}
                     onPress={() => toggleRole(role.key)}
                   >
                     {role.label}
                   </Button>
 
+                  {/* Sub-buttons */}
                   {expandedRole === role.key && (
                     <View style={styles.subButtonsContainer}>
                       {role.twoOptions ? (
@@ -172,6 +94,7 @@ export default function LandingPage() {
 
                           <Button
                             variant="secondary"
+                            style={styles.subButton}
                             onPress={() => goToRoleAuth(role.key, 'login')}
                           >
                             Login
@@ -192,87 +115,89 @@ export default function LandingPage() {
               ))}
             </View>
           </View>
+
+          <ThemedText variant="caption" color="tertiary" align="center" style={styles.footer}>
+            Mulțumim că folosești Livion.
+          </ThemedText>
         </ScrollView>
       </SafeAreaView>
     </View>
   );
 }
 
-
-// -------------------------------
-// 🔹 Aceleași stiluri (neschimbate)
-// -------------------------------
 const styles = StyleSheet.create({
   root: {
     flex: 1,
-    backgroundColor: '#041025',
-    paddingTop: Platform.OS === 'android' ? StatusBar.currentHeight || 24 : 0,
+    backgroundColor: '#f7f7f7',
   },
-  safeAreaContent: { flex: 1 },
+
+  safeAreaContent: {
+    flex: 1,
+  },
+
   container: {
     flexGrow: 1,
+    padding: 24,
     justifyContent: 'center',
     alignItems: 'center',
-    padding: Spacing.xl,
   },
+
   card: {
-    padding: Spacing.xl,
-    borderRadius: BorderRadius.xl,
-    backgroundColor: Colors.background.cardGlass,
-    borderColor: Colors.border.medium,
-    borderWidth: 3,
     width: '100%',
-    maxWidth: 400,
+    maxWidth: 420,
+    backgroundColor: '#fff',
+    borderRadius: 20,
+    padding: 24,
+    borderWidth: 1,
+    borderColor: '#e5e7eb',
     alignItems: 'center',
   },
+
   title: {
-    marginBottom: Spacing.sm,
-    color: Colors.primary.teal,
+    fontSize: 28,
+    color: '#111',
+    marginBottom: 4,
   },
+
   subtitle: {
-    marginBottom: Spacing.lg,
-    fontSize: 16,
+    color: '#03d0c5',
+    marginBottom: 24,
+    fontSize: 14,
   },
+
   sectionLabel: {
-    marginBottom: Spacing.lg,
-    color: '#5C6BC0',
-    fontSize: 20,
-    fontWeight: '700',
+    fontSize: 18,
+    marginBottom: 24,
+    color: '#111',
   },
+
   rolesContainer: {
     width: '100%',
-    maxWidth: 340,
-    gap: Spacing.lg,
+    gap: 20,
   },
-  roleWrapper: { gap: Spacing.sm },
+
+  roleWrapper: {
+    gap: 10,
+  },
+
+  roleButton: {
+    backgroundColor: '#03d0c5',
+    borderRadius: 12,
+    paddingVertical: 12,
+  },
+
   subButtonsContainer: {
-    marginTop: Spacing.sm,
-    gap: Spacing.sm,
+    gap: 10,
     width: '100%',
-    alignItems: 'center',
   },
+
   subButton: {
-    minWidth: '70%',
-    backgroundColor: '#3949AB',
+    backgroundColor: '#ff6e1e',
+    borderRadius: 10,
+    paddingVertical: 10,
   },
-  blobBlue: {
-    position: 'absolute',
-    width: 450,
-    height: 450,
-    borderRadius: 999,
-    backgroundColor: '#075985',
-    opacity: 0.12,
-    top: -150,
-    right: -120,
-  },
-  blobTeal: {
-    position: 'absolute',
-    width: 500,
-    height: 500,
-    borderRadius: 999,
-    backgroundColor: '#0ea5a4',
-    opacity: 0.1,
-    bottom: -130,
-    left: -170,
+
+  footer: {
+    marginTop: 20,
   },
 });

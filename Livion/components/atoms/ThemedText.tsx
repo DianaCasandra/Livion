@@ -60,14 +60,14 @@ export const ThemedText: React.FC<ThemedTextProps> = ({
   };
 
   const colorStyles: Record<string, string> = {
-    primary: Colors.text.primary,
-    secondary: Colors.text.secondary,
-    tertiary: Colors.text.tertiary,
-    inverse: Colors.text.inverse,
-    teal: Colors.primary.teal,
-    indigo: Colors.primary.indigo,
-    gold: Colors.accent.gold,
-    coral: Colors.accent.coral,
+  primary: 'black',
+  secondary: 'black',
+  tertiary: 'black',
+  inverse: 'black',
+  teal: 'black',
+  indigo: 'black',
+  gold: 'black',
+  coral: 'black',
   };
 
   return (
