@@ -15,7 +15,7 @@ import {
   StyleSheet,
   View,
 } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { ThemedText } from '../../../components/atoms/ThemedText';
 import { useMockData } from '../../../hooks/useMockData';
 import { COLORS } from '@/src/constants/Colors';
@@ -145,6 +145,7 @@ function TaskItem({ task, onToggle, index }: any) {
 export default function CarePlanTab() {
   const { patientData } = useMockData();
   const [careTasks, setCareTasks] = useState(patientData.careTasks);
+  const insets = useSafeAreaInsets();
 
   // Animations
   const fadeAnim = useRef(new Animated.Value(0)).current;
@@ -175,9 +176,11 @@ export default function CarePlanTab() {
     <View style={styles.root}>
       <StatusBar barStyle="dark-content" backgroundColor={COLORS.background} />
 
-      <SafeAreaView style={styles.safeArea}>
-        <ScrollView contentContainerStyle={styles.scrollContent} showsVerticalScrollIndicator={false}>
-          <Animated.View style={{ opacity: fadeAnim, transform: [{ translateY: slideAnim }] }}>
+      <ScrollView
+        contentContainerStyle={[styles.scrollContent, { paddingTop: insets.top + 12 }]}
+        showsVerticalScrollIndicator={false}
+      >
+        <Animated.View style={{ opacity: fadeAnim, transform: [{ translateY: slideAnim }] }}>
 
             {/* Header */}
             <View style={styles.header}>
@@ -274,8 +277,7 @@ export default function CarePlanTab() {
 
             <View style={{ height: 100 }} />
           </Animated.View>
-        </ScrollView>
-      </SafeAreaView>
+      </ScrollView>
     </View>
   );
 }
@@ -285,12 +287,8 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: COLORS.background,
   },
-  safeArea: {
-    flex: 1,
-  },
   scrollContent: {
     paddingHorizontal: 20,
-    paddingTop: 12,
   },
 
   // Header
@@ -302,11 +300,13 @@ const styles = StyleSheet.create({
   },
   headerTitle: {
     fontSize: 28,
+    lineHeight: 36,
     fontWeight: '700',
     color: COLORS.textPrimary,
   },
   headerSubtitle: {
     fontSize: 15,
+    lineHeight: 22,
     color: COLORS.textSecondary,
     marginTop: 4,
   },

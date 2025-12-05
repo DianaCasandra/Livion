@@ -14,7 +14,6 @@ import { Activity, Heart, Moon, Sparkles, TrendingUp, CheckCircle2, Smile, Meh, 
 import React, { useRef, useEffect } from 'react';
 import {
   Animated,
-  Dimensions,
   Platform,
   Pressable,
   ScrollView,
@@ -23,37 +22,9 @@ import {
   View,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { GlassCard } from '../../../components/atoms/GlassCard';
 import { ThemedText } from '../../../components/atoms/ThemedText';
 import { COLORS } from '@/src/constants/Colors';
-
-// Animated card component with subtle press feedback
-function Card({ children, style, onPress, highlight }: any) {
-  const scale = useRef(new Animated.Value(1)).current;
-
-  const onPressIn = () => {
-    if (!onPress) return;
-    Animated.spring(scale, { toValue: 0.98, useNativeDriver: true, speed: 50 }).start();
-  };
-
-  const onPressOut = () => {
-    if (!onPress) return;
-    Animated.spring(scale, { toValue: 1, useNativeDriver: true, speed: 50 }).start();
-  };
-
-  return (
-    <Pressable onPressIn={onPressIn} onPressOut={onPressOut} onPress={onPress} disabled={!onPress}>
-      <Animated.View style={[
-        styles.card,
-        highlight === 'teal' && styles.cardTealHighlight,
-        highlight === 'amber' && styles.cardAmberHighlight,
-        { transform: [{ scale }] },
-        style
-      ]}>
-        {children}
-      </Animated.View>
-    </Pressable>
-  );
-}
 
 // Stat widget - large number with label
 function StatWidget({ icon: Icon, iconColor, value, label, subtitle, trend }: any) {
@@ -128,20 +99,20 @@ export default function HomeTab() {
             </View>
 
             {/* Status Banner - Quick Glance */}
-            <Card style={styles.statusBanner} highlight="teal">
+            <GlassCard style={styles.statusBanner} highlight="teal">
               <View style={styles.statusRow}>
                 <View style={styles.statusDot} />
                 <ThemedText style={styles.statusText}>All vitals are looking good today</ThemedText>
               </View>
               <ThemedText style={styles.statusSubtext}>Last synced 15 min ago</ThemedText>
-            </Card>
+            </GlassCard>
 
             {/* Stats Grid - Bento Layout */}
             <ThemedText style={styles.sectionTitle}>Your day at a glance</ThemedText>
 
             <View style={styles.statsGrid}>
               {/* Large card - Steps */}
-              <Card style={styles.statsLarge}>
+              <GlassCard style={styles.statsLarge}>
                 <StatWidget
                   icon={Activity}
                   iconColor={COLORS.amber}
@@ -153,11 +124,11 @@ export default function HomeTab() {
                 <View style={styles.progressBar}>
                   <View style={[styles.progressFill, { width: '78%' }]} />
                 </View>
-              </Card>
+              </GlassCard>
 
               {/* Two small cards */}
               <View style={styles.statsSmallColumn}>
-                <Card style={styles.statsSmall}>
+                <GlassCard style={styles.statsSmall}>
                   <StatWidget
                     icon={Heart}
                     iconColor={COLORS.teal}
@@ -165,8 +136,8 @@ export default function HomeTab() {
                     label="bpm"
                     subtitle="resting"
                   />
-                </Card>
-                <Card style={styles.statsSmall}>
+                </GlassCard>
+                <GlassCard style={styles.statsSmall}>
                   <StatWidget
                     icon={Moon}
                     iconColor={COLORS.amber}
@@ -174,12 +145,12 @@ export default function HomeTab() {
                     label="sleep"
                     subtitle="good quality"
                   />
-                </Card>
+                </GlassCard>
               </View>
             </View>
 
             {/* Mood Check-in */}
-            <Card style={styles.moodCard}>
+            <GlassCard style={styles.moodCard}>
               <View style={styles.moodHeader}>
                 <Sparkles size={20} color={COLORS.amber} />
                 <ThemedText style={styles.moodTitle}>How are you feeling?</ThemedText>
@@ -198,12 +169,12 @@ export default function HomeTab() {
                 ))}
               </View>
               <ThemedText style={styles.moodHint}>Tap to log your mood</ThemedText>
-            </Card>
+            </GlassCard>
 
             {/* Insights Section */}
             <ThemedText style={styles.sectionTitle}>Insights for you</ThemedText>
 
-            <Card style={styles.insightCard} highlight="amber">
+            <GlassCard style={styles.insightCard} highlight="amber">
               <View style={styles.insightBadge}>
                 <ThemedText style={styles.insightBadgeText}>NEW</ThemedText>
               </View>
@@ -215,9 +186,9 @@ export default function HomeTab() {
                 <ThemedText style={styles.insightActionText}>See details</ThemedText>
                 <Ionicons name="chevron-forward" size={16} color={COLORS.teal} />
               </Pressable>
-            </Card>
+            </GlassCard>
 
-            <Card style={styles.insightCard}>
+            <GlassCard style={styles.insightCard}>
               <ThemedText style={styles.insightTitle}>Breathing looks steady</ThemedText>
               <ThemedText style={styles.insightBody}>
                 Your respiratory rate has stayed within your normal range all week.
@@ -226,7 +197,7 @@ export default function HomeTab() {
                 <ThemedText style={styles.insightActionText}>Learn more</ThemedText>
                 <Ionicons name="chevron-forward" size={16} color={COLORS.teal} />
               </Pressable>
-            </Card>
+            </GlassCard>
 
             {/* Today's Tasks */}
             <View style={styles.tasksHeader}>
@@ -234,11 +205,11 @@ export default function HomeTab() {
               <ThemedText style={styles.taskCount}>2 of 3 done</ThemedText>
             </View>
 
-            <Card style={styles.tasksCard}>
+            <GlassCard style={styles.tasksCard}>
               <TaskItem title="Morning blood pressure" time="Completed at 8:30 AM" done />
               <TaskItem title="10 minute walk" time="Completed at 1:15 PM" done />
               <TaskItem title="Evening check-in" time="Before 10:00 PM" />
-            </Card>
+            </GlassCard>
 
             {/* Quick Actions */}
             <View style={styles.quickActions}>
@@ -292,11 +263,13 @@ const styles = StyleSheet.create({
   },
   greeting: {
     fontSize: 15,
+    lineHeight: 22,
     color: COLORS.textSecondary,
     fontWeight: '500',
   },
   userName: {
     fontSize: 28,
+    lineHeight: 36,
     fontWeight: '700',
     color: COLORS.textPrimary,
     marginTop: 2,
@@ -323,30 +296,6 @@ const styles = StyleSheet.create({
     height: 8,
     borderRadius: 4,
     backgroundColor: COLORS.amber,
-  },
-
-  // Cards - Glass style
-  card: {
-    backgroundColor: 'rgba(255, 255, 255, 0.72)',
-    borderRadius: 24,
-    padding: 16,
-    marginBottom: 12,
-    borderWidth: 1,
-    borderColor: 'rgba(255, 255, 255, 0.8)',
-    ...Platform.select({
-      ios: { shadowColor: '#000', shadowOpacity: 0.08, shadowOffset: { width: 0, height: 8 }, shadowRadius: 24 },
-      android: { elevation: 4 },
-    }),
-  },
-  cardTealHighlight: {
-    borderLeftWidth: 3,
-    borderLeftColor: COLORS.teal,
-    backgroundColor: 'rgba(3, 208, 197, 0.08)',
-  },
-  cardAmberHighlight: {
-    borderLeftWidth: 3,
-    borderLeftColor: COLORS.amber,
-    backgroundColor: 'rgba(255, 110, 30, 0.06)',
   },
 
   // Status Banner

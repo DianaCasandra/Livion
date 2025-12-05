@@ -6,20 +6,17 @@ import { useNavigation } from '@react-navigation/native';
 import { useEffect, useRef } from 'react';
 import {
   Animated,
-  Dimensions,
-  Platform,
-  SafeAreaView,
   ScrollView,
   StatusBar,
   StyleSheet,
   TouchableOpacity,
   View,
 } from 'react-native';
-
-const { width: SCREEN_W, height: SCREEN_H } = Dimensions.get('window');
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 export default function WelcomeScreen() {
   const navigation = useNavigation();
+  const insets = useSafeAreaInsets();
   const anim1 = useRef(new Animated.Value(0)).current;
   const anim2 = useRef(new Animated.Value(0)).current;
 
@@ -62,8 +59,12 @@ export default function WelcomeScreen() {
       <Animated.View style={[styles.blobBlue, blob1Style]} />
       <Animated.View style={[styles.blobTeal, blob2Style]} />
 
-      <SafeAreaView style={styles.safeAreaContent}>
-        <ScrollView contentContainerStyle={styles.container}>
+      <ScrollView
+        contentContainerStyle={[
+          styles.container,
+          { paddingTop: insets.top + Spacing.lg, paddingBottom: insets.bottom + Spacing.lg }
+        ]}
+      >
 
           {/* Top Section */}
           <View style={styles.topSection} />
@@ -105,8 +106,7 @@ export default function WelcomeScreen() {
             </Button>
           </View>
 
-        </ScrollView>
-      </SafeAreaView>
+      </ScrollView>
     </View>
   );
 }
@@ -115,10 +115,7 @@ const styles = StyleSheet.create({
   root: {
     flex: 1,
     backgroundColor: '#f7f7f7',
-    paddingTop: Platform.OS === 'android' ? StatusBar.currentHeight || 24 : 0,
   },
-
-  safeAreaContent: { flex: 1 },
 
   container: {
     flexGrow: 1,
@@ -165,15 +162,6 @@ const styles = StyleSheet.create({
   },
 
   button: { marginTop: Spacing.xl },
-
-  backButton: {
-    alignSelf: 'flex-start',
-    marginBottom: Spacing.lg,
-    marginTop: Spacing.md,
-    padding: 6,
-    borderRadius: 10,
-    backgroundColor: 'rgba(255, 110, 30, 0.12)', // indigo principal transparent
-  },
 
   blobBlue: {
     position: 'absolute',

@@ -323,11 +323,13 @@ const styles = StyleSheet.create({
   },
   headerTitle: {
     fontSize: 28,
+    lineHeight: 36,
     fontWeight: '700',
     color: COLORS.textPrimary,
   },
   headerSubtitle: {
     fontSize: 15,
+    lineHeight: 22,
     color: COLORS.textSecondary,
     marginTop: 4,
   },

@@ -16,7 +16,7 @@ import {
   TextInput,
   View,
 } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { ThemedText } from '../../../components/atoms/ThemedText';
 import { COLORS } from '@/src/constants/Colors';
 
@@ -63,7 +63,7 @@ function PainScale({ value, onChange }: { value: number; onChange: (v: number) =
               styles.painDot,
               {
                 backgroundColor: level <= value ? getPainColor(value) : COLORS.border,
-                transform: [{ scale: level === value ? 1.3 : 1 }],
+                transform: [{ scale: level === value ? 1.2 : 1 }],
               },
             ]}
           >
@@ -126,6 +126,7 @@ export default function SymptomsTab() {
   const [painLevel, setPainLevel] = useState(3);
   const [symptoms, setSymptoms] = useState('');
   const [notes, setNotes] = useState('');
+  const insets = useSafeAreaInsets();
 
   // Animations
   const fadeAnim = useRef(new Animated.Value(0)).current;
@@ -156,9 +157,11 @@ export default function SymptomsTab() {
     <View style={styles.root}>
       <StatusBar barStyle="dark-content" backgroundColor={COLORS.background} />
 
-      <SafeAreaView style={styles.safeArea}>
-        <ScrollView contentContainerStyle={styles.scrollContent} showsVerticalScrollIndicator={false}>
-          <Animated.View style={{ opacity: fadeAnim, transform: [{ translateY: slideAnim }] }}>
+      <ScrollView
+        contentContainerStyle={[styles.scrollContent, { paddingTop: insets.top + 12 }]}
+        showsVerticalScrollIndicator={false}
+      >
+        <Animated.View style={{ opacity: fadeAnim, transform: [{ translateY: slideAnim }] }}>
 
             {/* Header */}
             <View style={styles.header}>
@@ -265,8 +268,7 @@ export default function SymptomsTab() {
 
             <View style={{ height: 100 }} />
           </Animated.View>
-        </ScrollView>
-      </SafeAreaView>
+      </ScrollView>
     </View>
   );
 }
@@ -276,12 +278,8 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: COLORS.background,
   },
-  safeArea: {
-    flex: 1,
-  },
   scrollContent: {
     paddingHorizontal: 20,
-    paddingTop: 12,
   },
 
   // Header
@@ -293,11 +291,13 @@ const styles = StyleSheet.create({
   },
   headerTitle: {
     fontSize: 28,
+    lineHeight: 36,
     fontWeight: '700',
     color: COLORS.textPrimary,
   },
   headerSubtitle: {
     fontSize: 15,
+    lineHeight: 22,
     color: COLORS.textSecondary,
     marginTop: 4,
   },
@@ -385,6 +385,7 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     width: '100%',
     marginBottom: 12,
+    paddingHorizontal: 4,
   },
   painLabelText: {
     fontSize: 12,
@@ -395,30 +396,32 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     width: '100%',
     marginBottom: 16,
+    paddingHorizontal: 4,
   },
   painDot: {
-    width: 28,
-    height: 28,
-    borderRadius: 14,
+    width: 24,
+    height: 24,
+    borderRadius: 12,
     justifyContent: 'center',
     alignItems: 'center',
   },
   painDotInner: {
-    width: 10,
-    height: 10,
-    borderRadius: 5,
+    width: 8,
+    height: 8,
+    borderRadius: 4,
     backgroundColor: COLORS.cardWhite,
   },
   painValueContainer: {
     flexDirection: 'row',
     alignItems: 'baseline',
+    marginTop: 4,
   },
   painValue: {
-    fontSize: 36,
+    fontSize: 32,
     fontWeight: '700',
   },
   painValueLabel: {
-    fontSize: 18,
+    fontSize: 16,
     color: COLORS.textTertiary,
     marginLeft: 4,
   },

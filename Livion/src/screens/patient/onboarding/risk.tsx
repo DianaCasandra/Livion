@@ -1,19 +1,17 @@
-import { Ionicons } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
-import { useState, useRef, useEffect } from 'react';
+import { useState } from 'react';
 import {
-  Animated,
   Platform,
   ScrollView,
   StatusBar,
   StyleSheet,
-  TouchableOpacity,
   View,
 } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import { AnimatedBlobBackground } from '../../../components/atoms/AnimatedBlobBackground';
 import { Button } from '../../../components/atoms/Button';
 import { Chip } from '../../../components/atoms/Chip';
 import { ThemedText } from '../../../components/atoms/ThemedText';
+import { ScreenHeader } from '../../../components/molecules/ScreenHeader';
 import { BorderRadius, COLORS, Spacing } from '@/src/constants/Colors';
 
 
@@ -39,52 +37,15 @@ export default function RiskAssessmentScreen() {
     setAnswers(newAnswers);
   };
 
-  // Animated blobs
-  const anim1 = useRef(new Animated.Value(0)).current;
-  const anim2 = useRef(new Animated.Value(0)).current;
-
-  useEffect(() => {
-    const loopAnimation = (anim: Animated.Value, delay: number) => {
-      Animated.loop(
-        Animated.sequence([
-          Animated.timing(anim, { toValue: 1, duration: 8000, delay, useNativeDriver: true }),
-          Animated.timing(anim, { toValue: 0, duration: 8000, useNativeDriver: true }),
-        ])
-      ).start();
-    };
-    loopAnimation(anim1, 0);
-    loopAnimation(anim2, 1500);
-  }, []);
-
-  const blob1Style = {
-    transform: [
-      { translateX: anim1.interpolate({ inputRange: [0, 1], outputRange: [-40, 40] }) },
-      { translateY: anim1.interpolate({ inputRange: [0, 1], outputRange: [-20, 20] }) },
-    ],
-  };
-
-  const blob2Style = {
-    transform: [
-      { translateX: anim2.interpolate({ inputRange: [0, 1], outputRange: [30, -30] }) },
-      { translateY: anim2.interpolate({ inputRange: [0, 1], outputRange: [40, -40] }) },
-    ],
-  };
-
   return (
     <View style={styles.root}>
       <StatusBar barStyle="dark-content" backgroundColor={COLORS.background} />
 
-      {/* Animated blobs */}
-      <Animated.View style={[styles.blobTeal, blob1Style]} />
-      <Animated.View style={[styles.blobAmber, blob2Style]} />
+      <AnimatedBlobBackground />
 
-      <SafeAreaView style={styles.safeArea}>
-        <ScrollView contentContainerStyle={styles.container}>
+      <ScreenHeader />
 
-          {/* Back button */}
-          <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
-            <Ionicons name="chevron-back" size={28} color={COLORS.textPrimary} />
-          </TouchableOpacity>
+      <ScrollView contentContainerStyle={styles.container}>
 
           {/* Card principal */}
           <View style={styles.card}>
@@ -140,8 +101,7 @@ export default function RiskAssessmentScreen() {
               Finish Assessment
             </Button>
           </View>
-        </ScrollView>
-      </SafeAreaView>
+      </ScrollView>
     </View>
   );
 }
@@ -150,25 +110,8 @@ const styles = StyleSheet.create({
   root: {
     flex: 1,
     backgroundColor: COLORS.background,
-    paddingTop: Platform.OS === 'android' ? StatusBar.currentHeight || 24 : 0,
   },
-  safeArea: { flex: 1 },
   container: { flexGrow: 1, padding: Spacing.xl },
-
-  backButton: {
-    alignSelf: 'flex-start',
-    marginBottom: Spacing.lg,
-    marginTop: Spacing.md,
-    padding: 8,
-    borderRadius: 14,
-    backgroundColor: 'rgba(255, 255, 255, 0.7)',
-    borderWidth: 1,
-    borderColor: 'rgba(255, 255, 255, 0.9)',
-    ...Platform.select({
-      ios: { shadowColor: '#000', shadowOpacity: 0.08, shadowOffset: { width: 0, height: 4 }, shadowRadius: 12 },
-      android: { elevation: 3 },
-    }),
-  },
 
   card: {
     padding: Spacing.xl,
@@ -216,27 +159,5 @@ const styles = StyleSheet.create({
   button: {
     marginTop: Spacing.lg,
     backgroundColor: COLORS.teal,
-  },
-
-  blobTeal: {
-    position: 'absolute',
-    width: 400,
-    height: 400,
-    right: -120,
-    top: -80,
-    borderRadius: 999,
-    backgroundColor: COLORS.teal,
-    opacity: 0.12,
-  },
-
-  blobAmber: {
-    position: 'absolute',
-    width: 450,
-    height: 450,
-    left: -180,
-    bottom: -100,
-    borderRadius: 999,
-    backgroundColor: COLORS.amber,
-    opacity: 0.10,
   },
 });
