@@ -6,15 +6,24 @@ import HomeTab from '../screens/patient/dashboard/HomeTab';
 import CarePlanTab from '../screens/patient/dashboard/CarePlanTab';
 import MessagesTab from '../screens/patient/dashboard/MessagesTab';
 import SymptomsTab from '../screens/patient/dashboard/SymptomsTab';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { COLORS } from '../constants/Colors';
 
 const Tab = createBottomTabNavigator();
 
 export default function DashboardTabs() {
+
+   const insets = useSafeAreaInsets();
+   
   return (
     <Tab.Navigator
       screenOptions={{
         headerShown: false,
-        tabBarStyle: styles.tabBar,
+        tabBarStyle: { 
+          ...styles.tabBar ,    
+          paddingBottom: insets.bottom + 6,
+          height: 60 + insets.bottom
+        }, 
         tabBarActiveTintColor: COLORS.teal,
         tabBarInactiveTintColor: COLORS.textSecondary,
         tabBarLabelStyle: styles.tabBarLabel,
@@ -63,13 +72,6 @@ export default function DashboardTabs() {
     </Tab.Navigator>
   );
 }
-
-const COLORS = {
-  background: '#ffffff',
-  teal: '#03d0c5',
-  textSecondary: '#94a3b8',
-  border: '#e2e8f0',
-};
 
 const styles = StyleSheet.create({
   tabBar: {
