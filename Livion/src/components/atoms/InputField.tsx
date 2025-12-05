@@ -6,7 +6,7 @@ import {
   View,
   ViewStyle,
 } from 'react-native';
-import { BorderRadius, Colors, Spacing, Typography } from '../../constants/Colors';
+import { BorderRadius, Colors, COLORS, Spacing, Typography } from '../../constants/Colors';
 import { ThemedText } from './ThemedText';
 
 export type InputFieldProps = TextInputProps & {

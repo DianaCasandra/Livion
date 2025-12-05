@@ -23,27 +23,8 @@ import {
   View,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { ThemedText } from '../../../../components/atoms/ThemedText';
-
-const { width: SCREEN_W } = Dimensions.get('window');
-
-// Color palette
-const COLORS = {
-  background: '#f7f7f7',
-  cardWhite: '#ffffff',
-  teal: '#03d0c5',
-  tealLight: '#e6faf9',
-  tealDark: '#029e96',
-  amber: '#ff6e1e',
-  amberLight: '#fff4ed',
-  amberDark: '#e55a0d',
-  textPrimary: '#1a1a2e',
-  textSecondary: '#64748b',
-  textTertiary: '#94a3b8',
-  border: '#e2e8f0',
-  success: '#10b981',
-  successLight: '#ecfdf5',
-};
+import { ThemedText } from '../../../components/atoms/ThemedText';
+import { COLORS } from '@/src/constants/Colors';
 
 // Animated card component with subtle press feedback
 function Card({ children, style, onPress, highlight }: any) {

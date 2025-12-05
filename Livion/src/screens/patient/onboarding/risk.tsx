@@ -11,21 +11,11 @@ import {
   View,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { Button } from '@/components/atoms/Button';
-import { Chip } from '@/components/atoms/Chip';
-import { ThemedText } from '@/components/atoms/ThemedText';
-import { BorderRadius, Spacing } from '@/constants/Colors';
+import { Button } from '../../../components/atoms/Button';
+import { Chip } from '../../../components/atoms/Chip';
+import { ThemedText } from '../../../components/atoms/ThemedText';
+import { BorderRadius, COLORS, Spacing } from '@/src/constants/Colors';
 
-const COLORS = {
-  background: '#f7f7f7',
-  teal: '#03d0c5',
-  tealLight: '#e6faf9',
-  amber: '#ff6e1e',
-  amberLight: '#fff4ed',
-  textPrimary: '#1a1a2e',
-  textSecondary: '#64748b',
-  error: '#ef4444',
-};
 
 const QUESTIONS = [
   "Do you experience severe headaches daily?",

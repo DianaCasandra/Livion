@@ -2,18 +2,11 @@ import { Ionicons } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
 import { useRef, useEffect } from 'react';
 import { Animated, Platform, SafeAreaView, ScrollView, StatusBar, StyleSheet, TouchableOpacity, View } from 'react-native';
-import { Button } from '@/components/atoms/Button';
-import { InputField } from '@/components/atoms/InputField';
-import { ThemedText } from '@/components/atoms/ThemedText';
-import { BorderRadius, Spacing } from '@/constants/Colors';
+import { Button } from '../../../components/atoms/Button';
+import { InputField } from '../../../components/atoms/InputField';
+import { ThemedText } from '../../../components/atoms/ThemedText';
+import { COLORS, Spacing } from '@/src/constants/Colors';
 
-const COLORS = {
-  background: '#f7f7f7',
-  teal: '#03d0c5',
-  amber: '#ff6e1e',
-  textPrimary: '#1a1a2e',
-  textSecondary: '#64748b',
-};
 
 export default function PatientRegisterScreen() {
   const navigation = useNavigation();

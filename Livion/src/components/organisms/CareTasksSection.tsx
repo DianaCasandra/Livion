@@ -1,7 +1,7 @@
 //import clsx from 'clsx';
 import { motion } from 'framer-motion';
-import { ThemedText } from '../atoms/ThemedText';
-import { CareTaskTile } from '../molecules/CareTaskTile';
+import { ThemedText } from '../../src/components/atoms/ThemedText';
+import { CareTaskTile } from '../../src/components/molecules/CareTaskTile';
 
 interface CareTask {
   id: string;

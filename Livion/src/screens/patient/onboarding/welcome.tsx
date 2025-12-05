@@ -1,6 +1,6 @@
-import { Button } from '@/components/atoms/Button';
-import { ThemedText } from '@/components/atoms/ThemedText';
-import { Spacing } from '@/constants/Colors';
+import { Button } from '../../../components/atoms/Button';
+import { ThemedText } from '../../../components/atoms/ThemedText';
+import { Spacing } from '@/src/constants/Colors';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useNavigation } from '@react-navigation/native';
 import { useEffect, useRef } from 'react';

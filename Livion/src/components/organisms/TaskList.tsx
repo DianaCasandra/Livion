@@ -1,6 +1,6 @@
 import React from 'react';
 import { View } from 'react-native';
-import { CareTaskTile } from '../molecules/CareTaskTile';
+import { CareTaskTile } from '../../src/components/molecules/CareTaskTile';
 import { useMockData } from '../providers/MockDataProvider';
 
 export const TaskList: React.FC = () => {

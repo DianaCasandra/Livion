@@ -10,8 +10,8 @@ import {
   View,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { ThemedText } from '@/components/atoms/ThemedText';
-import { Spacing } from '@/constants/Colors';
+import { ThemedText } from '../../../components/atoms/ThemedText';
+import { Spacing, COLORS } from '@/src/constants/Colors';
 import { Ionicons } from '@expo/vector-icons';
 
 // Icons Lucide
@@ -30,14 +30,6 @@ import {
   TrendingUp,
   Home,
 } from 'lucide-react-native';
-
-const COLORS = {
-  background: '#f7f7f7',
-  teal: '#03d0c5',
-  amber: '#ff6e1e',
-  textPrimary: '#1a1a2e',
-  textSecondary: '#64748b',
-};
 
 // Icon color for all manifesto items
 const ICON_COLOR = COLORS.teal;

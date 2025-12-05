@@ -1,7 +1,7 @@
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import { UserProvider, MockDataProvider } from '@/components/providers';
-import { ThemeProvider } from '@/components/providers/ThemeProvider';
+import { UserProvider, MockDataProvider } from '@/src/components/providers';
+import { ThemeProvider } from '@/src/components/providers/ThemeProvider';
 
 // Patient Onboarding Screens
 import WelcomeScreen from './src/screens/patient/onboarding/welcome';

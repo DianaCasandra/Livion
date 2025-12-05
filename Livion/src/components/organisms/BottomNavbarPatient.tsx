@@ -3,7 +3,7 @@ import { Href, usePathname, useRouter } from 'expo-router';
 import { Activity, MessageSquare, Sparkles, Users } from 'lucide-react-native';
 import React from 'react';
 import { Dimensions, Platform, Pressable, StyleSheet, View } from 'react-native';
-import { ThemedText } from '../atoms/ThemedText';
+import { ThemedText } from '../../src/components/atoms/ThemedText';
 
 const { width: SCREEN_W } = Dimensions.get('window');
 

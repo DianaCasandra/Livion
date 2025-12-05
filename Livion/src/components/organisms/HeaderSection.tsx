@@ -1,5 +1,5 @@
 import { motion } from 'framer-motion';
-import { ThemedText } from '../../components/atoms/ThemedText';
+import { ThemedText } from '../../src/components/atoms/ThemedText';
 
 interface HeaderSectionProps {
   patientName: string;

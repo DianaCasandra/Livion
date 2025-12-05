@@ -17,29 +17,8 @@ import {
   View,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { ThemedText } from '../../../../components/atoms/ThemedText';
-
-// Color palette
-const COLORS = {
-  background: '#f7f7f7',
-  cardWhite: '#ffffff',
-  teal: '#03d0c5',
-  tealLight: '#e6faf9',
-  tealDark: '#029e96',
-  amber: '#ff6e1e',
-  amberLight: '#fff4ed',
-  amberDark: '#e55a0d',
-  textPrimary: '#1a1a2e',
-  textSecondary: '#64748b',
-  textTertiary: '#94a3b8',
-  border: '#e2e8f0',
-  success: '#10b981',
-  successLight: '#ecfdf5',
-  warning: '#f59e0b',
-  warningLight: '#fffbeb',
-  error: '#ef4444',
-  errorLight: '#fef2f2',
-};
+import { ThemedText } from '../../../components/atoms/ThemedText';
+import { COLORS } from '@/src/constants/Colors';
 
 // Pain level colors
 const getPainColor = (level: number) => {

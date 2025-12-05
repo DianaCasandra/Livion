@@ -13,19 +13,10 @@ import {
   View
 } from 'react-native';
 
-import { Chip } from '@/components/atoms/Chip';
-import { Button } from '@/components/atoms/Button';
-import { ThemedText } from '@/components/atoms/ThemedText';
-import { BorderRadius, Spacing } from '@/constants/Colors';
-
-const COLORS = {
-  background: '#f7f7f7',
-  teal: '#03d0c5',
-  tealLight: '#e6faf9',
-  amber: '#ff6e1e',
-  textPrimary: '#1a1a2e',
-  textSecondary: '#64748b',
-};
+import { Chip } from '../../../components/atoms/Chip';
+import { Button } from '../../../components/atoms/Button';
+import { ThemedText } from '../../../components/atoms/ThemedText';
+import { COLORS, Spacing } from '@/src/constants/Colors';
 
 export default function DataConnectionsScreen() {
   const navigation = useNavigation();

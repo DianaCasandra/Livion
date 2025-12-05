@@ -1,6 +1,6 @@
 import React from 'react';
 import { View } from 'react-native';
-import { ThemedText } from '../atoms/ThemedText';
+import { ThemedText } from '../../src/components/atoms/ThemedText';
 
 export const PrivacyLedger: React.FC = () => {
   const rows = [

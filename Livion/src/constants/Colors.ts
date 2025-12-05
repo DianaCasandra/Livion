@@ -8,6 +8,28 @@
  * - Status: Green (ok), Amber (attention), Red (action)
  */
 
+// Color palette
+export const COLORS = {
+  background: '#f7f7f7',
+  cardWhite: '#ffffff',
+  teal: '#03d0c5',
+  tealLight: '#e6faf9',
+  tealDark: '#029e96',
+  amber: '#ff6e1e',
+  amberLight: '#fff4ed',
+  amberDark: '#e55a0d',
+  textPrimary: '#1a1a2e',
+  textSecondary: '#64748b',
+  textTertiary: '#94a3b8',
+  border: '#e2e8f0',
+  success: '#10b981',
+  successLight: '#ecfdf5',
+  warning: '#f59e0b',
+  warningLight: '#fffbeb',
+  error: '#ef4444',
+  errorLight: '#fef2f2',
+};
+
 export const Colors = {
   // Primary Colors
   primary: {

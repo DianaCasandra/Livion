@@ -1,6 +1,6 @@
 import React from 'react';
 import { View } from 'react-native';
-import { InsightCard } from '../molecules/InsightCard';
+import { InsightCard } from '../../src/components/molecules/InsightCard';
 import { useMockData } from '../providers/MockDataProvider';
 
 export const DailyPulseFeed: React.FC = () => {
