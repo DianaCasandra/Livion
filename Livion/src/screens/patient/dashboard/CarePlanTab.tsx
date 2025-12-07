@@ -1,6 +1,6 @@
 /**
  * CarePlanTab - 2025 UX Redesign
- * Doctor circles filter, AI Insights button, minimal intuitive UI
+ * Clean, minimal UI with doctor filters and AI insights
  */
 
 import {
@@ -9,11 +9,6 @@ import {
   Clock,
   Sparkles,
   ChevronRight,
-  Heart,
-  Stethoscope,
-  Brain,
-  Bone,
-  Eye,
 } from 'lucide-react-native';
 import React, { useRef, useEffect, useState } from 'react';
 import {
@@ -30,192 +25,66 @@ import { ThemedText } from '../../../components/atoms/ThemedText';
 import { AIInsightsModal } from '../../../components/molecules/AIInsightsModal';
 import { COLORS } from '@/src/constants/Colors';
 
-// Mock doctors data
+// Simplified doctors data - consistent color scheme
 const DOCTORS = [
-  {
-    id: 'all',
-    name: 'All',
-    initials: 'All',
-    color: COLORS.teal,
-    specialty: 'All Tasks',
-    icon: null,
-  },
-  {
-    id: 'dr-harper',
-    name: 'Dr. Harper',
-    initials: 'H',
-    color: '#3b82f6',
-    specialty: 'Family Medicine',
-    icon: Stethoscope,
-  },
-  {
-    id: 'dr-chen',
-    name: 'Dr. Chen',
-    initials: 'C',
-    color: '#ef4444',
-    specialty: 'Cardiology',
-    icon: Heart,
-  },
-  {
-    id: 'dr-patel',
-    name: 'Dr. Patel',
-    initials: 'P',
-    color: '#8b5cf6',
-    specialty: 'Neurology',
-    icon: Brain,
-  },
-  {
-    id: 'dr-kim',
-    name: 'Dr. Kim',
-    initials: 'K',
-    color: '#f59e0b',
-    specialty: 'Orthopedics',
-    icon: Bone,
-  },
-  {
-    id: 'dr-johnson',
-    name: 'Dr. Johnson',
-    initials: 'J',
-    color: '#10b981',
-    specialty: 'Ophthalmology',
-    icon: Eye,
-  },
+  { id: 'all', name: 'All', initials: 'All' },
+  { id: 'dr-harper', name: 'Dr. Harper', initials: 'H' },
+  { id: 'dr-chen', name: 'Dr. Chen', initials: 'C' },
+  { id: 'dr-patel', name: 'Dr. Patel', initials: 'P' },
+  { id: 'dr-kim', name: 'Dr. Kim', initials: 'K' },
 ];
 
 // Mock tasks with doctor assignments
 const TASKS_DATA = [
-  {
-    id: '1',
-    title: 'Blood pressure check',
-    time: '8:00 AM',
-    doctorId: 'dr-harper',
-    completed: true,
-  },
-  {
-    id: '2',
-    title: 'Take heart medication',
-    time: '9:00 AM',
-    doctorId: 'dr-chen',
-    completed: true,
-  },
-  {
-    id: '3',
-    title: '15 min morning walk',
-    time: '10:00 AM',
-    doctorId: 'dr-harper',
-    completed: false,
-  },
-  {
-    id: '4',
-    title: 'Cognitive exercises',
-    time: '11:00 AM',
-    doctorId: 'dr-patel',
-    completed: false,
-  },
-  {
-    id: '5',
-    title: 'Stretching routine',
-    time: '2:00 PM',
-    doctorId: 'dr-kim',
-    completed: false,
-  },
-  {
-    id: '6',
-    title: 'Eye drops',
-    time: '4:00 PM',
-    doctorId: 'dr-johnson',
-    completed: false,
-  },
-  {
-    id: '7',
-    title: 'Evening BP reading',
-    time: '6:00 PM',
-    doctorId: 'dr-chen',
-    completed: false,
-  },
-  {
-    id: '8',
-    title: 'Sleep meditation',
-    time: '9:00 PM',
-    doctorId: 'dr-patel',
-    completed: false,
-  },
+  { id: '1', title: 'Blood pressure check', time: '8:00 AM', doctorId: 'dr-harper', completed: true },
+  { id: '2', title: 'Take medication', time: '9:00 AM', doctorId: 'dr-chen', completed: true },
+  { id: '3', title: '15 min walk', time: '10:00 AM', doctorId: 'dr-harper', completed: false },
+  { id: '4', title: 'Breathing exercises', time: '2:00 PM', doctorId: 'dr-patel', completed: false },
+  { id: '5', title: 'Stretching', time: '4:00 PM', doctorId: 'dr-kim', completed: false },
+  { id: '6', title: 'Evening reading', time: '6:00 PM', doctorId: 'dr-chen', completed: false },
 ];
 
-// Doctor circle component
+// Doctor circle component - simplified
 function DoctorCircle({ doctor, isSelected, onPress, index }: any) {
   const scaleAnim = useRef(new Animated.Value(1)).current;
-  const slideAnim = useRef(new Animated.Value(30)).current;
   const fadeAnim = useRef(new Animated.Value(0)).current;
 
   useEffect(() => {
-    Animated.parallel([
-      Animated.timing(slideAnim, {
-        toValue: 0,
-        duration: 300,
-        delay: index * 60,
-        useNativeDriver: true,
-      }),
-      Animated.timing(fadeAnim, {
-        toValue: 1,
-        duration: 300,
-        delay: index * 60,
-        useNativeDriver: true,
-      }),
-    ]).start();
+    Animated.timing(fadeAnim, {
+      toValue: 1,
+      duration: 300,
+      delay: index * 50,
+      useNativeDriver: true,
+    }).start();
   }, []);
 
   const handlePress = () => {
     Animated.sequence([
-      Animated.timing(scaleAnim, { toValue: 0.9, duration: 100, useNativeDriver: true }),
-      Animated.timing(scaleAnim, { toValue: 1, duration: 100, useNativeDriver: true }),
+      Animated.timing(scaleAnim, { toValue: 0.9, duration: 80, useNativeDriver: true }),
+      Animated.timing(scaleAnim, { toValue: 1, duration: 80, useNativeDriver: true }),
     ]).start();
     onPress();
   };
 
-  const Icon = doctor.icon;
-
   return (
-    <Animated.View
-      style={{
-        opacity: fadeAnim,
-        transform: [{ translateX: slideAnim }, { scale: scaleAnim }],
-      }}
-    >
+    <Animated.View style={{ opacity: fadeAnim, transform: [{ scale: scaleAnim }] }}>
       <Pressable onPress={handlePress} style={styles.doctorCircleWrap}>
         <View
           style={[
             styles.doctorCircle,
-            { backgroundColor: isSelected ? doctor.color : COLORS.cardWhite },
-            isSelected && styles.doctorCircleSelected,
-            !isSelected && { borderColor: doctor.color, borderWidth: 2 },
+            isSelected ? styles.doctorCircleSelected : styles.doctorCircleDefault,
           ]}
         >
-          {doctor.id === 'all' ? (
-            <ThemedText
-              style={[
-                styles.doctorInitials,
-                { color: isSelected ? COLORS.cardWhite : doctor.color, fontSize: 13 },
-              ]}
-            >
-              All
-            </ThemedText>
-          ) : Icon ? (
-            <Icon size={22} color={isSelected ? COLORS.cardWhite : doctor.color} />
-          ) : (
-            <ThemedText
-              style={[
-                styles.doctorInitials,
-                { color: isSelected ? COLORS.cardWhite : doctor.color },
-              ]}
-            >
-              {doctor.initials}
-            </ThemedText>
-          )}
+          <ThemedText
+            style={[
+              styles.doctorInitials,
+              isSelected ? styles.doctorInitialsSelected : styles.doctorInitialsDefault,
+            ]}
+          >
+            {doctor.initials}
+          </ThemedText>
         </View>
-        <ThemedText
-          style={[styles.doctorName, isSelected && styles.doctorNameSelected]}
-        >
+        <ThemedText style={[styles.doctorName, isSelected && styles.doctorNameSelected]}>
           {doctor.id === 'all' ? 'All' : doctor.name.split(' ')[1]}
         </ThemedText>
       </Pressable>
@@ -223,27 +92,18 @@ function DoctorCircle({ doctor, isSelected, onPress, index }: any) {
   );
 }
 
-// Task item component
-function TaskItem({ task, doctor, onToggle, index }: any) {
-  const slideAnim = useRef(new Animated.Value(40)).current;
+// Task item component - simplified
+function TaskItem({ task, doctorName, onToggle, index }: any) {
   const fadeAnim = useRef(new Animated.Value(0)).current;
   const checkScale = useRef(new Animated.Value(task.completed ? 1 : 0)).current;
 
   useEffect(() => {
-    Animated.parallel([
-      Animated.timing(slideAnim, {
-        toValue: 0,
-        duration: 350,
-        delay: index * 60,
-        useNativeDriver: true,
-      }),
-      Animated.timing(fadeAnim, {
-        toValue: 1,
-        duration: 350,
-        delay: index * 60,
-        useNativeDriver: true,
-      }),
-    ]).start();
+    Animated.timing(fadeAnim, {
+      toValue: 1,
+      duration: 300,
+      delay: index * 50,
+      useNativeDriver: true,
+    }).start();
   }, []);
 
   useEffect(() => {
@@ -251,63 +111,46 @@ function TaskItem({ task, doctor, onToggle, index }: any) {
       toValue: task.completed ? 1 : 0,
       useNativeDriver: true,
       speed: 20,
-      bounciness: 12,
+      bounciness: 10,
     }).start();
   }, [task.completed]);
 
   return (
-    <Animated.View
-      style={{
-        opacity: fadeAnim,
-        transform: [{ translateY: slideAnim }],
-      }}
-    >
+    <Animated.View style={{ opacity: fadeAnim }}>
       <Pressable
         onPress={onToggle}
         style={[styles.taskItem, task.completed && styles.taskItemCompleted]}
       >
-        {/* Color accent */}
-        <View style={[styles.taskAccent, { backgroundColor: doctor.color }]} />
-
         {/* Checkbox */}
-        <View
-          style={[
-            styles.taskCheckbox,
-            task.completed && { backgroundColor: doctor.color, borderColor: doctor.color },
-            !task.completed && { borderColor: doctor.color },
-          ]}
-        >
+        <View style={[styles.taskCheckbox, task.completed && styles.taskCheckboxCompleted]}>
           {task.completed ? (
             <Animated.View style={{ transform: [{ scale: checkScale }] }}>
-              <CheckCircle2 size={20} color={COLORS.cardWhite} />
+              <CheckCircle2 size={22} color={COLORS.teal} />
             </Animated.View>
           ) : (
-            <Circle size={20} color={doctor.color} />
+            <Circle size={22} color={COLORS.textTertiary} />
           )}
         </View>
 
         {/* Content */}
         <View style={styles.taskContent}>
-          <ThemedText
-            style={[styles.taskTitle, task.completed && styles.taskTitleCompleted]}
-          >
+          <ThemedText style={[styles.taskTitle, task.completed && styles.taskTitleCompleted]}>
             {task.title}
           </ThemedText>
           <View style={styles.taskMeta}>
             <Clock size={12} color={COLORS.textTertiary} />
             <ThemedText style={styles.taskTime}>{task.time}</ThemedText>
-            <View style={[styles.taskDoctorBadge, { backgroundColor: doctor.color + '20' }]}>
-              <ThemedText style={[styles.taskDoctorText, { color: doctor.color }]}>
-                {doctor.name.split(' ')[1]}
-              </ThemedText>
-            </View>
+            <ThemedText style={styles.taskDoctor}>{doctorName}</ThemedText>
           </View>
         </View>
-
-        <ChevronRight size={18} color={COLORS.textTertiary} />
       </Pressable>
     </Animated.View>
   );
+}
+
+// Card component
+function Card({ children, style }: any) {
+  return <View style={[styles.card, style]}>{children}</View>;
 }
 
 export default function CarePlanTab() {
@@ -318,21 +161,12 @@ export default function CarePlanTab() {
   // Animations
   const fadeAnim = useRef(new Animated.Value(0)).current;
   const slideAnim = useRef(new Animated.Value(20)).current;
-  const buttonPulse = useRef(new Animated.Value(1)).current;
 
   useEffect(() => {
     Animated.parallel([
       Animated.timing(fadeAnim, { toValue: 1, duration: 400, useNativeDriver: true }),
       Animated.timing(slideAnim, { toValue: 0, duration: 400, useNativeDriver: true }),
     ]).start();
-
-    // Subtle pulse animation for AI button
-    Animated.loop(
-      Animated.sequence([
-        Animated.timing(buttonPulse, { toValue: 1.03, duration: 1500, useNativeDriver: true }),
-        Animated.timing(buttonPulse, { toValue: 1, duration: 1500, useNativeDriver: true }),
-      ])
-    ).start();
   }, []);
 
   const toggleTask = (taskId: string) => {
@@ -353,8 +187,11 @@ export default function CarePlanTab() {
   const totalCount = filteredTasks.length;
   const progress = totalCount > 0 ? Math.round((completedCount / totalCount) * 100) : 0;
 
-  // Get doctor by ID
-  const getDoctorById = (id: string) => DOCTORS.find((d) => d.id === id) || DOCTORS[0];
+  // Get doctor name by ID
+  const getDoctorName = (id: string) => {
+    const doctor = DOCTORS.find((d) => d.id === id);
+    return doctor ? doctor.name.split(' ')[1] : '';
+  };
 
   return (
     <View style={styles.root}>
@@ -366,69 +203,50 @@ export default function CarePlanTab() {
         >
           {/* Header */}
           <View style={styles.header}>
-            <ThemedText style={styles.headerTitle}>Care Plan</ThemedText>
-            <View style={styles.headerRight}>
-              <View style={styles.progressPill}>
-                <ThemedText style={styles.progressText}>
-                  {completedCount}/{totalCount}
-                </ThemedText>
-              </View>
+            <View>
+              <ThemedText style={styles.headerTitle}>Care Plan</ThemedText>
+              <ThemedText style={styles.headerSubtitle}>Your daily health tasks</ThemedText>
+            </View>
+            <View style={styles.progressPill}>
+              <ThemedText style={styles.progressText}>{completedCount}/{totalCount}</ThemedText>
             </View>
           </View>
 
-          {/* AI Insights Button */}
-          <Animated.View style={{ transform: [{ scale: buttonPulse }] }}>
-            <Pressable
-              style={styles.aiButton}
-              onPress={() => setAiModalVisible(true)}
-            >
-              <View style={styles.aiButtonIcon}>
-                <Sparkles size={24} color={COLORS.amber} />
-              </View>
-              <View style={styles.aiButtonContent}>
-                <ThemedText style={styles.aiButtonTitle}>AI Health Insights</ThemedText>
-                <ThemedText style={styles.aiButtonSubtitle}>
-                  Prevention & wellness tips
-                </ThemedText>
-              </View>
-              <ChevronRight size={22} color={COLORS.amber} />
-            </Pressable>
-          </Animated.View>
+          {/* AI Insights Button - Simplified */}
+          <Pressable style={styles.aiButton} onPress={() => setAiModalVisible(true)}>
+            <View style={styles.aiButtonIcon}>
+              <Sparkles size={20} color={COLORS.amber} />
+            </View>
+            <View style={styles.aiButtonContent}>
+              <ThemedText style={styles.aiButtonTitle}>AI Health Insights</ThemedText>
+              <ThemedText style={styles.aiButtonSubtitle}>Tips for your wellness</ThemedText>
+            </View>
+            <ChevronRight size={20} color={COLORS.textTertiary} />
+          </Pressable>
 
           {/* Doctor Circles */}
-          <View style={styles.doctorsSection}>
-            <ThemedText style={styles.doctorsSectionTitle}>Your Care Team</ThemedText>
-            <ScrollView
-              horizontal
-              showsHorizontalScrollIndicator={false}
-              contentContainerStyle={styles.doctorsScroll}
-            >
-              {DOCTORS.map((doctor, index) => (
-                <DoctorCircle
-                  key={doctor.id}
-                  doctor={doctor}
-                  isSelected={selectedDoctor === doctor.id}
-                  onPress={() => setSelectedDoctor(doctor.id)}
-                  index={index}
-                />
-              ))}
-            </ScrollView>
-          </View>
+          <ScrollView
+            horizontal
+            showsHorizontalScrollIndicator={false}
+            contentContainerStyle={styles.doctorsScroll}
+            style={styles.doctorsContainer}
+          >
+            {DOCTORS.map((doctor, index) => (
+              <DoctorCircle
+                key={doctor.id}
+                doctor={doctor}
+                isSelected={selectedDoctor === doctor.id}
+                onPress={() => setSelectedDoctor(doctor.id)}
+                index={index}
+              />
+            ))}
+          </ScrollView>
 
           {/* Progress Bar */}
           <View style={styles.progressBarWrap}>
             <View style={styles.progressBarBg}>
-              <Animated.View
-                style={[
-                  styles.progressBarFill,
-                  {
-                    width: `${progress}%`,
-                    backgroundColor: getDoctorById(selectedDoctor).color,
-                  },
-                ]}
-              />
+              <View style={[styles.progressBarFill, { width: `${progress}%` }]} />
             </View>
-            <ThemedText style={styles.progressLabel}>{progress}% complete</ThemedText>
           </View>
 
           {/* Tasks List */}
@@ -438,23 +256,51 @@ export default function CarePlanTab() {
             showsVerticalScrollIndicator={false}
           >
             {filteredTasks.length > 0 ? (
-              filteredTasks.map((task, index) => (
-                <TaskItem
-                  key={task.id}
-                  task={task}
-                  doctor={getDoctorById(task.doctorId)}
-                  onToggle={() => toggleTask(task.id)}
-                  index={index}
-                />
-              ))
+              <>
+                {/* Active Tasks */}
+                {filteredTasks.filter(t => !t.completed).length > 0 && (
+                  <>
+                    <ThemedText style={styles.sectionTitle}>To Do</ThemedText>
+                    {filteredTasks
+                      .filter((t) => !t.completed)
+                      .map((task, index) => (
+                        <TaskItem
+                          key={task.id}
+                          task={task}
+                          doctorName={getDoctorName(task.doctorId)}
+                          onToggle={() => toggleTask(task.id)}
+                          index={index}
+                        />
+                      ))}
+                  </>
+                )}
+
+                {/* Completed Tasks */}
+                {filteredTasks.filter(t => t.completed).length > 0 && (
+                  <>
+                    <ThemedText style={[styles.sectionTitle, styles.sectionTitleCompleted]}>
+                      Completed
+                    </ThemedText>
+                    {filteredTasks
+                      .filter((t) => t.completed)
+                      .map((task, index) => (
+                        <TaskItem
+                          key={task.id}
+                          task={task}
+                          doctorName={getDoctorName(task.doctorId)}
+                          onToggle={() => toggleTask(task.id)}
+                          index={index}
+                        />
+                      ))}
+                  </>
+                )}
+              </>
             ) : (
-              <View style={styles.emptyState}>
-                <CheckCircle2 size={48} color={COLORS.teal} />
+              <Card style={styles.emptyCard}>
+                <CheckCircle2 size={40} color={COLORS.teal} />
                 <ThemedText style={styles.emptyTitle}>All done!</ThemedText>
-                <ThemedText style={styles.emptySubtitle}>
-                  No tasks from this doctor
-                </ThemedText>
-              </View>
+                <ThemedText style={styles.emptySubtitle}>No tasks for this filter</ThemedText>
+              </Card>
             )}
 
             <View style={{ height: 100 }} />
@@ -490,16 +336,17 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     paddingHorizontal: 20,
     paddingTop: 12,
-    marginBottom: 16,
+    marginBottom: 20,
   },
   headerTitle: {
     fontSize: 28,
     fontWeight: '700',
     color: COLORS.textPrimary,
   },
-  headerRight: {
-    flexDirection: 'row',
-    alignItems: 'center',
+  headerSubtitle: {
+    fontSize: 15,
+    color: COLORS.textSecondary,
+    marginTop: 4,
   },
   progressPill: {
     backgroundColor: COLORS.tealLight,
@@ -513,41 +360,49 @@ const styles = StyleSheet.create({
     color: COLORS.teal,
   },
 
-  // AI Button
+  // Card
+  card: {
+    backgroundColor: 'rgba(255, 255, 255, 0.72)',
+    borderRadius: 20,
+    padding: 16,
+    borderWidth: 1,
+    borderColor: 'rgba(255, 255, 255, 0.8)',
+    ...Platform.select({
+      ios: { shadowColor: '#000', shadowOpacity: 0.06, shadowOffset: { width: 0, height: 4 }, shadowRadius: 12 },
+      android: { elevation: 3 },
+    }),
+  },
+
+  // AI Button - Clean and simple
   aiButton: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: COLORS.cardWhite,
+    backgroundColor: 'rgba(255, 255, 255, 0.72)',
     marginHorizontal: 20,
-    padding: 16,
-    borderRadius: 20,
-    borderWidth: 2,
-    borderColor: COLORS.amber,
+    padding: 14,
+    borderRadius: 16,
+    borderWidth: 1,
+    borderColor: 'rgba(255, 255, 255, 0.8)',
     ...Platform.select({
-      ios: {
-        shadowColor: COLORS.amber,
-        shadowOpacity: 0.2,
-        shadowOffset: { width: 0, height: 4 },
-        shadowRadius: 12,
-      },
-      android: { elevation: 4 },
+      ios: { shadowColor: '#000', shadowOpacity: 0.06, shadowOffset: { width: 0, height: 4 }, shadowRadius: 12 },
+      android: { elevation: 3 },
     }),
   },
   aiButtonIcon: {
-    width: 50,
-    height: 50,
-    borderRadius: 25,
+    width: 40,
+    height: 40,
+    borderRadius: 12,
     backgroundColor: COLORS.amberLight,
     justifyContent: 'center',
     alignItems: 'center',
-    marginRight: 14,
+    marginRight: 12,
   },
   aiButtonContent: {
     flex: 1,
   },
   aiButtonTitle: {
-    fontSize: 17,
-    fontWeight: '700',
+    fontSize: 15,
+    fontWeight: '600',
     color: COLORS.textPrimary,
   },
   aiButtonSubtitle: {
@@ -557,140 +412,131 @@ const styles = StyleSheet.create({
   },
 
   // Doctors Section
-  doctorsSection: {
+  doctorsContainer: {
     marginTop: 20,
-    marginBottom: 8,
-  },
-  doctorsSectionTitle: {
-    fontSize: 15,
-    fontWeight: '600',
-    color: COLORS.textSecondary,
-    paddingHorizontal: 20,
-    marginBottom: 14,
   },
   doctorsScroll: {
     paddingHorizontal: 16,
-    gap: 8,
   },
   doctorCircleWrap: {
     alignItems: 'center',
-    marginHorizontal: 6,
+    marginHorizontal: 8,
   },
   doctorCircle: {
-    width: 56,
-    height: 56,
-    borderRadius: 28,
+    width: 50,
+    height: 50,
+    borderRadius: 25,
     justifyContent: 'center',
     alignItems: 'center',
     marginBottom: 6,
+  },
+  doctorCircleDefault: {
+    backgroundColor: 'rgba(255, 255, 255, 0.7)',
+    borderWidth: 1.5,
+    borderColor: COLORS.border,
+  },
+  doctorCircleSelected: {
+    backgroundColor: COLORS.teal,
+    borderWidth: 0,
     ...Platform.select({
-      ios: {
-        shadowColor: '#000',
-        shadowOpacity: 0.1,
-        shadowOffset: { width: 0, height: 2 },
-        shadowRadius: 8,
-      },
+      ios: { shadowColor: COLORS.teal, shadowOpacity: 0.3, shadowOffset: { width: 0, height: 2 }, shadowRadius: 8 },
       android: { elevation: 3 },
     }),
   },
-  doctorCircleSelected: {
-    borderWidth: 0,
-  },
   doctorInitials: {
-    fontSize: 18,
-    fontWeight: '700',
+    fontSize: 15,
+    fontWeight: '600',
+  },
+  doctorInitialsDefault: {
+    color: COLORS.textSecondary,
+  },
+  doctorInitialsSelected: {
+    color: COLORS.cardWhite,
   },
   doctorName: {
     fontSize: 12,
-    color: COLORS.textSecondary,
-    fontWeight: '500',
+    color: COLORS.textTertiary,
   },
   doctorNameSelected: {
     color: COLORS.textPrimary,
-    fontWeight: '600',
+    fontWeight: '500',
   },
 
   // Progress Bar
   progressBarWrap: {
     paddingHorizontal: 20,
     marginTop: 16,
-    marginBottom: 8,
   },
   progressBarBg: {
-    height: 6,
+    height: 4,
     backgroundColor: COLORS.border,
-    borderRadius: 3,
+    borderRadius: 2,
     overflow: 'hidden',
   },
   progressBarFill: {
     height: '100%',
-    borderRadius: 3,
+    backgroundColor: COLORS.teal,
+    borderRadius: 2,
   },
-  progressLabel: {
-    fontSize: 12,
+
+  // Section Title
+  sectionTitle: {
+    fontSize: 14,
+    fontWeight: '600',
+    color: COLORS.textSecondary,
+    marginBottom: 12,
+    marginTop: 8,
+    textTransform: 'uppercase',
+    letterSpacing: 0.5,
+  },
+  sectionTitleCompleted: {
+    marginTop: 24,
     color: COLORS.textTertiary,
-    marginTop: 6,
-    textAlign: 'right',
   },
 
   // Tasks List
   tasksList: {
     flex: 1,
-    marginTop: 8,
+    marginTop: 16,
   },
   tasksContent: {
     paddingHorizontal: 20,
-    paddingTop: 8,
   },
 
-  // Task Item
+  // Task Item - Simplified
   taskItem: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: COLORS.cardWhite,
-    borderRadius: 18,
+    backgroundColor: 'rgba(255, 255, 255, 0.65)',
+    borderRadius: 14,
     padding: 14,
-    paddingLeft: 0,
-    marginBottom: 10,
-    overflow: 'hidden',
+    marginBottom: 8,
     borderWidth: 1,
-    borderColor: COLORS.border,
-    ...Platform.select({
-      ios: {
-        shadowColor: '#000',
-        shadowOpacity: 0.04,
-        shadowOffset: { width: 0, height: 2 },
-        shadowRadius: 8,
-      },
-      android: { elevation: 1 },
-    }),
+    borderColor: 'rgba(255, 255, 255, 0.7)',
   },
   taskItemCompleted: {
-    opacity: 0.7,
-  },
-  taskAccent: {
-    width: 4,
-    height: '120%',
-    borderRadius: 2,
-    marginRight: 14,
+    opacity: 0.6,
   },
   taskCheckbox: {
-    width: 32,
-    height: 32,
-    borderRadius: 16,
-    borderWidth: 2,
+    width: 28,
+    height: 28,
+    borderRadius: 14,
     justifyContent: 'center',
     alignItems: 'center',
     marginRight: 12,
+    backgroundColor: 'rgba(255, 255, 255, 0.5)',
+  },
+  taskCheckboxCompleted: {
+    backgroundColor: COLORS.tealLight,
   },
   taskContent: {
     flex: 1,
   },
   taskTitle: {
     fontSize: 15,
-    fontWeight: '600',
+    fontWeight: '500',
     color: COLORS.textPrimary,
-    marginBottom: 6,
+    marginBottom: 4,
   },
   taskTitleCompleted: {
     textDecorationLine: 'line-through',
@@ -705,30 +551,26 @@ const styles = StyleSheet.create({
     fontSize: 13,
     color: COLORS.textTertiary,
   },
-  taskDoctorBadge: {
-    paddingHorizontal: 8,
-    paddingVertical: 3,
-    borderRadius: 8,
-    marginLeft: 4,
-  },
-  taskDoctorText: {
-    fontSize: 11,
-    fontWeight: '600',
+  taskDoctor: {
+    fontSize: 12,
+    color: COLORS.textTertiary,
+    marginLeft: 8,
   },
 
   // Empty State
-  emptyState: {
+  emptyCard: {
     alignItems: 'center',
-    paddingVertical: 60,
+    paddingVertical: 40,
+    marginTop: 20,
   },
   emptyTitle: {
-    fontSize: 20,
+    fontSize: 18,
     fontWeight: '600',
     color: COLORS.textPrimary,
-    marginTop: 16,
+    marginTop: 12,
   },
   emptySubtitle: {
-    fontSize: 15,
+    fontSize: 14,
     color: COLORS.textSecondary,
     marginTop: 4,
   },

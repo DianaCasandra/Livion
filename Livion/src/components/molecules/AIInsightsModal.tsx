@@ -1,6 +1,6 @@
 /**
  * AIInsightsModal - AI Health Insights Modal
- * Shows AI-powered insights on prevention and chronic disease management
+ * Clean, minimal design for wellness tips
  */
 
 import { Ionicons } from '@expo/vector-icons';
@@ -8,14 +8,12 @@ import {
   Sparkles,
   X,
   Heart,
-  Shield,
   Activity,
-  Brain,
-  Leaf,
-  TrendingUp,
+  Moon,
+  Droplets,
   ChevronRight,
 } from 'lucide-react-native';
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef } from 'react';
 import {
   Animated,
   Modal,
@@ -25,7 +23,7 @@ import {
   StyleSheet,
   View,
 } from 'react-native';
-import { COLORS, BorderRadius, Spacing } from '../../constants/Colors';
+import { COLORS, BorderRadius } from '../../constants/Colors';
 import { ThemedText } from '../atoms/ThemedText';
 
 type AIInsightsModalProps = {
@@ -33,164 +31,79 @@ type AIInsightsModalProps = {
   onClose: () => void;
 };
 
-// Insight card data
-const INSIGHT_CATEGORIES = [
-  {
-    id: 'prevention',
-    icon: Shield,
-    title: 'Prevention',
-    color: COLORS.teal,
-    bgColor: COLORS.tealLight,
-    insights: [
-      { title: 'Stay Active', desc: '30 min daily walking reduces heart risk by 35%' },
-      { title: 'Sleep Quality', desc: '7-8 hours improves immune function' },
-    ],
-  },
+// Insight data - simplified categories
+const INSIGHTS = [
   {
     id: 'heart',
     icon: Heart,
     title: 'Heart Health',
-    color: '#ef4444',
-    bgColor: '#fef2f2',
-    insights: [
-      { title: 'Blood Pressure', desc: 'Your readings show improvement this week' },
-      { title: 'Resting Heart Rate', desc: 'Trending down - great progress!' },
-    ],
+    tip: 'Your resting heart rate has improved 5% this week. Keep up the morning walks!',
   },
   {
     id: 'activity',
     icon: Activity,
-    title: 'Activity',
-    color: COLORS.amber,
-    bgColor: COLORS.amberLight,
-    insights: [
-      { title: 'Step Goal', desc: "You're averaging 7,500 steps daily" },
-      { title: 'Active Minutes', desc: '45 min more than last week' },
-    ],
+    title: 'Stay Active',
+    tip: 'Try adding a 10-minute stretch after sitting for an hour to improve circulation.',
   },
   {
-    id: 'mental',
-    icon: Brain,
-    title: 'Mental Wellness',
-    color: '#8b5cf6',
-    bgColor: '#f5f3ff',
-    insights: [
-      { title: 'Stress Levels', desc: 'Consider 5-min breathing exercises' },
-      { title: 'Mood Tracking', desc: 'Consistent logging helps identify patterns' },
-    ],
+    id: 'sleep',
+    icon: Moon,
+    title: 'Sleep Quality',
+    tip: 'Consider a consistent bedtime routine. Aim for 7-8 hours for optimal recovery.',
   },
   {
-    id: 'nutrition',
-    icon: Leaf,
-    title: 'Nutrition',
-    color: COLORS.success,
-    bgColor: COLORS.successLight,
-    insights: [
-      { title: 'Hydration', desc: 'Aim for 8 glasses of water daily' },
-      { title: 'Balanced Diet', desc: 'Add more leafy greens this week' },
-    ],
+    id: 'hydration',
+    icon: Droplets,
+    title: 'Hydration',
+    tip: 'Drinking water before meals can help with digestion and energy levels.',
   },
 ];
 
-// Quick stat component
-function QuickStat({ icon: Icon, value, label, color }: any) {
-  return (
-    <View style={styles.quickStat}>
-      <View style={[styles.quickStatIcon, { backgroundColor: color + '20' }]}>
-        <Icon size={18} color={color} />
-      </View>
-      <ThemedText style={styles.quickStatValue}>{value}</ThemedText>
-      <ThemedText style={styles.quickStatLabel}>{label}</ThemedText>
-    </View>
-  );
-}
-
-// Insight category card
-function InsightCard({ category, index, onPress }: any) {
-  const slideAnim = useRef(new Animated.Value(50)).current;
+// Insight card component
+function InsightCard({ insight, index }: any) {
   const fadeAnim = useRef(new Animated.Value(0)).current;
-  const scaleAnim = useRef(new Animated.Value(1)).current;
+  const slideAnim = useRef(new Animated.Value(20)).current;
 
   useEffect(() => {
     Animated.parallel([
-      Animated.timing(slideAnim, {
-        toValue: 0,
-        duration: 400,
+      Animated.timing(fadeAnim, {
+        toValue: 1,
+        duration: 300,
         delay: index * 80,
         useNativeDriver: true,
       }),
-      Animated.timing(fadeAnim, {
-        toValue: 1,
-        duration: 400,
+      Animated.timing(slideAnim, {
+        toValue: 0,
+        duration: 300,
         delay: index * 80,
         useNativeDriver: true,
       }),
     ]).start();
   }, []);
 
-  const handlePressIn = () => {
-    Animated.spring(scaleAnim, {
-      toValue: 0.97,
-      useNativeDriver: true,
-      speed: 50,
-    }).start();
-  };
-
-  const handlePressOut = () => {
-    Animated.spring(scaleAnim, {
-      toValue: 1,
-      useNativeDriver: true,
-      speed: 50,
-    }).start();
-  };
-
-  const Icon = category.icon;
+  const Icon = insight.icon;
 
   return (
     <Animated.View
       style={{
         opacity: fadeAnim,
-        transform: [{ translateY: slideAnim }, { scale: scaleAnim }],
+        transform: [{ translateY: slideAnim }],
       }}
     >
-      <Pressable
-        onPressIn={handlePressIn}
-        onPressOut={handlePressOut}
-        onPress={onPress}
-        style={styles.insightCard}
-      >
-        <View style={styles.insightCardHeader}>
-          <View style={[styles.insightCardIcon, { backgroundColor: category.bgColor }]}>
-            <Icon size={22} color={category.color} />
-          </View>
-          <View style={styles.insightCardTitleWrap}>
-            <ThemedText style={styles.insightCardTitle}>{category.title}</ThemedText>
-            <ThemedText style={styles.insightCardCount}>
-              {category.insights.length} insights
-            </ThemedText>
-          </View>
-          <ChevronRight size={20} color={COLORS.textTertiary} />
+      <View style={styles.insightCard}>
+        <View style={styles.insightIconWrap}>
+          <Icon size={20} color={COLORS.teal} />
         </View>
-
-        <View style={styles.insightCardBody}>
-          {category.insights.map((insight: any, i: number) => (
-            <View key={i} style={styles.insightItem}>
-              <View style={[styles.insightDot, { backgroundColor: category.color }]} />
-              <View style={styles.insightItemContent}>
-                <ThemedText style={styles.insightItemTitle}>{insight.title}</ThemedText>
-                <ThemedText style={styles.insightItemDesc}>{insight.desc}</ThemedText>
-              </View>
-            </View>
-          ))}
+        <View style={styles.insightContent}>
+          <ThemedText style={styles.insightTitle}>{insight.title}</ThemedText>
+          <ThemedText style={styles.insightTip}>{insight.tip}</ThemedText>
         </View>
-      </Pressable>
+      </View>
     </Animated.View>
   );
 }
 
 export function AIInsightsModal({ visible, onClose }: AIInsightsModalProps) {
-  const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
-
   // Animation values
   const slideAnim = useRef(new Animated.Value(300)).current;
   const fadeAnim = useRef(new Animated.Value(0)).current;
@@ -247,12 +160,12 @@ export function AIInsightsModal({ visible, onClose }: AIInsightsModalProps) {
           <View style={styles.header}>
             <View style={styles.headerLeft}>
               <View style={styles.aiIconWrap}>
-                <Sparkles size={24} color={COLORS.amber} />
+                <Sparkles size={22} color={COLORS.amber} />
               </View>
               <View>
                 <ThemedText style={styles.headerTitle}>AI Insights</ThemedText>
                 <ThemedText style={styles.headerSubtitle}>
-                  Personalized for you
+                  Personalized wellness tips
                 </ThemedText>
               </View>
             </View>
@@ -261,52 +174,30 @@ export function AIInsightsModal({ visible, onClose }: AIInsightsModalProps) {
             </Pressable>
           </View>
 
-          {/* Quick Stats */}
-          <View style={styles.quickStats}>
-            <QuickStat
-              icon={TrendingUp}
-              value="85%"
-              label="Health Score"
-              color={COLORS.teal}
-            />
-            <QuickStat
-              icon={Heart}
-              value="Good"
-              label="Heart Health"
-              color="#ef4444"
-            />
-            <QuickStat
-              icon={Activity}
-              value="Active"
-              label="Lifestyle"
-              color={COLORS.amber}
-            />
-          </View>
-
-          {/* AI Summary Banner */}
-          <View style={styles.aiBanner}>
-            <Sparkles size={18} color={COLORS.amber} />
-            <ThemedText style={styles.aiBannerText}>
-              Based on your data, focus on heart health and staying active this week.
+          {/* Summary Banner */}
+          <View style={styles.summaryBanner}>
+            <ThemedText style={styles.summaryText}>
+              Based on your recent activity, here are some suggestions to support your health journey.
             </ThemedText>
           </View>
 
-          {/* Insight Categories */}
+          {/* Insights List */}
           <ScrollView
             style={styles.insightsScroll}
             contentContainerStyle={styles.insightsContent}
             showsVerticalScrollIndicator={false}
           >
-            {INSIGHT_CATEGORIES.map((category, index) => (
-              <InsightCard
-                key={category.id}
-                category={category}
-                index={index}
-                onPress={() => setSelectedCategory(category.id)}
-              />
+            {INSIGHTS.map((insight, index) => (
+              <InsightCard key={insight.id} insight={insight} index={index} />
             ))}
 
-            <View style={{ height: 30 }} />
+            {/* More Insights Button */}
+            <Pressable style={styles.moreButton}>
+              <ThemedText style={styles.moreButtonText}>View more insights</ThemedText>
+              <ChevronRight size={18} color={COLORS.teal} />
+            </Pressable>
+
+            <View style={{ height: 20 }} />
           </ScrollView>
 
           {/* Footer */}
@@ -317,7 +208,7 @@ export function AIInsightsModal({ visible, onClose }: AIInsightsModalProps) {
               color={COLORS.textTertiary}
             />
             <ThemedText style={styles.footerText}>
-              Insights are AI-generated suggestions, not medical advice.
+              AI suggestions are for wellness only, not medical advice.
             </ThemedText>
           </View>
         </Animated.View>
@@ -329,12 +220,12 @@ export function AIInsightsModal({ visible, onClose }: AIInsightsModalProps) {
 const styles = StyleSheet.create({
   overlay: {
     flex: 1,
-    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    backgroundColor: 'rgba(0, 0, 0, 0.4)',
     justifyContent: 'flex-end',
   },
 
   modalCard: {
-    height: '92%',
+    height: '75%',
     backgroundColor: COLORS.background,
     borderTopLeftRadius: BorderRadius['2xl'],
     borderTopRightRadius: BorderRadius['2xl'],
@@ -342,11 +233,11 @@ const styles = StyleSheet.create({
     ...Platform.select({
       ios: {
         shadowColor: '#000',
-        shadowOpacity: 0.15,
+        shadowOpacity: 0.12,
         shadowOffset: { width: 0, height: -4 },
-        shadowRadius: 20,
+        shadowRadius: 16,
       },
-      android: { elevation: 10 },
+      android: { elevation: 8 },
     }),
   },
 
@@ -365,90 +256,49 @@ const styles = StyleSheet.create({
   headerLeft: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 14,
+    gap: 12,
   },
 
   aiIconWrap: {
-    width: 48,
-    height: 48,
-    borderRadius: 24,
+    width: 44,
+    height: 44,
+    borderRadius: 14,
     backgroundColor: COLORS.amberLight,
     justifyContent: 'center',
     alignItems: 'center',
   },
 
   headerTitle: {
-    fontSize: 22,
+    fontSize: 20,
     fontWeight: '700',
     color: COLORS.textPrimary,
   },
 
   headerSubtitle: {
-    fontSize: 14,
+    fontSize: 13,
     color: COLORS.textSecondary,
     marginTop: 2,
   },
 
   closeButton: {
-    width: 40,
-    height: 40,
-    borderRadius: 20,
+    width: 36,
+    height: 36,
+    borderRadius: 18,
     backgroundColor: COLORS.background,
     justifyContent: 'center',
     alignItems: 'center',
   },
 
-  // Quick Stats
-  quickStats: {
-    flexDirection: 'row',
-    justifyContent: 'space-around',
-    paddingVertical: 20,
-    paddingHorizontal: 16,
+  // Summary Banner
+  summaryBanner: {
     backgroundColor: COLORS.cardWhite,
+    paddingHorizontal: 20,
+    paddingVertical: 14,
   },
 
-  quickStat: {
-    alignItems: 'center',
-  },
-
-  quickStatIcon: {
-    width: 44,
-    height: 44,
-    borderRadius: 22,
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginBottom: 8,
-  },
-
-  quickStatValue: {
-    fontSize: 18,
-    fontWeight: '700',
-    color: COLORS.textPrimary,
-  },
-
-  quickStatLabel: {
-    fontSize: 12,
-    color: COLORS.textSecondary,
-    marginTop: 2,
-  },
-
-  // AI Banner
-  aiBanner: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: COLORS.amberLight,
-    marginHorizontal: 20,
-    marginTop: 16,
-    marginBottom: 8,
-    padding: 14,
-    borderRadius: 14,
-    gap: 12,
-  },
-
-  aiBannerText: {
-    flex: 1,
+  summaryText: {
     fontSize: 14,
-    color: COLORS.amberDark,
+    color: COLORS.textSecondary,
     lineHeight: 20,
   },
 
@@ -459,91 +309,61 @@ const styles = StyleSheet.create({
 
   insightsContent: {
     padding: 20,
-    paddingTop: 12,
+    paddingTop: 16,
   },
 
   // Insight Card
   insightCard: {
+    flexDirection: 'row',
     backgroundColor: COLORS.cardWhite,
-    borderRadius: 20,
+    borderRadius: 16,
     padding: 16,
     marginBottom: 12,
     borderWidth: 1,
     borderColor: COLORS.border,
-    ...Platform.select({
-      ios: {
-        shadowColor: '#000',
-        shadowOpacity: 0.06,
-        shadowOffset: { width: 0, height: 4 },
-        shadowRadius: 12,
-      },
-      android: { elevation: 2 },
-    }),
   },
 
-  insightCardHeader: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginBottom: 14,
-  },
-
-  insightCardIcon: {
-    width: 44,
-    height: 44,
-    borderRadius: 14,
+  insightIconWrap: {
+    width: 40,
+    height: 40,
+    borderRadius: 12,
+    backgroundColor: COLORS.tealLight,
     justifyContent: 'center',
     alignItems: 'center',
-    marginRight: 12,
+    marginRight: 14,
   },
 
-  insightCardTitleWrap: {
+  insightContent: {
     flex: 1,
   },
 
-  insightCardTitle: {
-    fontSize: 17,
+  insightTitle: {
+    fontSize: 15,
     fontWeight: '600',
     color: COLORS.textPrimary,
+    marginBottom: 4,
   },
 
-  insightCardCount: {
-    fontSize: 13,
-    color: COLORS.textTertiary,
-    marginTop: 2,
-  },
-
-  insightCardBody: {
-    gap: 10,
-  },
-
-  insightItem: {
-    flexDirection: 'row',
-    alignItems: 'flex-start',
-  },
-
-  insightDot: {
-    width: 6,
-    height: 6,
-    borderRadius: 3,
-    marginTop: 7,
-    marginRight: 10,
-  },
-
-  insightItemContent: {
-    flex: 1,
-  },
-
-  insightItemTitle: {
+  insightTip: {
     fontSize: 14,
-    fontWeight: '600',
-    color: COLORS.textPrimary,
-    marginBottom: 2,
+    color: COLORS.textSecondary,
+    lineHeight: 20,
   },
 
-  insightItemDesc: {
-    fontSize: 13,
-    color: COLORS.textSecondary,
-    lineHeight: 18,
+  // More Button
+  moreButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingVertical: 14,
+    gap: 6,
+    marginTop: 8,
+  },
+
+  moreButtonText: {
+    fontSize: 15,
+    fontWeight: '600',
+    color: COLORS.teal,
   },
 
   // Footer
