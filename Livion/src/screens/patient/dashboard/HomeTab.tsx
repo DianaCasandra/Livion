@@ -11,10 +11,9 @@
 
 import { Ionicons } from '@expo/vector-icons';
 import { Activity, Heart, Moon, Sparkles, TrendingUp, CheckCircle2, Smile, Meh, Frown, AlertCircle } from 'lucide-react-native';
-import React, { useRef, useEffect } from 'react';
+import React, { useRef, useEffect, useState } from 'react';
 import {
   Animated,
-  Dimensions,
   Platform,
   Pressable,
   ScrollView,
@@ -89,7 +88,143 @@ function TaskItem({ title, time, done }: any) {
   );
 }
 
+// Welcome Blob Component
+function WelcomeBlob({ onPress, healthStatus }: { onPress: () => void; healthStatus: string }) {
+  const pulseAnim = useRef(new Animated.Value(1)).current;
+  const glowAnim = useRef(new Animated.Value(0.3)).current;
+  const floatAnim = useRef(new Animated.Value(0)).current;
+  const scalePress = useRef(new Animated.Value(1)).current;
+
+  useEffect(() => {
+    // Breathing/pulse animation
+    Animated.loop(
+      Animated.sequence([
+        Animated.timing(pulseAnim, {
+          toValue: 1.05,
+          duration: 2000,
+          useNativeDriver: true,
+        }),
+        Animated.timing(pulseAnim, {
+          toValue: 1,
+          duration: 2000,
+          useNativeDriver: true,
+        }),
+      ])
+    ).start();
+
+    // Glow animation
+    Animated.loop(
+      Animated.sequence([
+        Animated.timing(glowAnim, {
+          toValue: 0.6,
+          duration: 1500,
+          useNativeDriver: true,
+        }),
+        Animated.timing(glowAnim, {
+          toValue: 0.3,
+          duration: 1500,
+          useNativeDriver: true,
+        }),
+      ])
+    ).start();
+
+    // Floating animation
+    Animated.loop(
+      Animated.sequence([
+        Animated.timing(floatAnim, {
+          toValue: -8,
+          duration: 2500,
+          useNativeDriver: true,
+        }),
+        Animated.timing(floatAnim, {
+          toValue: 8,
+          duration: 2500,
+          useNativeDriver: true,
+        }),
+      ])
+    ).start();
+  }, []);
+
+  const handlePressIn = () => {
+    Animated.spring(scalePress, {
+      toValue: 0.95,
+      useNativeDriver: true,
+      speed: 50,
+    }).start();
+  };
+
+  const handlePressOut = () => {
+    Animated.spring(scalePress, {
+      toValue: 1,
+      useNativeDriver: true,
+      speed: 50,
+    }).start();
+  };
+
+  const currentHour = new Date().getHours();
+  const greeting = currentHour < 12 ? 'Good morning' : currentHour < 18 ? 'Good afternoon' : 'Good evening';
+
+  return (
+    <View style={styles.welcomeContainer}>
+      {/* Greeting */}
+      <View style={styles.welcomeHeader}>
+        <ThemedText style={styles.welcomeGreeting}>{greeting}</ThemedText>
+        <ThemedText style={styles.welcomeName}>Darian</ThemedText>
+      </View>
+
+      {/* Blob */}
+      <Pressable
+        onPress={onPress}
+        onPressIn={handlePressIn}
+        onPressOut={handlePressOut}
+        style={styles.blobPressable}
+      >
+        {/* Outer glow */}
+        <Animated.View
+          style={[
+            styles.blobGlow,
+            {
+              opacity: glowAnim,
+              transform: [{ scale: pulseAnim }],
+            },
+          ]}
+        />
+
+        {/* Main blob */}
+        <Animated.View
+          style={[
+            styles.blob,
+            {
+              transform: [
+                { scale: Animated.multiply(pulseAnim, scalePress) },
+                { translateY: floatAnim },
+              ],
+            },
+          ]}
+        >
+          {/* Inner gradient effect */}
+          <View style={styles.blobInner}>
+            <Heart size={48} color="rgba(255, 255, 255, 0.9)" />
+          </View>
+        </Animated.View>
+      </Pressable>
+
+      {/* Health Status Message */}
+      <View style={styles.healthMessageContainer}>
+        <ThemedText style={styles.healthMessage}>{healthStatus}</ThemedText>
+        <ThemedText style={styles.tapHint}>Tap to see your details</ThemedText>
+      </View>
+    </View>
+  );
+}
+
 export default function HomeTab() {
+  const [showDashboard, setShowDashboard] = useState(false);
+
+  // Transition animations
+  const welcomeOpacity = useRef(new Animated.Value(1)).current;
+  const dashboardOpacity = useRef(new Animated.Value(0)).current;
+  const dashboardSlide = useRef(new Animated.Value(50)).current;
   // Entrance animations
   const fadeAnim = useRef(new Animated.Value(0)).current;
   const slideAnim = useRef(new Animated.Value(20)).current;
@@ -101,22 +236,76 @@ export default function HomeTab() {
     ]).start();
   }, []);
 
+  const handleBlobPress = () => {
+    // Animate welcome out
+    Animated.parallel([
+      Animated.timing(welcomeOpacity, {
+        toValue: 0,
+        duration: 300,
+        useNativeDriver: true,
+      }),
+    ]).start(() => {
+      setShowDashboard(true);
+      // Animate dashboard in
+      Animated.parallel([
+        Animated.timing(dashboardOpacity, {
+          toValue: 1,
+          duration: 400,
+          useNativeDriver: true,
+        }),
+        Animated.spring(dashboardSlide, {
+          toValue: 0,
+          tension: 50,
+          friction: 9,
+          useNativeDriver: true,
+        }),
+      ]).start();
+    });
+  };
+
   const currentHour = new Date().getHours();
   const greeting = currentHour < 12 ? 'Good morning' : currentHour < 18 ? 'Good afternoon' : 'Good evening';
 
+  // Welcome screen with blob
+  if (!showDashboard) {
+    return (
+      <View style={styles.root}>
+        <StatusBar barStyle="dark-content" backgroundColor={COLORS.background} />
+        <SafeAreaView style={styles.safeArea}>
+          <Animated.View style={[styles.welcomeWrapper, { opacity: welcomeOpacity }]}>
+            <WelcomeBlob
+              onPress={handleBlobPress}
+              healthStatus="You are in healthy shape"
+            />
+          </Animated.View>
+        </SafeAreaView>
+      </View>
+    );
+  }
+
+  // Full dashboard
   return (
     <View style={styles.root}>
       <StatusBar barStyle="dark-content" backgroundColor={COLORS.background} />
 
       <SafeAreaView style={styles.safeArea}>
-        <ScrollView
-          contentContainerStyle={styles.scrollContent}
-          showsVerticalScrollIndicator={false}
+        <Animated.View
+          style={[
+            styles.dashboardWrapper,
+            {
+              opacity: dashboardOpacity,
+              transform: [{ translateY: dashboardSlide }],
+            },
+          ]}
         >
-          <Animated.View style={{ opacity: fadeAnim, transform: [{ translateY: slideAnim }] }}>
+          <ScrollView
+            contentContainerStyle={styles.scrollContent}
+            showsVerticalScrollIndicator={false}
+          >
+            <Animated.View style={{ opacity: fadeAnim, transform: [{ translateY: slideAnim }] }}>
 
-            {/* Header */}
-            <View style={styles.header}>
+              {/* Header */}
+              <View style={styles.header}>
               <View>
                 <ThemedText style={styles.greeting}>{greeting}</ThemedText>
                 <ThemedText style={styles.userName}>Darian</ThemedText>
@@ -262,9 +451,10 @@ export default function HomeTab() {
               </Pressable>
             </View>
 
-            <View style={{ height: 100 }} />
-          </Animated.View>
-        </ScrollView>
+              <View style={{ height: 100 }} />
+            </Animated.View>
+          </ScrollView>
+        </Animated.View>
       </SafeAreaView>
     </View>
   );
@@ -627,5 +817,89 @@ const styles = StyleSheet.create({
     fontSize: 13,
     color: COLORS.textSecondary,
     fontWeight: '500',
+  },
+
+  // Welcome Screen & Blob
+  welcomeWrapper: {
+    flex: 1,
+  },
+  dashboardWrapper: {
+    flex: 1,
+  },
+  welcomeContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    paddingHorizontal: 40,
+  },
+  welcomeHeader: {
+    alignItems: 'center',
+    marginBottom: 60,
+  },
+  welcomeGreeting: {
+    fontSize: 18,
+    color: COLORS.textSecondary,
+    fontWeight: '500',
+  },
+  welcomeName: {
+    fontSize: 36,
+    fontWeight: '700',
+    color: COLORS.textPrimary,
+    marginTop: 4,
+  },
+  blobPressable: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    width: 220,
+    height: 220,
+  },
+  blobGlow: {
+    position: 'absolute',
+    width: 240,
+    height: 240,
+    borderRadius: 120,
+    backgroundColor: COLORS.teal,
+  },
+  blob: {
+    width: 180,
+    height: 180,
+    borderRadius: 90,
+    backgroundColor: COLORS.teal,
+    justifyContent: 'center',
+    alignItems: 'center',
+    ...Platform.select({
+      ios: {
+        shadowColor: COLORS.teal,
+        shadowOpacity: 0.5,
+        shadowOffset: { width: 0, height: 8 },
+        shadowRadius: 30,
+      },
+      android: {
+        elevation: 12,
+      },
+    }),
+  },
+  blobInner: {
+    width: 160,
+    height: 160,
+    borderRadius: 80,
+    backgroundColor: 'rgba(255, 255, 255, 0.15)',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  healthMessageContainer: {
+    alignItems: 'center',
+    marginTop: 50,
+  },
+  healthMessage: {
+    fontSize: 24,
+    fontWeight: '600',
+    color: COLORS.textPrimary,
+    textAlign: 'center',
+  },
+  tapHint: {
+    fontSize: 15,
+    color: COLORS.textTertiary,
+    marginTop: 12,
   },
 });
