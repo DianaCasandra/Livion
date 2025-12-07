@@ -10,10 +10,32 @@
  */
 
 import { Ionicons } from '@expo/vector-icons';
-import { Activity, Heart, Moon, Sparkles, TrendingUp, CheckCircle2, Smile, Meh, Frown, AlertCircle } from 'lucide-react-native';
+import {
+  Activity,
+  Heart,
+  Moon,
+  Sparkles,
+  TrendingUp,
+  CheckCircle2,
+  Smile,
+  Meh,
+  Frown,
+  AlertCircle,
+  Menu,
+  User,
+  BookOpen,
+  Stethoscope,
+  Settings,
+  X,
+  ChevronRight,
+  LogOut,
+  HelpCircle,
+} from 'lucide-react-native';
 import React, { useRef, useEffect, useState } from 'react';
 import {
   Animated,
+  Dimensions,
+  Modal,
   Platform,
   Pressable,
   ScrollView,
@@ -85,6 +107,114 @@ function TaskItem({ title, time, done }: any) {
         {time && <ThemedText style={styles.taskTime}>{time}</ThemedText>}
       </View>
     </View>
+  );
+}
+
+const { width: SCREEN_WIDTH } = Dimensions.get('window');
+
+// Menu items configuration
+const MENU_ITEMS = [
+  { id: 'profile', icon: User, label: 'My Profile', color: COLORS.teal },
+  { id: 'glossary', icon: BookOpen, label: 'Lab Results & Glossary', color: COLORS.amber },
+  { id: 'doctors', icon: Stethoscope, label: 'My Doctors', color: COLORS.success },
+  { id: 'settings', icon: Settings, label: 'Settings', color: COLORS.textSecondary },
+  { id: 'help', icon: HelpCircle, label: 'Help & Support', color: COLORS.textSecondary },
+];
+
+// Side Menu Component
+function SideMenu({ visible, onClose }: { visible: boolean; onClose: () => void }) {
+  const slideAnim = useRef(new Animated.Value(SCREEN_WIDTH)).current;
+  const fadeAnim = useRef(new Animated.Value(0)).current;
+
+  useEffect(() => {
+    if (visible) {
+      Animated.parallel([
+        Animated.spring(slideAnim, {
+          toValue: 0,
+          tension: 65,
+          friction: 11,
+          useNativeDriver: true,
+        }),
+        Animated.timing(fadeAnim, {
+          toValue: 1,
+          duration: 250,
+          useNativeDriver: true,
+        }),
+      ]).start();
+    } else {
+      Animated.parallel([
+        Animated.timing(slideAnim, {
+          toValue: SCREEN_WIDTH,
+          duration: 250,
+          useNativeDriver: true,
+        }),
+        Animated.timing(fadeAnim, {
+          toValue: 0,
+          duration: 200,
+          useNativeDriver: true,
+        }),
+      ]).start();
+    }
+  }, [visible]);
+
+  const handleMenuPress = (id: string) => {
+    console.log('Menu item pressed:', id);
+    onClose();
+  };
+
+  return (
+    <Modal transparent visible={visible} animationType="none" onRequestClose={onClose}>
+      <Animated.View style={[styles.menuBackdrop, { opacity: fadeAnim }]}>
+        <Pressable style={styles.menuBackdropPress} onPress={onClose} />
+      </Animated.View>
+
+      <Animated.View
+        style={[
+          styles.menuPanel,
+          { transform: [{ translateX: slideAnim }] },
+        ]}
+      >
+        <SafeAreaView style={styles.menuSafeArea}>
+          <View style={styles.menuHeader}>
+            <View style={styles.menuProfileSection}>
+              <View style={styles.menuAvatar}>
+                <ThemedText style={styles.menuAvatarText}>D</ThemedText>
+              </View>
+              <View style={styles.menuProfileInfo}>
+                <ThemedText style={styles.menuProfileName}>Darian</ThemedText>
+                <ThemedText style={styles.menuProfileEmail}>darian@email.com</ThemedText>
+              </View>
+            </View>
+            <Pressable style={styles.menuCloseBtn} onPress={onClose}>
+              <X size={24} color={COLORS.textSecondary} />
+            </Pressable>
+          </View>
+
+          <ScrollView style={styles.menuContent} showsVerticalScrollIndicator={false}>
+            {MENU_ITEMS.map((item) => (
+              <Pressable
+                key={item.id}
+                style={styles.menuItem}
+                onPress={() => handleMenuPress(item.id)}
+              >
+                <View style={[styles.menuItemIcon, { backgroundColor: item.color + '15' }]}>
+                  <item.icon size={22} color={item.color} />
+                </View>
+                <ThemedText style={styles.menuItemLabel}>{item.label}</ThemedText>
+                <ChevronRight size={20} color={COLORS.textTertiary} />
+              </Pressable>
+            ))}
+          </ScrollView>
+
+          <View style={styles.menuFooter}>
+            <Pressable style={styles.menuLogout} onPress={() => handleMenuPress('logout')}>
+              <LogOut size={20} color={COLORS.error} />
+              <ThemedText style={styles.menuLogoutText}>Log Out</ThemedText>
+            </Pressable>
+          </View>
+        </SafeAreaView>
+      </Animated.View>
+    </Modal>
   );
 }
 
@@ -220,6 +350,7 @@ function WelcomeBlob({ onPress, healthStatus }: { onPress: () => void; healthSta
 
 export default function HomeTab() {
   const [showDashboard, setShowDashboard] = useState(false);
+  const [menuVisible, setMenuVisible] = useState(false);
 
   // Transition animations
   const welcomeOpacity = useRef(new Animated.Value(1)).current;
@@ -306,15 +437,14 @@ export default function HomeTab() {
 
               {/* Header */}
               <View style={styles.header}>
-              <View>
-                <ThemedText style={styles.greeting}>{greeting}</ThemedText>
-                <ThemedText style={styles.userName}>Darian</ThemedText>
+                <View>
+                  <ThemedText style={styles.greeting}>{greeting}</ThemedText>
+                  <ThemedText style={styles.userName}>Darian</ThemedText>
+                </View>
+                <Pressable style={styles.menuBtn} onPress={() => setMenuVisible(true)}>
+                  <Menu size={24} color={COLORS.textPrimary} />
+                </Pressable>
               </View>
-              <Pressable style={styles.notificationBtn}>
-                <Ionicons name="notifications-outline" size={24} color={COLORS.textPrimary} />
-                <View style={styles.notificationDot} />
-              </Pressable>
-            </View>
 
             {/* Status Banner - Quick Glance */}
             <Card style={styles.statusBanner} highlight="teal">
@@ -456,6 +586,9 @@ export default function HomeTab() {
           </ScrollView>
         </Animated.View>
       </SafeAreaView>
+
+      {/* Side Menu */}
+      <SideMenu visible={menuVisible} onClose={() => setMenuVisible(false)} />
     </View>
   );
 }
@@ -491,7 +624,7 @@ const styles = StyleSheet.create({
     color: COLORS.textPrimary,
     marginTop: 2,
   },
-  notificationBtn: {
+  menuBtn: {
     width: 44,
     height: 44,
     borderRadius: 22,
@@ -504,15 +637,6 @@ const styles = StyleSheet.create({
       ios: { shadowColor: '#000', shadowOpacity: 0.1, shadowOffset: { width: 0, height: 4 }, shadowRadius: 12 },
       android: { elevation: 3 },
     }),
-  },
-  notificationDot: {
-    position: 'absolute',
-    top: 10,
-    right: 10,
-    width: 8,
-    height: 8,
-    borderRadius: 4,
-    backgroundColor: COLORS.amber,
   },
 
   // Cards - Glass style
@@ -901,5 +1025,122 @@ const styles = StyleSheet.create({
     fontSize: 15,
     color: COLORS.textTertiary,
     marginTop: 12,
+  },
+
+  // Side Menu
+  menuBackdrop: {
+    ...StyleSheet.absoluteFillObject,
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+  },
+  menuBackdropPress: {
+    flex: 1,
+  },
+  menuPanel: {
+    position: 'absolute',
+    top: 0,
+    right: 0,
+    bottom: 0,
+    width: SCREEN_WIDTH * 0.82,
+    backgroundColor: COLORS.cardWhite,
+    ...Platform.select({
+      ios: {
+        shadowColor: '#000',
+        shadowOpacity: 0.2,
+        shadowOffset: { width: -4, height: 0 },
+        shadowRadius: 20,
+      },
+      android: { elevation: 10 },
+    }),
+  },
+  menuSafeArea: {
+    flex: 1,
+  },
+  menuHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    padding: 20,
+    paddingTop: 16,
+    borderBottomWidth: 1,
+    borderBottomColor: COLORS.border,
+  },
+  menuProfileSection: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    flex: 1,
+  },
+  menuAvatar: {
+    width: 50,
+    height: 50,
+    borderRadius: 25,
+    backgroundColor: COLORS.teal,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginRight: 14,
+  },
+  menuAvatarText: {
+    fontSize: 20,
+    fontWeight: '700',
+    color: COLORS.cardWhite,
+  },
+  menuProfileInfo: {
+    flex: 1,
+  },
+  menuProfileName: {
+    fontSize: 18,
+    fontWeight: '600',
+    color: COLORS.textPrimary,
+  },
+  menuProfileEmail: {
+    fontSize: 13,
+    color: COLORS.textSecondary,
+    marginTop: 2,
+  },
+  menuCloseBtn: {
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    backgroundColor: COLORS.background,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  menuContent: {
+    flex: 1,
+    paddingTop: 12,
+  },
+  menuItem: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingVertical: 16,
+    paddingHorizontal: 20,
+  },
+  menuItemIcon: {
+    width: 44,
+    height: 44,
+    borderRadius: 14,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginRight: 14,
+  },
+  menuItemLabel: {
+    flex: 1,
+    fontSize: 16,
+    fontWeight: '500',
+    color: COLORS.textPrimary,
+  },
+  menuFooter: {
+    borderTopWidth: 1,
+    borderTopColor: COLORS.border,
+    padding: 20,
+  },
+  menuLogout: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 12,
+  },
+  menuLogoutText: {
+    fontSize: 16,
+    fontWeight: '500',
+    color: COLORS.error,
   },
 });
