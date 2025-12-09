@@ -8,7 +8,7 @@ import {
     StyleSheet,
     View,
 } from 'react-native';
-import { BorderRadius, Spacing } from '../../constants/Colors';
+import { BorderRadius, COLORS, Spacing } from '../../constants/Colors';
 import { ThemedText } from '../atoms/ThemedText';
 
 type InsightModalProps = {
@@ -71,7 +71,7 @@ export function InsightModal({ visible, onClose, title = "Insight", message }: I
 
                     {/* ---------- CLOSE BUTTON ---------- */}
                     <Pressable style={styles.closeButton} onPress={onClose}>
-                        <Ionicons name="close" size={22} color="#fff" />
+                        <Ionicons name="close" size={22} color={COLORS.cardWhite} />
                     </Pressable>
 
                     {/* ---------- TITLE ---------- */}
@@ -81,8 +81,8 @@ export function InsightModal({ visible, onClose, title = "Insight", message }: I
                         style={{
                             marginBottom: Spacing.sm,
                             fontSize: 22,
-                            color: "#fff",
-                            paddingRight: 28, // avoid overlap with X button
+                            color: COLORS.cardWhite,
+                            paddingRight: 28,
                         }}
                     >
                         {title}
@@ -172,6 +172,6 @@ const styles = StyleSheet.create({
 
     okText: {
         fontSize: 13,
-        color: "#fff",
+        color: COLORS.cardWhite,
     },
 });

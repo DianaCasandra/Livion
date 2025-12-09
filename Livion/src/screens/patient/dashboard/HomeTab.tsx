@@ -437,8 +437,8 @@ const INITIAL_TASKS = [
 const MOOD_OPTIONS = [
   { id: 'great', icon: Smile, label: 'Great', color: COLORS.teal },
   { id: 'okay', icon: Meh, label: 'Okay', color: COLORS.amber },
-  { id: 'low', icon: Frown, label: 'Low', color: '#f59e0b' },
-  { id: 'rough', icon: AlertCircle, label: 'Rough', color: '#ef4444' },
+  { id: 'low', icon: Frown, label: 'Low', color: COLORS.warning },
+  { id: 'rough', icon: AlertCircle, label: 'Rough', color: COLORS.error },
 ];
 
 export default function HomeTab() {

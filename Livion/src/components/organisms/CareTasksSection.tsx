@@ -2,6 +2,7 @@
 import { motion } from 'framer-motion';
 import { ThemedText } from '../../src/components/atoms/ThemedText';
 import { CareTaskTile } from '../../src/components/molecules/CareTaskTile';
+import { COLORS } from '../../src/constants/Colors';
 
 interface CareTask {
   id: string;
@@ -29,13 +30,12 @@ export const CareTasksSection = ({ tasks }: CareTasksSectionProps) => {
         transition={{ duration: 0.22, ease }}
         className="flex flex-col gap-2"
       >
-        {/* Înlocuiește className cu style */}
-        <ThemedText 
-          variant="heading" 
-          weight="semibold" 
-          style={{ color: 'white' }}
+        <ThemedText
+          variant="heading"
+          weight="semibold"
+          style={{ color: COLORS.cardWhite }}
         >
-          Today’s Tasks
+          Today's Tasks
         </ThemedText>
         <ThemedText variant="caption" color="tertiary">
           {remaining} remaining

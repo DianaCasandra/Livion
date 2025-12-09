@@ -51,8 +51,8 @@ const INSIGHT_CATEGORIES = [
     id: 'heart',
     icon: Heart,
     title: 'Heart Health',
-    color: '#ef4444',
-    bgColor: '#fef2f2',
+    color: COLORS.error,
+    bgColor: COLORS.errorLight,
     insights: [
       { title: 'Blood Pressure', desc: 'Your readings show improvement this week' },
       { title: 'Resting Heart Rate', desc: 'Trending down - great progress!' },
@@ -73,8 +73,8 @@ const INSIGHT_CATEGORIES = [
     id: 'mental',
     icon: Brain,
     title: 'Mental Wellness',
-    color: '#8b5cf6',
-    bgColor: '#f5f3ff',
+    color: COLORS.purple,
+    bgColor: COLORS.purpleLight,
     insights: [
       { title: 'Stress Levels', desc: 'Consider 5-min breathing exercises' },
       { title: 'Mood Tracking', desc: 'Consistent logging helps identify patterns' },

@@ -162,13 +162,17 @@ export const Colors = {
 /**
  * Typography Scale
  * Minimum 14-16pt base; 1.2-1.6 line-height; WCAG AA contrast
+ * Using System fonts - SF Pro (iOS) / Roboto (Android)
  */
 export const Typography = {
   fontFamily: {
-    sans: 'Inter, system-ui, -apple-system, sans-serif', // UI font
-    serif: 'Source Serif Pro, Georgia, serif',           // Clinical content
+    // System fonts - these resolve to SF Pro on iOS and Roboto on Android
+    regular: 'System',
+    medium: 'System',
+    semibold: 'System',
+    bold: 'System',
   },
-  
+
   fontSize: {
     xs: 12,
     sm: 14,

@@ -25,7 +25,7 @@
                 "monochromeImage": "./assets/images/android-icon-monochrome.png"
             },
             "splash": {
-                "image": "./assets/images/logo.png",
+                "image": "./assets/images/splash-image.png",
                 "resizeMode": "contain",
                 "backgroundColor": "#f7f7f7"
             },

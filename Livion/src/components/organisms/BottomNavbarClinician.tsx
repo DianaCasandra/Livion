@@ -1,9 +1,9 @@
 import { Href, usePathname, useRouter } from 'expo-router';
-// ... // <-- Am adăugat usePathname
 import { Activity, MessageSquare, Sparkles, Users } from 'lucide-react-native';
 import React from 'react';
 import { Dimensions, Platform, Pressable, StyleSheet, View } from 'react-native';
 import { ThemedText } from '../../src/components/atoms/ThemedText';
+import { COLORS } from '../../src/constants/Colors';
 
 const { width: SCREEN_W } = Dimensions.get('window');
 
@@ -35,30 +35,29 @@ export default function FloatingPillNav() {
     <View style={styles.floatingNavWrap} pointerEvents="box-none">
       <View style={styles.floatingNav}>
         <NavButton
-          icon={<Activity size={18} color="#fff" />}
+          icon={<Activity size={18} color={COLORS.cardWhite} />}
           label="Daily"
-          // Verificăm dacă calea curentă se potrivește cu calea butonului
-          active={currentPath === '/clinician/dashboard/home'} 
+          active={currentPath === '/clinician/dashboard/home'}
           onPress={() => navigate('/clinician/dashboard/home')}
         />
         <NavButton
-          icon={<Users size={18} color="#fff" />}
+          icon={<Users size={18} color={COLORS.cardWhite} />}
           label="Care Plan"
-          active={currentPath === '/clinician/dashboard/careplanauthoring'} 
+          active={currentPath === '/clinician/dashboard/careplanauthoring'}
           onPress={() => navigate('/clinician/dashboard/careplanauthoring')}
         />
 
         <NavButton
-          icon={<Sparkles size={18} color="#fff" />}
+          icon={<Sparkles size={18} color={COLORS.cardWhite} />}
           label="Documentation"
-          active={currentPath === '/clinician/dashboard/documentation'} 
+          active={currentPath === '/clinician/dashboard/documentation'}
           onPress={() => navigate('/clinician/dashboard/documentation')}
         />
 
         <NavButton
-          icon={<MessageSquare size={18} color="#fff" />}
+          icon={<MessageSquare size={18} color={COLORS.cardWhite} />}
           label="Messages"
-          active={currentPath === '/clinician/dashboard/messages'} 
+          active={currentPath === '/clinician/dashboard/messages'}
           onPress={() => navigate('/clinician/dashboard/messages')}
         />
       </View>
@@ -111,7 +110,7 @@ const styles = StyleSheet.create({
     marginTop: 4,
   },
   navLabelActive: {
-    color: '#fff',
+    color: COLORS.cardWhite,
     fontWeight: '600',
   },
 });

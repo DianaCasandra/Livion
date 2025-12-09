@@ -1,6 +1,6 @@
 import { Button } from '../../../components/atoms/Button';
 import { ThemedText } from '../../../components/atoms/ThemedText';
-import { Spacing } from '@/src/constants/Colors';
+import { COLORS, Spacing } from '@/src/constants/Colors';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useNavigation } from '@react-navigation/native';
 import { useEffect, useRef } from 'react';
@@ -56,7 +56,7 @@ export default function WelcomeScreen() {
       <StatusBar barStyle="light-content" translucent backgroundColor="transparent" />
 
       {/* Gradient background */}
-      <LinearGradient colors={["#f7f7f7", "#f7f7f7", "#f7f7f7"]} style={StyleSheet.absoluteFill} />
+      <LinearGradient colors={[COLORS.background, COLORS.background, COLORS.background]} style={StyleSheet.absoluteFill} />
 
       {/* Animated blobs */}
       <Animated.View style={[styles.blobBlue, blob1Style]} />
@@ -73,7 +73,7 @@ export default function WelcomeScreen() {
             <ThemedText
               variant="heading"
               align="center"
-              style={[styles.softTitle, { color: "#03d0c5" }]} // teal secundar
+              style={[styles.softTitle, { color: COLORS.teal }]}
             >
               Your health story. Yours to share.
             </ThemedText>
@@ -85,7 +85,7 @@ export default function WelcomeScreen() {
               <ThemedText
                 variant="body"
                 align="center"
-                style={[styles.linkText, { color: "#ff6e1e" }]} // indigo principal
+                style={[styles.linkText, { color: COLORS.amber }]}
               >
                 User Promise & Privacy Explainer
               </ThemedText>
@@ -99,9 +99,9 @@ export default function WelcomeScreen() {
               size="lg"
               fullWidth
               onPress={() => navigation.navigate('Register' as never)}
-              style={{ ...styles.button, backgroundColor: '#ff6d1e9a' }} // accent principal
+              style={[styles.button, { backgroundColor: COLORS.amber + '9a' }]}
             >
-             <ThemedText variant="label" weight="semibold" style={{ color: "#fff", textAlign: "center" }}>
+             <ThemedText variant="label" weight="semibold" style={{ color: COLORS.cardWhite, textAlign: "center" }}>
                 Get Started
               </ThemedText>
             </Button>
@@ -116,7 +116,7 @@ export default function WelcomeScreen() {
 const styles = StyleSheet.create({
   root: {
     flex: 1,
-    backgroundColor: '#f7f7f7',
+    backgroundColor: COLORS.background,
     paddingTop: Platform.OS === 'android' ? StatusBar.currentHeight || 24 : 0,
   },
 
@@ -174,7 +174,7 @@ const styles = StyleSheet.create({
     marginTop: Spacing.md,
     padding: 6,
     borderRadius: 10,
-    backgroundColor: 'rgba(255, 110, 30, 0.12)', // indigo principal transparent
+    backgroundColor: COLORS.amber + '1f',
   },
 
   blobBlue: {
@@ -182,7 +182,7 @@ const styles = StyleSheet.create({
     width: 450,
     height: 450,
     borderRadius: 999,
-    backgroundColor: '#03a098ff',
+    backgroundColor: COLORS.tealDark,
     opacity: 0.12,
     top: -150,
     right: -120,
@@ -193,7 +193,7 @@ const styles = StyleSheet.create({
     width: 500,
     height: 500,
     borderRadius: 999,
-    backgroundColor: '#03d0c5',
+    backgroundColor: COLORS.teal,
     opacity: 0.10,
     bottom: -130,
     left: -170,
