@@ -359,7 +359,7 @@ export default function SymptomsTab() {
     <View style={styles.root}>
       <StatusBar barStyle="dark-content" backgroundColor={COLORS.background} />
 
-      <SafeAreaView style={styles.safeArea}>
+      <SafeAreaView style={styles.safeArea} edges={['left', 'right', 'top']}>
         <Animated.View style={[styles.container, { opacity: fadeAnim, transform: [{ translateY: slideAnim }] }]}>
 
           {/* Header */}
@@ -724,6 +724,7 @@ const styles = StyleSheet.create({
     fontSize: 28,
     fontWeight: '700',
     color: COLORS.textPrimary,
+    lineHeight: 36,
   },
   headerSubtitle: {
     fontSize: 15,
@@ -1072,6 +1073,7 @@ const styles = StyleSheet.create({
   painValue: {
     fontSize: 36,
     fontWeight: '700',
+    lineHeight: 44,
   },
   painValueLabel: {
     fontSize: 18,

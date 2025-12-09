@@ -101,7 +101,9 @@ export default function WelcomeScreen() {
               onPress={() => navigation.navigate('Register' as never)}
               style={{ ...styles.button, backgroundColor: '#ff6d1e9a' }} // accent principal
             >
-              Get Started
+             <ThemedText variant="label" weight="semibold" style={{ color: "#fff", textAlign: "center" }}>
+                Get Started
+              </ThemedText>
             </Button>
           </View>
 

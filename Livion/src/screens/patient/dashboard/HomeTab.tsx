@@ -131,6 +131,9 @@ const MENU_ITEMS = [
   { id: 'help', icon: HelpCircle, label: 'Help & Support', color: COLORS.textSecondary },
 ];
 
+  const currentHour = new Date().getHours();
+  const greeting = currentHour < 12 ? 'Good morning' : currentHour < 18 ? 'Good afternoon' : 'Good evening';
+
 // Side Menu Component
 function SideMenu({ visible, onClose }: { visible: boolean; onClose: () => void }) {
   const slideAnim = useRef(new Animated.Value(SCREEN_WIDTH)).current;
@@ -354,9 +357,6 @@ function WelcomeBlob({ onPress, healthStatus }: { onPress: () => void; healthSta
     }).start();
   };
 
-  const currentHour = new Date().getHours();
-  const greeting = currentHour < 12 ? 'Good morning' : currentHour < 18 ? 'Good afternoon' : 'Good evening';
-
   return (
     <View style={styles.welcomeContainer}>
       {/* Greeting */}
@@ -506,15 +506,12 @@ export default function HomeTab() {
     });
   };
 
-  const currentHour = new Date().getHours();
-  const greeting = currentHour < 12 ? 'Good morning' : currentHour < 18 ? 'Good afternoon' : 'Good evening';
-
   // Welcome screen with blob
   if (!showDashboard) {
     return (
       <View style={styles.root}>
         <StatusBar barStyle="dark-content" backgroundColor={COLORS.background} />
-        <SafeAreaView style={styles.safeArea}>
+        <SafeAreaView style={styles.safeArea} edges={['left', 'right', 'top']}>
           <Animated.View style={[styles.welcomeWrapper, { opacity: welcomeOpacity }]}>
             <WelcomeBlob
               onPress={handleBlobPress}
@@ -531,7 +528,7 @@ export default function HomeTab() {
     <View style={styles.root}>
       <StatusBar barStyle="dark-content" backgroundColor={COLORS.background} />
 
-      <SafeAreaView style={styles.safeArea}>
+      <SafeAreaView style={styles.safeArea} edges={['left', 'right', 'top']}>
         <Animated.View
           style={[
             styles.dashboardWrapper,
@@ -1083,6 +1080,7 @@ const styles = StyleSheet.create({
     fontWeight: '700',
     color: COLORS.textPrimary,
     marginTop: 4,
+    lineHeight: 44,
   },
   blobPressable: {
     alignItems: 'center',

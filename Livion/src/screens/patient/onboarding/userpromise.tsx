@@ -6,13 +6,12 @@ import {
   ScrollView,
   StatusBar,
   StyleSheet,
-  TouchableOpacity,
   View,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { BackButton } from '../../../components/atoms/BackButton';
 import { ThemedText } from '../../../components/atoms/ThemedText';
 import { Spacing, COLORS } from '@/src/constants/Colors';
-import { Ionicons } from '@expo/vector-icons';
 
 // Icons Lucide
 import {
@@ -105,17 +104,15 @@ export default function UserPromise() {
       <Animated.View style={[styles.blobAmber, blob2Style]} />
 
       <SafeAreaView style={styles.safeArea}>
+        {/* Header with Back Button */}
+        <View style={styles.header}>
+          <BackButton />
+        </View>
+
         <ScrollView
           style={styles.container}
           contentContainerStyle={styles.contentContainer}
         >
-          <TouchableOpacity
-            onPress={() => navigation.goBack()}
-            style={styles.backButton}
-          >
-            <Ionicons name="chevron-back" size={28} color={COLORS.textPrimary} />
-          </TouchableOpacity>
-
           <Animated.View
             style={{
               transform: [{ translateY: slide }],
@@ -241,28 +238,19 @@ const styles = StyleSheet.create({
   safeArea: {
     flex: 1,
   },
+
+  header: {
+    paddingHorizontal: Spacing.xl,
+    paddingTop: Spacing.xs,
+    paddingBottom: Spacing.xs,
+  },
+
   container: {
     flex: 1,
   },
   contentContainer: {
-    padding: Spacing.xl,
+    paddingHorizontal: Spacing.xl,
     paddingBottom: Spacing['2xl'],
-  },
-
-  /* Back Button */
-  backButton: {
-    alignSelf: 'flex-start',
-    marginBottom: Spacing.lg,
-    marginTop: Spacing.md,
-    padding: 8,
-    borderRadius: 14,
-    backgroundColor: 'rgba(255, 255, 255, 0.7)',
-    borderWidth: 1,
-    borderColor: 'rgba(255, 255, 255, 0.9)',
-    ...Platform.select({
-      ios: { shadowColor: '#000', shadowOpacity: 0.08, shadowOffset: { width: 0, height: 4 }, shadowRadius: 12 },
-      android: { elevation: 3 },
-    }),
   },
 
   title: {

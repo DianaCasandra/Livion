@@ -175,7 +175,7 @@ export default function MessagesTab() {
     <View style={styles.root}>
       <StatusBar barStyle="dark-content" backgroundColor={COLORS.background} />
 
-      <SafeAreaView style={styles.safeArea}>
+      <SafeAreaView style={styles.safeArea} edges={['left', 'right', 'top']}>
         <Animated.View style={[styles.container, { opacity: fadeAnim, transform: [{ translateY: slideAnim }] }]}>
 
           {/* Header */}

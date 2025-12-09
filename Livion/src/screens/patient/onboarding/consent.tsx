@@ -1,20 +1,13 @@
-import { Ionicons } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
-import { useState, useRef, useEffect } from 'react';
-import {
-  Animated,
-  Platform,
-  SafeAreaView,
-  ScrollView,
-  StatusBar,
-  StyleSheet,
-  Switch,
-  TouchableOpacity,
-  View,
-} from 'react-native';
+import { useState } from 'react';
+import { Platform, SafeAreaView, ScrollView, StatusBar, StyleSheet, View } from 'react-native';
+import { AnimatedBlobBackground } from '../../../components/atoms/AnimatedBlobBackground';
+import { GlassCard } from '../../../components/atoms/GlassCard';
 import { Button } from '../../../components/atoms/Button';
 import { ThemedText } from '../../../components/atoms/ThemedText';
-import { BorderRadius, Spacing, COLORS } from '@/src/constants/Colors';
+import { OnboardingHeader } from '../../../components/molecules/OnboardingHeader';
+import { ToggleRow } from '../../../components/molecules/ToggleRow';
+import { BorderRadius, Spacing, COLORS, GlassStyles } from '@/src/constants/Colors';
 
 export default function ConsentScreen() {
   const navigation = useNavigation();
@@ -30,55 +23,17 @@ export default function ConsentScreen() {
   const [research, setResearch] = useState(false);
   const [purposeBinding, setPurposeBinding] = useState(false);
 
-  // Animated blobs
-  const anim1 = useRef(new Animated.Value(0)).current;
-  const anim2 = useRef(new Animated.Value(0)).current;
-
-  useEffect(() => {
-    const loopAnimation = (anim: Animated.Value, delay: number) => {
-      Animated.loop(
-        Animated.sequence([
-          Animated.timing(anim, { toValue: 1, duration: 8000, delay, useNativeDriver: true }),
-          Animated.timing(anim, { toValue: 0, duration: 8000, useNativeDriver: true }),
-        ])
-      ).start();
-    };
-    loopAnimation(anim1, 0);
-    loopAnimation(anim2, 1500);
-  }, []);
-
-  const blob1Style = {
-    transform: [
-      { translateX: anim1.interpolate({ inputRange: [0, 1], outputRange: [-40, 40] }) },
-      { translateY: anim1.interpolate({ inputRange: [0, 1], outputRange: [-20, 20] }) },
-    ],
-  };
-
-  const blob2Style = {
-    transform: [
-      { translateX: anim2.interpolate({ inputRange: [0, 1], outputRange: [30, -30] }) },
-      { translateY: anim2.interpolate({ inputRange: [0, 1], outputRange: [40, -40] }) },
-    ],
-  };
-
   return (
     <View style={styles.root}>
       <StatusBar barStyle="dark-content" backgroundColor={COLORS.background} />
 
-      {/* Animated blobs */}
-      <Animated.View style={[styles.blobTeal, blob1Style]} />
-      <Animated.View style={[styles.blobAmber, blob2Style]} />
+      <AnimatedBlobBackground />
 
       <SafeAreaView style={styles.safeArea}>
+        <OnboardingHeader />
+
         <ScrollView contentContainerStyle={styles.container}>
-
-          {/* Back Button */}
-          <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
-            <Ionicons name="chevron-back" size={28} color={COLORS.textPrimary} />
-          </TouchableOpacity>
-
-          {/* Main Card */}
-          <View style={styles.card}>
+          <GlassCard style={styles.card} shadowSize="lg">
             <ThemedText variant="display" weight="bold" style={styles.title} align="center">
               Consent & Preferences
             </ThemedText>
@@ -92,7 +47,7 @@ export default function ConsentScreen() {
               <ToggleRow
                 label="Data Sources"
                 value={dataSources}
-                onValueChange={() => setDataSources(prev => !prev)}
+                onValueChange={setDataSources}
                 centerText
               />
 
@@ -101,14 +56,14 @@ export default function ConsentScreen() {
                   <ToggleRow
                     label="Wearables"
                     value={wearables}
-                    onValueChange={() => setWearables(prev => !prev)}
+                    onValueChange={setWearables}
                     small
                     centerText
                   />
                   <ToggleRow
                     label="EHR"
                     value={ehr}
-                    onValueChange={() => setEhr(prev => !prev)}
+                    onValueChange={setEhr}
                     small
                     centerText
                   />
@@ -117,101 +72,43 @@ export default function ConsentScreen() {
             </View>
 
             {/* Sharing Scopes */}
-            <ThemedText
-              variant="heading"
-              weight="semibold"
-              align="center"
-              style={styles.subtitle}
-            >
+            <ThemedText variant="heading" weight="semibold" align="center" style={styles.subtitle}>
               Sharing Scopes
             </ThemedText>
 
             <View style={styles.section}>
-              <ToggleRow label="Private" value={privateShare} onValueChange={() => setPrivateShare(prev => !prev)} centerText />
-              <ToggleRow label="Circle" value={circleShare} onValueChange={() => setCircleShare(prev => !prev)} centerText />
-              <ToggleRow label="Clinician" value={clinicianShare} onValueChange={() => setClinicianShare(prev => !prev)} centerText />
+              <ToggleRow label="Private" value={privateShare} onValueChange={setPrivateShare} centerText />
+              <ToggleRow label="Circle" value={circleShare} onValueChange={setCircleShare} centerText />
+              <ToggleRow label="Clinician" value={clinicianShare} onValueChange={setClinicianShare} centerText />
             </View>
 
             {/* Additional Toggles */}
             <View style={styles.section}>
-              <ToggleRow label="Research opt-in" value={research} onValueChange={() => setResearch(prev => !prev)} centerText />
-              <ToggleRow label="Purpose binding & data minimization" value={purposeBinding} onValueChange={() => setPurposeBinding(prev => !prev)} centerText />
+              <ToggleRow label="Research opt-in" value={research} onValueChange={setResearch} centerText />
+              <ToggleRow label="Purpose binding & data minimization" value={purposeBinding} onValueChange={setPurposeBinding} centerText />
             </View>
 
-            {/* NEXT Button */}
             <Button
               variant="primary"
               fullWidth
               style={styles.nextButton}
-              textStyle={{ textAlign: "center" }}
+              textStyle={{ textAlign: 'center' }}
               onPress={() => navigation.navigate('DataConnections' as never)}
             >
-              <ThemedText variant="label" weight="semibold" style={{ color: "#fff", textAlign: "center" }}>
+              <ThemedText variant="label" weight="semibold" style={styles.buttonText}>
                 Continue
               </ThemedText>
             </Button>
-          </View>
+          </GlassCard>
 
-          {/* Disclaimer */}
-          <ThemedText
-            variant="caption"
-            align="center"
-            style={styles.disclaimer}
-          >
+          <ThemedText variant="caption" align="center" style={styles.disclaimer}>
             You can adjust all consent settings later from your profile.
           </ThemedText>
-
         </ScrollView>
       </SafeAreaView>
     </View>
   );
 }
-
-
-/* ─────────────────────────────── */
-/* ToggleRow Component */
-/* ─────────────────────────────── */
-
-function ToggleRow({
-  label,
-  value,
-  onValueChange,
-  small = false,
-  centerText = false,
-}: {
-  label: string;
-  value: boolean;
-  onValueChange: () => void;
-  small?: boolean;
-  centerText?: boolean;
-}) {
-  return (
-    <View style={[styles.toggleRow, small && styles.smallToggleRow]}>
-      <ThemedText
-        variant="body"
-        style={[
-          styles.toggleLabel,
-          small && styles.smallToggleLabel,
-          { color: COLORS.textPrimary, textAlign: centerText ? 'center' : 'left' }
-        ]}
-      >
-        {label}
-      </ThemedText>
-
-      <Switch
-        value={value}
-        onValueChange={onValueChange}
-        thumbColor={value ? COLORS.teal : '#e2e8f0'}
-        trackColor={{ true: COLORS.tealLight, false: '#cbd5e1' }}
-      />
-    </View>
-  );
-}
-
-
-/* ─────────────────────────────── */
-/* Styles */
-/* ─────────────────────────────── */
 
 const styles = StyleSheet.create({
   root: {
@@ -219,133 +116,55 @@ const styles = StyleSheet.create({
     backgroundColor: COLORS.background,
     paddingTop: Platform.OS === 'android' ? StatusBar.currentHeight || 24 : 0,
   },
-  safeArea: { flex: 1 },
-
+  safeArea: {
+    flex: 1,
+  },
   container: {
     flexGrow: 1,
-    padding: Spacing.xl,
-    paddingTop: Spacing.lg,
+    paddingHorizontal: Spacing.xl,
+    paddingBottom: Spacing.xl,
     alignItems: 'center',
   },
-
-  backButton: {
-    alignSelf: 'flex-start',
-    marginBottom: Spacing.lg,
-    marginTop: Spacing.md,
-    padding: 8,
-    borderRadius: 14,
-    backgroundColor: 'rgba(255, 255, 255, 0.7)',
-    borderWidth: 1,
-    borderColor: 'rgba(255, 255, 255, 0.9)',
-    ...Platform.select({
-      ios: { shadowColor: '#000', shadowOpacity: 0.08, shadowOffset: { width: 0, height: 4 }, shadowRadius: 12 },
-      android: { elevation: 3 },
-    }),
-  },
-
   card: {
-    padding: Spacing.xl,
-    borderRadius: 28,
-    backgroundColor: 'rgba(255, 255, 255, 0.72)',
-    borderColor: 'rgba(255, 255, 255, 0.8)',
-    borderWidth: 1,
     width: '100%',
     alignItems: 'center',
-    ...Platform.select({
-      ios: { shadowColor: '#000', shadowOpacity: 0.1, shadowOffset: { width: 0, height: 10 }, shadowRadius: 30 },
-      android: { elevation: 6 },
-    }),
   },
-
   title: {
     marginBottom: Spacing.md,
     color: COLORS.textPrimary,
-    textAlign: 'center',
   },
   body: {
     marginBottom: Spacing.xl,
-    textAlign: 'center',
     color: COLORS.textSecondary,
   },
-
   section: {
     marginBottom: Spacing.xl,
     gap: Spacing.md,
     width: '100%',
   },
-
   subtitle: {
     marginBottom: Spacing.md,
     color: COLORS.teal,
-    textAlign: 'center',
   },
-
-  toggleRow: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    paddingVertical: Spacing.sm,
-    paddingHorizontal: Spacing.md,
-    backgroundColor: 'rgba(255, 255, 255, 0.5)',
-    borderRadius: 14,
-    borderWidth: 1,
-    borderColor: 'rgba(255, 255, 255, 0.7)',
-  },
-
-  smallToggleRow: {
-    paddingLeft: Spacing.lg,
-  },
-
-  toggleLabel: {
-    flex: 1,
-    marginRight: Spacing.md,
-    textAlign: 'center',
-  },
-
-  smallToggleLabel: {
-    fontSize: 14,
-  },
-
   subToggleGroup: {
     marginTop: Spacing.xs,
     gap: Spacing.xs,
-    backgroundColor: 'rgba(255, 255, 255, 0.3)',
+    backgroundColor: GlassStyles.cardSubtle.backgroundColor,
     borderRadius: BorderRadius.md,
     paddingVertical: Spacing.sm,
     paddingHorizontal: Spacing.sm,
   },
-
   nextButton: {
     marginTop: Spacing.lg,
     backgroundColor: COLORS.teal,
   },
-
+  buttonText: {
+    color: COLORS.cardWhite,
+    textAlign: 'center',
+  },
   disclaimer: {
     marginBottom: 25,
     marginTop: 15,
-    textAlign: 'center',
     color: COLORS.textSecondary,
-  },
-
-  blobTeal: {
-    position: 'absolute',
-    width: 400,
-    height: 400,
-    right: -120,
-    top: -80,
-    borderRadius: 999,
-    backgroundColor: COLORS.teal,
-    opacity: 0.12,
-  },
-
-  blobAmber: {
-    position: 'absolute',
-    width: 450,
-    height: 450,
-    left: -180,
-    bottom: -100,
-    borderRadius: 999,
-    backgroundColor: COLORS.amber,
-    opacity: 0.10,
   },
 });

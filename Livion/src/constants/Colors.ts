@@ -28,6 +28,57 @@ export const COLORS = {
   warningLight: '#fffbeb',
   error: '#ef4444',
   errorLight: '#fef2f2',
+  // Additional UI colors
+  purple: '#8b5cf6',
+  purpleLight: '#f3e8ff',
+  blue: '#3b82f6',
+  blueLight: '#eff6ff',
+  // Switch/Toggle colors
+  switchTrackOff: '#cbd5e1',
+  switchThumbOff: '#e2e8f0',
+};
+
+// Glass morphism style presets
+export const GlassStyles = {
+  card: {
+    backgroundColor: 'rgba(255, 255, 255, 0.72)',
+    borderColor: 'rgba(255, 255, 255, 0.8)',
+  },
+  cardSubtle: {
+    backgroundColor: 'rgba(255, 255, 255, 0.5)',
+    borderColor: 'rgba(255, 255, 255, 0.7)',
+  },
+  cardStrong: {
+    backgroundColor: 'rgba(255, 255, 255, 0.85)',
+    borderColor: 'rgba(255, 255, 255, 0.9)',
+  },
+  overlay: {
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+  },
+  tealHighlight: {
+    backgroundColor: 'rgba(3, 208, 197, 0.12)',
+    borderColor: 'rgba(3, 208, 197, 0.2)',
+  },
+  amberHighlight: {
+    backgroundColor: 'rgba(255, 110, 30, 0.12)',
+    borderColor: 'rgba(255, 110, 30, 0.2)',
+  },
+};
+
+// Opacity hex values for appending to colors
+export const OpacityHex = {
+  '5': '0d',
+  '10': '1a',
+  '15': '26',
+  '20': '33',
+  '25': '40',
+  '30': '4d',
+  '40': '66',
+  '50': '80',
+  '60': '99',
+  '70': 'b3',
+  '80': 'cc',
+  '90': 'e6',
 };
 
 export const Colors = {

@@ -360,7 +360,7 @@ export default function CarePlanTab() {
     <View style={styles.root}>
       <StatusBar barStyle="dark-content" backgroundColor={COLORS.background} />
 
-      <SafeAreaView style={styles.safeArea}>
+      <SafeAreaView style={styles.safeArea} edges={['left', 'right', 'top']}>
         <Animated.View
           style={[styles.container, { opacity: fadeAnim, transform: [{ translateY: slideAnim }] }]}
         >
@@ -496,6 +496,7 @@ const styles = StyleSheet.create({
     fontSize: 28,
     fontWeight: '700',
     color: COLORS.textPrimary,
+    lineHeight: 36,
   },
   headerRight: {
     flexDirection: 'row',

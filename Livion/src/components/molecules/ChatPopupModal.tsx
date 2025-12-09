@@ -17,6 +17,7 @@ import {
   TextInput,
   View,
 } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { COLORS, BorderRadius, Spacing } from '../../constants/Colors';
 import { ThemedText } from '../atoms/ThemedText';
 
@@ -118,6 +119,7 @@ export function ChatPopupModal({
   doctorRole = 'Family Physician',
   initialMessages = [],
 }: ChatPopupModalProps) {
+  const insets = useSafeAreaInsets();
   const [message, setMessage] = useState('');
   const [messages, setMessages] = useState<Message[]>(
     initialMessages.length > 0
@@ -216,6 +218,8 @@ export function ChatPopupModal({
         style={styles.keyboardView}
       >
         <View style={styles.overlay}>
+          {/* Backdrop - tap to close */}
+          <Pressable style={styles.backdrop} onPress={onClose} />
           <Animated.View
             style={[
               styles.modalCard,
@@ -279,7 +283,7 @@ export function ChatPopupModal({
             </ScrollView>
 
             {/* Input Area */}
-            <View style={styles.inputArea}>
+            <View style={[styles.inputArea, { paddingBottom: 12 + insets.bottom }]}>
               <TextInput
                 style={styles.messageInput}
                 placeholder="Type your message..."
@@ -318,12 +322,21 @@ const styles = StyleSheet.create({
     justifyContent: 'flex-end',
   },
 
+  backdrop: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+  },
+
   modalCard: {
-    height: '85%',
+    height: '80%',
     backgroundColor: COLORS.cardWhite,
     borderTopLeftRadius: BorderRadius['2xl'],
     borderTopRightRadius: BorderRadius['2xl'],
     overflow: 'hidden',
+    marginBottom: 0,
     ...Platform.select({
       ios: {
         shadowColor: '#000',
