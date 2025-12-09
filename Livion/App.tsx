@@ -14,6 +14,10 @@ import UserPromiseScreen from './src/screens/patient/onboarding/userpromise';
 // Patient Dashboard (Tab Navigator)
 import DashboardTabs from './src/navigation/DashboardTabs';
 
+// Lab Results Screens
+import LabResultsScreen from './src/screens/patient/labs/LabResultsScreen';
+import LabResultDetailScreen from './src/screens/patient/labs/LabResultDetailScreen';
+
 const Stack = createNativeStackNavigator();
 
 export default function App() {
@@ -36,6 +40,10 @@ export default function App() {
 
               {/* Main Dashboard */}
               <Stack.Screen name="Dashboard" component={DashboardTabs} />
+
+              {/* Lab Results */}
+              <Stack.Screen name="LabResults" component={LabResultsScreen} />
+              <Stack.Screen name="LabResultDetail" component={LabResultDetailScreen} />
             </Stack.Navigator>
           </NavigationContainer>
         </MockDataProvider>
