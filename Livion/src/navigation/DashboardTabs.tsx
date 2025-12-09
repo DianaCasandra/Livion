@@ -4,7 +4,7 @@ import { StyleSheet, View } from 'react-native';
 
 import HomeTab from '../screens/patient/dashboard/HomeTab';
 import CarePlanTab from '../screens/patient/dashboard/CarePlanTab';
-import MessagesTab from '../screens/patient/dashboard/MessagesTab';
+import PeerCirclesTab from '../screens/patient/dashboard/PeerCirclesTab';
 import SymptomsTab from '../screens/patient/dashboard/SymptomsTab';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { COLORS } from '../constants/Colors';
@@ -60,12 +60,12 @@ export default function DashboardTabs() {
         }}
       />
       <Tab.Screen
-        name="MessagesTab"
-        component={MessagesTab}
+        name="PeerCirclesTab"
+        component={PeerCirclesTab}
         options={{
-          tabBarLabel: 'Messages',
+          tabBarLabel: 'Circles',
           tabBarIcon: ({ color, size }) => (
-            <Ionicons name="chatbubbles-outline" size={size} color={color} />
+            <Ionicons name="people-outline" size={size} color={color} />
           ),
         }}
       />
