@@ -25,6 +25,7 @@ import {
   StyleSheet,
   View,
 } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { COLORS, BorderRadius, Spacing } from '../../constants/Colors';
 import { ThemedText } from '../atoms/ThemedText';
 
@@ -189,6 +190,7 @@ function InsightCard({ category, index, onPress }: any) {
 }
 
 export function AIInsightsModal({ visible, onClose }: AIInsightsModalProps) {
+  const insets = useSafeAreaInsets();
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
 
   // Animation values
@@ -310,7 +312,7 @@ export function AIInsightsModal({ visible, onClose }: AIInsightsModalProps) {
           </ScrollView>
 
           {/* Footer */}
-          <View style={styles.footer}>
+          <View style={[styles.footer, { paddingBottom: 14 + insets.bottom }]}>
             <Ionicons
               name="information-circle-outline"
               size={14}

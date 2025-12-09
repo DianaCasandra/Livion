@@ -45,7 +45,7 @@ import {
   StyleSheet,
   View,
 } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
 import { ThemedText } from '../../../components/atoms/ThemedText';
 import { COLORS } from '@/src/constants/Colors';
 
@@ -136,11 +136,16 @@ const MENU_ITEMS = [
 
 // Side Menu Component
 function SideMenu({ visible, onClose }: { visible: boolean; onClose: () => void }) {
+  const insets = useSafeAreaInsets();
   const slideAnim = useRef(new Animated.Value(SCREEN_WIDTH)).current;
   const fadeAnim = useRef(new Animated.Value(0)).current;
 
   useEffect(() => {
     if (visible) {
+      // Reset to starting position before animating in
+      slideAnim.setValue(SCREEN_WIDTH);
+      fadeAnim.setValue(0);
+
       Animated.parallel([
         Animated.spring(slideAnim, {
           toValue: 0,
@@ -154,40 +159,50 @@ function SideMenu({ visible, onClose }: { visible: boolean; onClose: () => void 
           useNativeDriver: true,
         }),
       ]).start();
-    } else {
-      Animated.parallel([
-        Animated.timing(slideAnim, {
-          toValue: SCREEN_WIDTH,
-          duration: 250,
-          useNativeDriver: true,
-        }),
-        Animated.timing(fadeAnim, {
-          toValue: 0,
-          duration: 200,
-          useNativeDriver: true,
-        }),
-      ]).start();
     }
   }, [visible]);
 
-  const handleMenuPress = (id: string) => {
-    console.log('Menu item pressed:', id);
-    onClose();
+  const handleClose = () => {
+    Animated.parallel([
+      Animated.timing(slideAnim, {
+        toValue: SCREEN_WIDTH,
+        duration: 250,
+        useNativeDriver: true,
+      }),
+      Animated.timing(fadeAnim, {
+        toValue: 0,
+        duration: 200,
+        useNativeDriver: true,
+      }),
+    ]).start(() => {
+      onClose();
+    });
   };
 
-  return (
-    <Modal transparent visible={visible} animationType="none" onRequestClose={onClose}>
-      <Animated.View style={[styles.menuBackdrop, { opacity: fadeAnim }]}>
-        <Pressable style={styles.menuBackdropPress} onPress={onClose} />
-      </Animated.View>
+  const handleMenuPress = (id: string) => {
+    console.log('Menu item pressed:', id);
+    handleClose();
+  };
 
-      <Animated.View
-        style={[
-          styles.menuPanel,
-          { transform: [{ translateX: slideAnim }] },
-        ]}
-      >
-        <SafeAreaView style={styles.menuSafeArea}>
+  if (!visible) return null;
+
+  return (
+    <Modal transparent visible={visible} animationType="none" onRequestClose={handleClose}>
+      <View style={styles.menuContainer}>
+        <Animated.View style={[styles.menuBackdrop, { opacity: fadeAnim }]}>
+          <Pressable style={styles.menuBackdropPress} onPress={handleClose} />
+        </Animated.View>
+
+        <Animated.View
+          style={[
+            styles.menuPanel,
+            {
+              transform: [{ translateX: slideAnim }],
+              paddingTop: insets.top,
+              paddingBottom: insets.bottom,
+            },
+          ]}
+        >
           <View style={styles.menuHeader}>
             <View style={styles.menuProfileSection}>
               <View style={styles.menuAvatar}>
@@ -198,7 +213,7 @@ function SideMenu({ visible, onClose }: { visible: boolean; onClose: () => void 
                 <ThemedText style={styles.menuProfileEmail}>darian@email.com</ThemedText>
               </View>
             </View>
-            <Pressable style={styles.menuCloseBtn} onPress={onClose}>
+            <Pressable style={styles.menuCloseBtn} onPress={handleClose}>
               <X size={24} color={COLORS.textSecondary} />
             </Pressable>
           </View>
@@ -225,8 +240,8 @@ function SideMenu({ visible, onClose }: { visible: boolean; onClose: () => void 
               <ThemedText style={styles.menuLogoutText}>Log Out</ThemedText>
             </Pressable>
           </View>
-        </SafeAreaView>
-      </Animated.View>
+        </Animated.View>
+      </View>
     </Modal>
   );
 }
@@ -1139,6 +1154,9 @@ const styles = StyleSheet.create({
   },
 
   // Side Menu
+  menuContainer: {
+    flex: 1,
+  },
   menuBackdrop: {
     ...StyleSheet.absoluteFillObject,
     backgroundColor: 'rgba(0, 0, 0, 0.5)',
