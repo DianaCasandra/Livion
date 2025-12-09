@@ -30,6 +30,8 @@ import {
   ChevronRight,
   LogOut,
   HelpCircle,
+  Phone,
+  MessageCircle,
 } from 'lucide-react-native';
 import React, { useRef, useEffect, useState } from 'react';
 import {
@@ -76,37 +78,45 @@ function Card({ children, style, onPress, highlight }: any) {
   );
 }
 
-// Stat widget - large number with label
-function StatWidget({ icon: Icon, iconColor, value, label, subtitle, trend }: any) {
+// Compact Vital Card - centered design with icon accent
+function VitalCard({ icon: Icon, iconColor, value, unit, subtitle, progress, style }: any) {
   return (
-    <View style={styles.statWidget}>
-      <View style={[styles.statIconBg, { backgroundColor: iconColor + '15' }]}>
-        <Icon size={20} color={iconColor} />
+    <Card style={[styles.vitalCard, style]}>
+      <View style={styles.vitalContent}>
+        <View style={[styles.vitalIconCircle, { backgroundColor: iconColor + '18' }]}>
+          <Icon size={22} color={iconColor} strokeWidth={2.5} />
+        </View>
+        <View style={styles.vitalInfo}>
+          <View style={styles.vitalValueRow}>
+            <ThemedText style={styles.vitalValue}>{value}</ThemedText>
+            <ThemedText style={styles.vitalUnit}>{unit}</ThemedText>
+          </View>
+          <ThemedText style={[styles.vitalSubtitle, { color: iconColor }]}>{subtitle}</ThemedText>
+        </View>
       </View>
-      <ThemedText style={styles.statValue}>{value}</ThemedText>
-      <ThemedText style={styles.statLabel}>{label}</ThemedText>
-      {subtitle && (
-        <View style={styles.statSubtitleRow}>
-          {trend && <TrendingUp size={12} color={COLORS.success} />}
-          <ThemedText style={styles.statSubtitle}>{subtitle}</ThemedText>
+      {progress !== undefined && (
+        <View style={styles.vitalProgressBar}>
+          <View style={[styles.vitalProgressFill, { width: `${progress}%`, backgroundColor: iconColor }]} />
         </View>
       )}
-    </View>
+    </Card>
   );
 }
 
-// Task item with checkbox feel
-function TaskItem({ title, time, done }: any) {
+// Task item with checkbox feel - clickable
+function TaskItem({ title, time, done, onToggle }: any) {
   return (
-    <View style={[styles.taskItem, done && styles.taskItemDone]}>
-      <View style={[styles.taskCheckbox, done && styles.taskCheckboxDone]}>
-        {done && <CheckCircle2 size={18} color={COLORS.teal} />}
+    <Pressable onPress={onToggle}>
+      <View style={[styles.taskItem, done && styles.taskItemDone]}>
+        <View style={[styles.taskCheckbox, done && styles.taskCheckboxDone]}>
+          {done && <CheckCircle2 size={18} color={COLORS.teal} />}
+        </View>
+        <View style={styles.taskContent}>
+          <ThemedText style={[styles.taskTitle, done && styles.taskTitleDone]}>{title}</ThemedText>
+          {time && <ThemedText style={styles.taskTime}>{time}</ThemedText>}
+        </View>
       </View>
-      <View style={styles.taskContent}>
-        <ThemedText style={[styles.taskTitle, done && styles.taskTitleDone]}>{title}</ThemedText>
-        {time && <ThemedText style={styles.taskTime}>{time}</ThemedText>}
-      </View>
-    </View>
+    </Pressable>
   );
 }
 
@@ -214,6 +224,59 @@ function SideMenu({ visible, onClose }: { visible: boolean; onClose: () => void 
           </View>
         </SafeAreaView>
       </Animated.View>
+    </Modal>
+  );
+}
+
+// Support Modal for "Rough" mood
+function SupportModal({ visible, onClose }: { visible: boolean; onClose: () => void }) {
+  return (
+    <Modal transparent visible={visible} animationType="fade" onRequestClose={onClose}>
+      <View style={styles.supportModalOverlay}>
+        <View style={styles.supportModalContent}>
+          <View style={styles.supportModalHeader}>
+            <View style={styles.supportModalIconCircle}>
+              <Heart size={28} color="#fff" />
+            </View>
+            <Pressable style={styles.supportModalClose} onPress={onClose}>
+              <X size={20} color={COLORS.textSecondary} />
+            </Pressable>
+          </View>
+
+          <ThemedText style={styles.supportModalTitle}>We're here for you</ThemedText>
+          <ThemedText style={styles.supportModalSubtitle}>
+            It's okay to have rough days. Would you like to reach out to your care team?
+          </ThemedText>
+
+          <View style={styles.supportModalActions}>
+            <Pressable style={styles.supportActionBtn} onPress={onClose}>
+              <View style={[styles.supportActionIcon, { backgroundColor: COLORS.teal + '20' }]}>
+                <Phone size={22} color={COLORS.teal} />
+              </View>
+              <View style={styles.supportActionText}>
+                <ThemedText style={styles.supportActionTitle}>Call Dr. Sarah</ThemedText>
+                <ThemedText style={styles.supportActionSubtitle}>Family Physician</ThemedText>
+              </View>
+              <ChevronRight size={20} color={COLORS.textTertiary} />
+            </Pressable>
+
+            <Pressable style={styles.supportActionBtn} onPress={onClose}>
+              <View style={[styles.supportActionIcon, { backgroundColor: COLORS.amber + '20' }]}>
+                <MessageCircle size={22} color={COLORS.amber} />
+              </View>
+              <View style={styles.supportActionText}>
+                <ThemedText style={styles.supportActionTitle}>Send a message</ThemedText>
+                <ThemedText style={styles.supportActionSubtitle}>Get a response within 24h</ThemedText>
+              </View>
+              <ChevronRight size={20} color={COLORS.textTertiary} />
+            </Pressable>
+          </View>
+
+          <Pressable style={styles.supportDismissBtn} onPress={onClose}>
+            <ThemedText style={styles.supportDismissText}>I'm okay for now</ThemedText>
+          </Pressable>
+        </View>
+      </View>
     </Modal>
   );
 }
@@ -348,9 +411,58 @@ function WelcomeBlob({ onPress, healthStatus }: { onPress: () => void; healthSta
   );
 }
 
+// Initial tasks data
+const INITIAL_TASKS = [
+  { id: '1', title: 'Morning blood pressure', time: 'Before 9:00 AM', done: true, doneTime: 'Completed at 8:30 AM' },
+  { id: '2', title: '10 minute walk', time: 'Before 3:00 PM', done: true, doneTime: 'Completed at 1:15 PM' },
+  { id: '3', title: 'Evening check-in', time: 'Before 10:00 PM', done: false, doneTime: null },
+];
+
+// Mood options data
+const MOOD_OPTIONS = [
+  { id: 'great', icon: Smile, label: 'Great', color: COLORS.teal },
+  { id: 'okay', icon: Meh, label: 'Okay', color: COLORS.amber },
+  { id: 'low', icon: Frown, label: 'Low', color: '#f59e0b' },
+  { id: 'rough', icon: AlertCircle, label: 'Rough', color: '#ef4444' },
+];
+
 export default function HomeTab() {
   const [showDashboard, setShowDashboard] = useState(false);
   const [menuVisible, setMenuVisible] = useState(false);
+  const [tasks, setTasks] = useState(INITIAL_TASKS);
+  const [selectedMood, setSelectedMood] = useState<string | null>(null);
+  const [showSupportModal, setShowSupportModal] = useState(false);
+
+  // Handle mood selection
+  const handleMoodSelect = (moodId: string) => {
+    setSelectedMood(moodId);
+    if (moodId === 'rough') {
+      setShowSupportModal(true);
+    }
+  };
+
+  // Toggle task and sort: undone first, done at bottom
+  const toggleTask = (taskId: string) => {
+    setTasks(prev => {
+      const updated = prev.map(task => {
+        if (task.id === taskId) {
+          const now = new Date();
+          const timeStr = now.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' });
+          return {
+            ...task,
+            done: !task.done,
+            doneTime: !task.done ? `Completed at ${timeStr}` : null,
+          };
+        }
+        return task;
+      });
+      // Sort: undone tasks first, done tasks at bottom
+      return updated.sort((a, b) => Number(a.done) - Number(b.done));
+    });
+  };
+
+  // Count completed tasks
+  const completedCount = tasks.filter(t => t.done).length;
 
   // Transition animations
   const welcomeOpacity = useRef(new Animated.Value(1)).current;
@@ -446,78 +558,91 @@ export default function HomeTab() {
                 </Pressable>
               </View>
 
-            {/* Status Banner - Quick Glance */}
-            <Card style={styles.statusBanner} highlight="teal">
-              <View style={styles.statusRow}>
-                <View style={styles.statusDot} />
-                <ThemedText style={styles.statusText}>All vitals are looking good today</ThemedText>
-              </View>
-              <ThemedText style={styles.statusSubtext}>Last synced 15 min ago</ThemedText>
-            </Card>
 
-            {/* Stats Grid - Bento Layout */}
+            {/* Vitals Section */}
             <ThemedText style={styles.sectionTitle}>Your day at a glance</ThemedText>
 
-            <View style={styles.statsGrid}>
-              {/* Large card - Steps */}
-              <Card style={styles.statsLarge}>
-                <StatWidget
-                  icon={Activity}
-                  iconColor={COLORS.amber}
-                  value="7,820"
-                  label="steps"
-                  subtitle="78% of goal"
-                  trend
+            <View style={styles.vitalsGrid}>
+              <VitalCard
+                icon={Activity}
+                iconColor={COLORS.amber}
+                value="7,820"
+                unit="steps"
+                subtitle="78% of goal"
+                progress={78}
+              />
+              <View style={styles.vitalsRow}>
+                <VitalCard
+                  icon={Heart}
+                  iconColor={COLORS.teal}
+                  value="68"
+                  unit="bpm"
+                  subtitle="resting"
+                  style={styles.vitalHalf}
                 />
-                <View style={styles.progressBar}>
-                  <View style={[styles.progressFill, { width: '78%' }]} />
-                </View>
-              </Card>
-
-              {/* Two small cards */}
-              <View style={styles.statsSmallColumn}>
-                <Card style={styles.statsSmall}>
-                  <StatWidget
-                    icon={Heart}
-                    iconColor={COLORS.teal}
-                    value="68"
-                    label="bpm"
-                    subtitle="resting"
-                  />
-                </Card>
-                <Card style={styles.statsSmall}>
-                  <StatWidget
-                    icon={Moon}
-                    iconColor={COLORS.amber}
-                    value="7h 42m"
-                    label="sleep"
-                    subtitle="good quality"
-                  />
-                </Card>
+                <VitalCard
+                  icon={Moon}
+                  iconColor="#8B5CF6"
+                  value="7h 42m"
+                  unit=""
+                  subtitle="good sleep"
+                  style={styles.vitalHalf}
+                />
               </View>
             </View>
 
             {/* Mood Check-in */}
-            <Card style={styles.moodCard}>
+            <Card style={styles.moodCard} highlight="teal">
               <View style={styles.moodHeader}>
-                <Sparkles size={20} color={COLORS.amber} />
+                <Sparkles size={20} color={COLORS.teal} />
                 <ThemedText style={styles.moodTitle}>How are you feeling?</ThemedText>
               </View>
               <View style={styles.moodOptions}>
-                {[
-                  { icon: Smile, label: 'Great', color: COLORS.success },
-                  { icon: Meh, label: 'Okay', color: COLORS.teal },
-                  { icon: Frown, label: 'Low', color: COLORS.amber },
-                  { icon: AlertCircle, label: 'Rough', color: '#ef4444' },
-                ].map((mood, i) => (
-                  <Pressable key={i} style={[styles.moodOption, i === 0 && styles.moodOptionSelected]}>
-                    <mood.icon size={28} color={i === 0 ? mood.color : COLORS.textTertiary} />
-                    <ThemedText style={[styles.moodLabel, i === 0 && { color: mood.color }]}>{mood.label}</ThemedText>
-                  </Pressable>
-                ))}
+                {MOOD_OPTIONS.map((mood) => {
+                  const isSelected = selectedMood === mood.id;
+                  return (
+                    <Pressable
+                      key={mood.id}
+                      style={[styles.moodOption, isSelected && styles.moodOptionSelected, isSelected && { borderColor: mood.color, backgroundColor: mood.color + '20' }]}
+                      onPress={() => handleMoodSelect(mood.id)}
+                    >
+                      <mood.icon size={28} color={isSelected ? mood.color : COLORS.textTertiary} />
+                      <ThemedText style={[styles.moodLabel, isSelected && { color: mood.color }]}>{mood.label}</ThemedText>
+                    </Pressable>
+                  );
+                })}
               </View>
-              <ThemedText style={styles.moodHint}>Tap to log your mood</ThemedText>
+              <ThemedText style={styles.moodHint}>{selectedMood ? 'Mood logged!' : 'Tap to log your mood'}</ThemedText>
             </Card>
+
+            {/* Today's Tasks */}
+            <View style={styles.tasksHeader}>
+              <ThemedText style={styles.sectionTitle}>Today's plan</ThemedText>
+              <ThemedText style={[styles.taskCount, completedCount === tasks.length && { color: COLORS.success }]}>
+                {completedCount === tasks.length ? 'All done!' : `${completedCount} of ${tasks.length} done`}
+              </ThemedText>
+            </View>
+
+            <Card style={[styles.tasksCard, completedCount === tasks.length && styles.tasksCardDone]}>
+              {completedCount === tasks.length ? (
+                <View style={styles.allDoneContainer}>
+                  <CheckCircle2 size={36} color={COLORS.success} />
+                  <ThemedText style={styles.allDoneTitle}>Great job!</ThemedText>
+                  <ThemedText style={styles.allDoneSubtitle}>You've completed all your tasks for today</ThemedText>
+                </View>
+              ) : (
+                tasks.map(task => (
+                  <TaskItem
+                    key={task.id}
+                    title={task.title}
+                    time={task.done ? task.doneTime : task.time}
+                    done={task.done}
+                    onToggle={() => toggleTask(task.id)}
+                  />
+                ))
+              )}
+            </Card>
+
 
             {/* Insights Section */}
             <ThemedText style={styles.sectionTitle}>Insights for you</ThemedText>
@@ -547,39 +672,8 @@ export default function HomeTab() {
               </Pressable>
             </Card>
 
-            {/* Today's Tasks */}
-            <View style={styles.tasksHeader}>
-              <ThemedText style={styles.sectionTitle}>Today's plan</ThemedText>
-              <ThemedText style={styles.taskCount}>2 of 3 done</ThemedText>
-            </View>
-
-            <Card style={styles.tasksCard}>
-              <TaskItem title="Morning blood pressure" time="Completed at 8:30 AM" done />
-              <TaskItem title="10 minute walk" time="Completed at 1:15 PM" done />
-              <TaskItem title="Evening check-in" time="Before 10:00 PM" />
-            </Card>
-
             {/* Quick Actions */}
-            <View style={styles.quickActions}>
-              <Pressable style={styles.quickActionBtn}>
-                <View style={[styles.quickActionIcon, { backgroundColor: COLORS.tealLight }]}>
-                  <Ionicons name="add" size={24} color={COLORS.teal} />
-                </View>
-                <ThemedText style={styles.quickActionLabel}>Log reading</ThemedText>
-              </Pressable>
-              <Pressable style={styles.quickActionBtn}>
-                <View style={[styles.quickActionIcon, { backgroundColor: COLORS.amberLight }]}>
-                  <Ionicons name="chatbubble-outline" size={22} color={COLORS.amber} />
-                </View>
-                <ThemedText style={styles.quickActionLabel}>Message</ThemedText>
-              </Pressable>
-              <Pressable style={styles.quickActionBtn}>
-                <View style={[styles.quickActionIcon, { backgroundColor: COLORS.successLight }]}>
-                  <Ionicons name="calendar-outline" size={22} color={COLORS.success} />
-                </View>
-                <ThemedText style={styles.quickActionLabel}>Schedule</ThemedText>
-              </Pressable>
-            </View>
+
 
               <View style={{ height: 100 }} />
             </Animated.View>
@@ -589,6 +683,9 @@ export default function HomeTab() {
 
       {/* Side Menu */}
       <SideMenu visible={menuVisible} onClose={() => setMenuVisible(false)} />
+
+      {/* Support Modal for Rough mood */}
+      <SupportModal visible={showSupportModal} onClose={() => setShowSupportModal(false)} />
     </View>
   );
 }
@@ -699,72 +796,67 @@ const styles = StyleSheet.create({
     marginTop: 8,
   },
 
-  // Stats Grid
-  statsGrid: {
+  // Vitals Grid
+  vitalsGrid: {
+    gap: 10,
+    marginBottom: 16,
+  },
+  vitalsRow: {
     flexDirection: 'row',
-    gap: 12,
-    marginBottom: 12,
+    gap: 10,
   },
-  statsLarge: {
-    flex: 1.2,
-    padding: 20,
+  vitalCard: {
+    padding: 16,
+    marginBottom: 0,
   },
-  statsSmallColumn: {
+  vitalHalf: {
     flex: 1,
-    gap: 12,
   },
-  statsSmall: {
-    flex: 1,
-    padding: 14,
+  vitalContent: {
+    flexDirection: 'row',
+    alignItems: 'center',
   },
-
-  // Stat Widget
-  statWidget: {
-    alignItems: 'flex-start',
-  },
-  statIconBg: {
-    width: 36,
-    height: 36,
-    borderRadius: 10,
+  vitalIconCircle: {
+    width: 44,
+    height: 44,
+    borderRadius: 22,
     justifyContent: 'center',
     alignItems: 'center',
-    marginBottom: 12,
+    marginRight: 14,
   },
-  statValue: {
-    fontSize: 28,
+  vitalInfo: {
+    flex: 1,
+  },
+  vitalValueRow: {
+    flexDirection: 'row',
+    alignItems: 'baseline',
+    gap: 4,
+  },
+  vitalValue: {
+    fontSize: 26,
     fontWeight: '700',
     color: COLORS.textPrimary,
-    lineHeight: 32,
   },
-  statLabel: {
+  vitalUnit: {
     fontSize: 14,
+    fontWeight: '500',
     color: COLORS.textSecondary,
+  },
+  vitalSubtitle: {
+    fontSize: 13,
+    fontWeight: '600',
     marginTop: 2,
   },
-  statSubtitleRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 4,
-    marginTop: 6,
-  },
-  statSubtitle: {
-    fontSize: 12,
-    color: COLORS.success,
-    fontWeight: '500',
-  },
-
-  // Progress Bar
-  progressBar: {
-    height: 6,
+  vitalProgressBar: {
+    height: 4,
     backgroundColor: COLORS.border,
-    borderRadius: 3,
-    marginTop: 16,
+    borderRadius: 2,
+    marginTop: 12,
     overflow: 'hidden',
   },
-  progressFill: {
+  vitalProgressFill: {
     height: '100%',
-    backgroundColor: COLORS.amber,
-    borderRadius: 3,
+    borderRadius: 2,
   },
 
   // Mood Card
@@ -799,9 +891,9 @@ const styles = StyleSheet.create({
     borderColor: 'rgba(255, 255, 255, 0.8)',
   },
   moodOptionSelected: {
-    backgroundColor: 'rgba(16, 185, 129, 0.15)',
+    backgroundColor: COLORS.teal + '20',
     borderWidth: 2,
-    borderColor: COLORS.success,
+    borderColor: COLORS.teal,
   },
   moodLabel: {
     fontSize: 12,
@@ -870,6 +962,27 @@ const styles = StyleSheet.create({
   },
   tasksCard: {
     padding: 8,
+  },
+  tasksCardDone: {
+    backgroundColor: COLORS.success + '10',
+    borderColor: COLORS.success + '30',
+  },
+  allDoneContainer: {
+    alignItems: 'center',
+    paddingVertical: 24,
+    paddingHorizontal: 16,
+  },
+  allDoneTitle: {
+    fontSize: 18,
+    fontWeight: '700',
+    color: COLORS.success,
+    marginTop: 12,
+  },
+  allDoneSubtitle: {
+    fontSize: 14,
+    color: COLORS.textSecondary,
+    textAlign: 'center',
+    marginTop: 4,
   },
   taskItem: {
     flexDirection: 'row',
@@ -1040,7 +1153,7 @@ const styles = StyleSheet.create({
     top: 0,
     right: 0,
     bottom: 0,
-    width: SCREEN_WIDTH * 0.82,
+    width: SCREEN_WIDTH * 0.8,
     backgroundColor: COLORS.cardWhite,
     ...Platform.select({
       ios: {
@@ -1142,5 +1255,105 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: '500',
     color: COLORS.error,
+  },
+
+  // Support Modal
+  supportModalOverlay: {
+    flex: 1,
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    justifyContent: 'center',
+    alignItems: 'center',
+    padding: 24,
+  },
+  supportModalContent: {
+    backgroundColor: COLORS.cardWhite,
+    borderRadius: 24,
+    padding: 24,
+    width: '100%',
+    maxWidth: 340,
+    ...Platform.select({
+      ios: {
+        shadowColor: '#000',
+        shadowOpacity: 0.15,
+        shadowOffset: { width: 0, height: 10 },
+        shadowRadius: 30,
+      },
+      android: { elevation: 10 },
+    }),
+  },
+  supportModalHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'flex-start',
+    marginBottom: 16,
+  },
+  supportModalIconCircle: {
+    width: 56,
+    height: 56,
+    borderRadius: 28,
+    backgroundColor: '#ef4444',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  supportModalClose: {
+    width: 36,
+    height: 36,
+    borderRadius: 18,
+    backgroundColor: COLORS.background,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  supportModalTitle: {
+    fontSize: 22,
+    fontWeight: '700',
+    color: COLORS.textPrimary,
+    marginBottom: 8,
+  },
+  supportModalSubtitle: {
+    fontSize: 15,
+    color: COLORS.textSecondary,
+    lineHeight: 22,
+    marginBottom: 24,
+  },
+  supportModalActions: {
+    gap: 12,
+    marginBottom: 20,
+  },
+  supportActionBtn: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: COLORS.background,
+    borderRadius: 16,
+    padding: 14,
+  },
+  supportActionIcon: {
+    width: 48,
+    height: 48,
+    borderRadius: 14,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginRight: 14,
+  },
+  supportActionText: {
+    flex: 1,
+  },
+  supportActionTitle: {
+    fontSize: 16,
+    fontWeight: '600',
+    color: COLORS.textPrimary,
+  },
+  supportActionSubtitle: {
+    fontSize: 13,
+    color: COLORS.textSecondary,
+    marginTop: 2,
+  },
+  supportDismissBtn: {
+    alignItems: 'center',
+    paddingVertical: 12,
+  },
+  supportDismissText: {
+    fontSize: 15,
+    fontWeight: '500',
+    color: COLORS.textTertiary,
   },
 });
