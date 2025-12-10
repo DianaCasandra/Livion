@@ -494,9 +494,7 @@ export default function SymptomsTab() {
                   <ThemedText style={styles.infoCardTitle}>{t.symptoms.officeHours}</ThemedText>
                 </View>
                 <ThemedText style={styles.infoCardText}>
-                  Monday - Friday: 8:00 AM - 5:00 PM{'\n'}
-                  Saturday: 9:00 AM - 1:00 PM{'\n'}
-                  Sunday: Closed
+                  {t.symptoms.officeHoursSchedule}
                 </ThemedText>
               </Card>
 
