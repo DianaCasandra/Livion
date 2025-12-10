@@ -1,12 +1,9 @@
 import { Button } from '../../../components/atoms/Button';
 import { ThemedText } from '../../../components/atoms/ThemedText';
+import { AnimatedBlobBackground } from '../../../components/atoms/AnimatedBlobBackground';
 import { COLORS, Spacing } from '@/src/constants/Colors';
-import { LinearGradient } from 'expo-linear-gradient';
 import { useNavigation } from '@react-navigation/native';
-import { useEffect, useRef } from 'react';
 import {
-  Animated,
-  Dimensions,
   Platform,
   SafeAreaView,
   ScrollView,
@@ -17,52 +14,16 @@ import {
 } from 'react-native';
 import { useLanguage } from '../../../components/providers/LanguageProvider';
 
-const { width: SCREEN_W, height: SCREEN_H } = Dimensions.get('window');
-
 export default function WelcomeScreen() {
   const navigation = useNavigation();
   const { t } = useLanguage();
-  const anim1 = useRef(new Animated.Value(0)).current;
-  const anim2 = useRef(new Animated.Value(0)).current;
-
-  useEffect(() => {
-    const loopAnimation = (anim: Animated.Value, delay: number) => {
-      Animated.loop(
-        Animated.sequence([
-          Animated.timing(anim, { toValue: 1, duration: 9000, delay, useNativeDriver: false }),
-          Animated.timing(anim, { toValue: 0, duration: 9000, useNativeDriver: false }),
-        ])
-      ).start();
-    };
-
-    loopAnimation(anim1, 0);
-    loopAnimation(anim2, 2000);
-  }, []);
-
-  const blob1Style = {
-    transform: [
-      { translateX: anim1.interpolate({ inputRange: [0, 1], outputRange: [-50, 50] }) },
-      { translateY: anim1.interpolate({ inputRange: [0, 1], outputRange: [-30, 30] }) },
-    ],
-  };
-
-  const blob2Style = {
-    transform: [
-      { translateX: anim2.interpolate({ inputRange: [0, 1], outputRange: [40, -40] }) },
-      { translateY: anim2.interpolate({ inputRange: [0, 1], outputRange: [60, -60] }) },
-    ],
-  };
 
   return (
     <View style={styles.root}>
-      <StatusBar barStyle="light-content" translucent backgroundColor="transparent" />
+      <StatusBar barStyle="dark-content" backgroundColor={COLORS.background} />
 
-      {/* Gradient background */}
-      <LinearGradient colors={[COLORS.background, COLORS.background, COLORS.background]} style={StyleSheet.absoluteFill} />
-
-      {/* Animated blobs */}
-      <Animated.View style={[styles.blobBlue, blob1Style]} />
-      <Animated.View style={[styles.blobTeal, blob2Style]} />
+      {/* Animated blobs - same as other pages */}
+      <AnimatedBlobBackground />
 
       <SafeAreaView style={styles.safeAreaContent}>
         <ScrollView contentContainerStyle={styles.container}>
@@ -177,27 +138,5 @@ const styles = StyleSheet.create({
     padding: 6,
     borderRadius: 10,
     backgroundColor: COLORS.amber + '1f',
-  },
-
-  blobBlue: {
-    position: 'absolute',
-    width: 450,
-    height: 450,
-    borderRadius: 999,
-    backgroundColor: COLORS.tealDark,
-    opacity: 0.12,
-    top: -150,
-    right: -120,
-  },
-
-  blobTeal: {
-    position: 'absolute',
-    width: 500,
-    height: 500,
-    borderRadius: 999,
-    backgroundColor: COLORS.teal,
-    opacity: 0.10,
-    bottom: -130,
-    left: -170,
   },
 });

@@ -49,7 +49,7 @@ export default function FloatingPillNav() {
 
         <NavButton
           icon={<Stethoscope size={18} color={COLORS.cardWhite} />}
-          label="Doctor"
+          label="Doctor Familie"
           active={currentPath === '/patient/dashboard/symptoms'}
           onPress={() => navigate('/patient/dashboard/symptoms')}
         />

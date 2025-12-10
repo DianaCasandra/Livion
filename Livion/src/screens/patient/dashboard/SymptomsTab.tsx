@@ -11,7 +11,6 @@ import {
   TrendingUp,
   Minus,
   Send,
-  Phone,
   MessageCircle,
   Calendar,
   Star,
@@ -387,6 +386,17 @@ const ROMANIAN_MONTHS = [
 
 const ROMANIAN_DAYS = ['Lun', 'Mar', 'Mie', 'Joi', 'Vin', 'Sâm', 'Dum'];
 
+// Mock data for appointments and health logs
+const CALENDAR_EVENTS: { [key: number]: { type: 'appointment' | 'log' | 'both'; appointment?: string; log?: { symptoms: string; painLevel: number } } } = {
+  5: { type: 'log', log: { symptoms: 'Oboseală generală', painLevel: 2 } },
+  8: { type: 'appointment', appointment: 'Control periodic - 10:00' },
+  10: { type: 'both', appointment: 'Consultație - 14:30', log: { symptoms: 'Durere de cap ușoară', painLevel: 3 } },
+  12: { type: 'appointment', appointment: 'Programare Dr. Popescu - 10:00' },
+  15: { type: 'log', log: { symptoms: 'Tensiune musculară', painLevel: 4 } },
+  18: { type: 'log', log: { symptoms: 'Stare bună', painLevel: 1 } },
+  22: { type: 'appointment', appointment: 'Analize de sânge - 08:00' },
+};
+
 // Calendar Modal Component
 function CalendarModal({
   visible,
@@ -397,6 +407,7 @@ function CalendarModal({
 }) {
   const fadeAnim = useRef(new Animated.Value(0)).current;
   const slideAnim = useRef(new Animated.Value(300)).current;
+  const [selectedDay, setSelectedDay] = useState<number | null>(null);
   const today = new Date();
   const currentMonth = today.getMonth();
   const currentYear = today.getFullYear();
@@ -411,6 +422,7 @@ function CalendarModal({
     } else {
       fadeAnim.setValue(0);
       slideAnim.setValue(300);
+      setSelectedDay(null);
     }
   }, [visible]);
 
@@ -429,13 +441,21 @@ function CalendarModal({
   const firstDay = getFirstDayOfMonth(currentMonth, currentYear);
 
   // Create calendar grid
-  const calendarDays = [];
+  const calendarDays: (number | null)[] = [];
   for (let i = 0; i < firstDay; i++) {
-    calendarDays.push(null); // Empty cells before first day
+    calendarDays.push(null);
   }
   for (let i = 1; i <= daysInMonth; i++) {
     calendarDays.push(i);
   }
+
+  const handleDayPress = (day: number) => {
+    if (CALENDAR_EVENTS[day]) {
+      setSelectedDay(selectedDay === day ? null : day);
+    }
+  };
+
+  const selectedEvent = selectedDay ? CALENDAR_EVENTS[selectedDay] : null;
 
   return (
     <Modal visible={visible} transparent animationType="none" onRequestClose={onClose}>
@@ -452,6 +472,18 @@ function CalendarModal({
             </Pressable>
           </View>
 
+          {/* Legend */}
+          <View style={styles.calendarLegend}>
+            <View style={styles.legendItem}>
+              <View style={[styles.legendDot, { backgroundColor: COLORS.teal }]} />
+              <ThemedText style={styles.legendText}>Programare</ThemedText>
+            </View>
+            <View style={styles.legendItem}>
+              <View style={[styles.legendDot, { backgroundColor: COLORS.amber }]} />
+              <ThemedText style={styles.legendText}>Jurnal</ThemedText>
+            </View>
+          </View>
+
           {/* Day names */}
           <View style={styles.calendarDayNames}>
             {ROMANIAN_DAYS.map((day) => (
@@ -461,24 +493,80 @@ function CalendarModal({
 
           {/* Calendar grid */}
           <View style={styles.calendarGrid}>
-            {calendarDays.map((day, index) => (
-              <View key={index} style={styles.calendarDayCell}>
-                {day !== null && (
-                  <View style={[
-                    styles.calendarDay,
-                    day === currentDay && styles.calendarDayToday,
-                  ]}>
-                    <ThemedText style={[
-                      styles.calendarDayText,
-                      day === currentDay && styles.calendarDayTextToday,
-                    ]}>
-                      {day}
+            {calendarDays.map((day, index) => {
+              const event = day ? CALENDAR_EVENTS[day] : null;
+              const hasAppointment = event?.type === 'appointment' || event?.type === 'both';
+              const hasLog = event?.type === 'log' || event?.type === 'both';
+
+              return (
+                <View key={index} style={styles.calendarDayCell}>
+                  {day !== null && (
+                    <Pressable
+                      onPress={() => handleDayPress(day)}
+                      style={[
+                        styles.calendarDay,
+                        day === currentDay && styles.calendarDayToday,
+                        selectedDay === day && styles.calendarDaySelected,
+                      ]}
+                    >
+                      <ThemedText style={[
+                        styles.calendarDayText,
+                        day === currentDay && styles.calendarDayTextToday,
+                        selectedDay === day && styles.calendarDayTextSelected,
+                      ]}>
+                        {day}
+                      </ThemedText>
+                      {/* Event indicators */}
+                      {(hasAppointment || hasLog) && (
+                        <View style={styles.eventIndicators}>
+                          {hasAppointment && <View style={[styles.eventDot, { backgroundColor: COLORS.teal }]} />}
+                          {hasLog && <View style={[styles.eventDot, { backgroundColor: COLORS.amber }]} />}
+                        </View>
+                      )}
+                    </Pressable>
+                  )}
+                </View>
+              );
+            })}
+          </View>
+
+          {/* Selected day details */}
+          {selectedEvent && selectedDay && (
+            <View style={styles.eventDetails}>
+              <ThemedText style={styles.eventDetailsTitle}>
+                {selectedDay} {ROMANIAN_MONTHS[currentMonth]}
+              </ThemedText>
+
+              {(selectedEvent.type === 'appointment' || selectedEvent.type === 'both') && selectedEvent.appointment && (
+                <View style={styles.eventCard}>
+                  <View style={[styles.eventCardAccent, { backgroundColor: COLORS.teal }]} />
+                  <View style={styles.eventCardContent}>
+                    <View style={styles.eventCardHeader}>
+                      <Calendar size={14} color={COLORS.teal} />
+                      <ThemedText style={styles.eventCardLabel}>Programare</ThemedText>
+                    </View>
+                    <ThemedText style={styles.eventCardText}>{selectedEvent.appointment}</ThemedText>
+                  </View>
+                </View>
+              )}
+
+              {(selectedEvent.type === 'log' || selectedEvent.type === 'both') && selectedEvent.log && (
+                <View style={styles.eventCard}>
+                  <View style={[styles.eventCardAccent, { backgroundColor: COLORS.amber }]} />
+                  <View style={styles.eventCardContent}>
+                    <View style={styles.eventCardHeader}>
+                      <ClipboardList size={14} color={COLORS.amber} />
+                      <ThemedText style={styles.eventCardLabel}>Jurnal Simptome</ThemedText>
+                    </View>
+                    <ThemedText style={styles.eventCardText}>{selectedEvent.log.symptoms}</ThemedText>
+                    <ThemedText style={styles.eventCardPain}>
+                      Nivel durere: {selectedEvent.log.painLevel}/10
                     </ThemedText>
                   </View>
-                )}
-              </View>
-            ))}
-          </View>
+                </View>
+              )}
+            </View>
+          )}
         </Animated.View>
       </Animated.View>
     </Modal>
@@ -658,25 +746,21 @@ export default function SymptomsTab() {
 
                 {/* Quick Actions */}
                 <View style={styles.doctorActions}>
-                  <Pressable style={styles.doctorActionBtnSmall} onPress={handleCall}>
-                    <Phone size={16} color={COLORS.cardWhite} />
-                    <ThemedText style={styles.doctorActionTextSmall}>{t.symptoms.call}</ThemedText>
-                  </Pressable>
                   <Pressable
-                    style={[styles.doctorActionBtnSmall, styles.doctorActionBtnSecondary]}
+                    style={styles.doctorActionBtnSmall}
                     onPress={() => setChatVisible(true)}
                   >
-                    <MessageCircle size={16} color={COLORS.teal} />
-                    <ThemedText style={styles.doctorActionTextSecondarySmall}>
+                    <MessageCircle size={16} color={COLORS.cardWhite} />
+                    <ThemedText style={styles.doctorActionTextSmall}>
                       {t.symptoms.message}
                     </ThemedText>
                   </Pressable>
                   <Pressable
-                    style={[styles.doctorActionBtnSmall, styles.doctorActionBtnSchedule]}
+                    style={styles.doctorActionBtnSmall}
                     onPress={() => setScheduleModalVisible(true)}
                   >
-                    <Calendar size={16} color={COLORS.success} />
-                    <ThemedText style={styles.doctorActionTextSchedule}>
+                    <Calendar size={16} color={COLORS.cardWhite} />
+                    <ThemedText style={styles.doctorActionTextSmall}>
                       {t.symptoms.schedule}
                     </ThemedText>
                   </Pressable>
@@ -1159,16 +1243,6 @@ const styles = StyleSheet.create({
     fontWeight: '600',
     color: COLORS.teal,
   },
-  doctorActionBtnSchedule: {
-    backgroundColor: COLORS.successLight,
-    borderWidth: 1,
-    borderColor: COLORS.success,
-  },
-  doctorActionTextSchedule: {
-    fontSize: 12,
-    fontWeight: '600',
-    color: COLORS.success,
-  },
 
   // Info Card
   infoCard: {
@@ -1623,5 +1697,95 @@ const styles = StyleSheet.create({
   calendarDayTextToday: {
     color: COLORS.cardWhite,
     fontWeight: '700',
+  },
+  calendarDaySelected: {
+    backgroundColor: COLORS.amber,
+  },
+  calendarDayTextSelected: {
+    color: COLORS.cardWhite,
+    fontWeight: '700',
+  },
+
+  // Calendar legend
+  calendarLegend: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    gap: 20,
+    marginBottom: 16,
+  },
+  legendItem: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 6,
+  },
+  legendDot: {
+    width: 8,
+    height: 8,
+    borderRadius: 4,
+  },
+  legendText: {
+    fontSize: 12,
+    color: COLORS.textSecondary,
+  },
+
+  // Event indicators on calendar days
+  eventIndicators: {
+    flexDirection: 'row',
+    position: 'absolute',
+    bottom: 2,
+    gap: 2,
+  },
+  eventDot: {
+    width: 5,
+    height: 5,
+    borderRadius: 2.5,
+  },
+
+  // Event details panel
+  eventDetails: {
+    marginTop: 16,
+    paddingTop: 16,
+    borderTopWidth: 1,
+    borderTopColor: COLORS.border,
+  },
+  eventDetailsTitle: {
+    fontSize: 16,
+    fontWeight: '600',
+    color: COLORS.textPrimary,
+    marginBottom: 12,
+  },
+  eventCard: {
+    flexDirection: 'row',
+    backgroundColor: COLORS.background,
+    borderRadius: 12,
+    overflow: 'hidden',
+    marginBottom: 10,
+  },
+  eventCardAccent: {
+    width: 4,
+  },
+  eventCardContent: {
+    flex: 1,
+    padding: 12,
+  },
+  eventCardHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 6,
+    marginBottom: 4,
+  },
+  eventCardLabel: {
+    fontSize: 12,
+    fontWeight: '600',
+    color: COLORS.textSecondary,
+  },
+  eventCardText: {
+    fontSize: 14,
+    color: COLORS.textPrimary,
+  },
+  eventCardPain: {
+    fontSize: 12,
+    color: COLORS.textSecondary,
+    marginTop: 4,
   },
 });

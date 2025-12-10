@@ -54,9 +54,9 @@ export default function DashboardTabs() {
         name="SymptomsTab"
         component={SymptomsTab}
         options={{
-          tabBarLabel: t.navigation.symptoms,
+          tabBarLabel: 'Doctor Familie',
           tabBarIcon: ({ color, size }) => (
-            <Ionicons name="pulse-outline" size={size} color={color} />
+            <Ionicons name="medkit-outline" size={size} color={color} />
           ),
         }}
       />
