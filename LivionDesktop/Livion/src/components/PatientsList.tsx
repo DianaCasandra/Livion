@@ -4,6 +4,7 @@
  */
 
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import {
   Search,
   User,
@@ -49,80 +50,80 @@ interface Patient {
 const MOCK_PATIENTS: Patient[] = [
   {
     id: '1',
-    name: 'Sarah Johnson',
+    name: 'Ana Popescu',
     age: 45,
-    condition: 'Hypertension',
+    condition: 'Hipertensiune',
     status: 'stable',
-    lastVisit: '2 days ago',
-    nextAppointment: 'Tomorrow, 9:00 AM',
+    lastVisit: 'acum 2 zile',
+    nextAppointment: 'Mâine, 09:00',
     vitals: { heartRate: 72, bloodPressure: '120/80', oxygenLevel: 98 },
   },
   {
     id: '2',
-    name: 'Michael Chen',
+    name: 'Ion Ionescu',
     age: 62,
-    condition: 'Type 2 Diabetes',
+    condition: 'Diabet Tip 2',
     status: 'attention',
-    lastVisit: '1 week ago',
-    nextAppointment: 'Dec 15, 2:00 PM',
+    lastVisit: 'acum 1 săptămână',
+    nextAppointment: '15 Dec, 14:00',
     vitals: { heartRate: 78, bloodPressure: '135/88', oxygenLevel: 96 },
     aiInsight: {
-      summary: 'Blood glucose levels trending higher than baseline over past 2 weeks. HbA1c may have increased.',
-      recommendation: 'Consider adjusting metformin dosage or adding GLP-1 agonist. Schedule lab work.',
+      summary: 'Nivelurile glicemiei în tendință ascendentă față de valoarea de bază în ultimele 2 săptămâni. HbA1c posibil crescută.',
+      recommendation: 'Luați în considerare ajustarea dozei de metformin sau adăugarea unui agonist GLP-1. Programați analize.',
       trend: 'declining',
       urgency: 'medium',
     },
   },
   {
     id: '3',
-    name: 'Emily Davis',
+    name: 'Elena Dumitrescu',
     age: 34,
-    condition: 'Asthma',
+    condition: 'Astm',
     status: 'stable',
-    lastVisit: '3 days ago',
+    lastVisit: 'acum 3 zile',
     nextAppointment: null,
     vitals: { heartRate: 68, bloodPressure: '118/75', oxygenLevel: 99 },
   },
   {
     id: '4',
-    name: 'James Wilson',
+    name: 'Gheorghe Munteanu',
     age: 71,
-    condition: 'Heart Disease',
+    condition: 'Boală Cardiacă',
     status: 'critical',
-    lastVisit: 'Today',
-    nextAppointment: 'Today, 4:00 PM',
+    lastVisit: 'Astăzi',
+    nextAppointment: 'Astăzi, 16:00',
     vitals: { heartRate: 92, bloodPressure: '145/95', oxygenLevel: 94 },
     aiInsight: {
-      summary: 'Elevated heart rate and BP combined with reduced O2 saturation. Pattern suggests possible CHF exacerbation.',
-      recommendation: 'Urgent echocardiogram recommended. Consider adjusting diuretic therapy. Monitor for edema.',
+      summary: 'Frecvență cardiacă și TA crescute combinate cu saturație O2 redusă. Modelul sugerează posibilă exacerbare ICC.',
+      recommendation: 'Ecocardiogramă urgentă recomandată. Luați în considerare ajustarea terapiei diuretice. Monitorizați pentru edeme.',
       trend: 'declining',
       urgency: 'high',
     },
   },
   {
     id: '5',
-    name: 'Maria Garcia',
+    name: 'Maria Georgescu',
     age: 52,
-    condition: 'Chronic Kidney Disease',
+    condition: 'Boală Cronică de Rinichi',
     status: 'attention',
-    lastVisit: '5 days ago',
-    nextAppointment: 'Dec 18, 11:00 AM',
+    lastVisit: 'acum 5 zile',
+    nextAppointment: '18 Dec, 11:00',
     vitals: { heartRate: 74, bloodPressure: '128/82', oxygenLevel: 97 },
     aiInsight: {
-      summary: 'eGFR showing gradual decline. Creatinine levels slightly elevated compared to last month.',
-      recommendation: 'Review current medications for nephrotoxicity. Consider nephrology referral if decline continues.',
+      summary: 'eGFR arată declin gradual. Nivelurile creatininei ușor crescute față de luna trecută.',
+      recommendation: 'Revizuiți medicamentele actuale pentru nefrotoxicitate. Luați în considerare trimitere la nefrolog dacă declinul continuă.',
       trend: 'declining',
       urgency: 'medium',
     },
   },
   {
     id: '6',
-    name: 'Robert Brown',
+    name: 'Vasile Stoica',
     age: 58,
-    condition: 'COPD',
+    condition: 'BPOC',
     status: 'stable',
-    lastVisit: '1 week ago',
-    nextAppointment: 'Dec 20, 3:30 PM',
+    lastVisit: 'acum 1 săptămână',
+    nextAppointment: '20 Dec, 15:30',
     vitals: { heartRate: 76, bloodPressure: '122/78', oxygenLevel: 95 },
   },
 ];
@@ -132,19 +133,19 @@ const statusConfig = {
     color: COLORS.success,
     bgColor: COLORS.successLight,
     icon: Heart,
-    label: 'Stable',
+    label: 'Stabil',
   },
   attention: {
     color: COLORS.warning,
     bgColor: COLORS.warningLight,
     icon: Activity,
-    label: 'Attention',
+    label: 'Atenție',
   },
   critical: {
     color: COLORS.error,
     bgColor: COLORS.errorLight,
     icon: AlertTriangle,
-    label: 'Critical',
+    label: 'Critic',
   },
 };
 
@@ -155,9 +156,14 @@ const trendConfig = {
 };
 
 export function PatientsList() {
+  const navigate = useNavigate();
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedStatus, setSelectedStatus] = useState<string | null>(null);
   const [expandedPatient, setExpandedPatient] = useState<string | null>(null);
+
+  const handlePatientClick = (patientId: string) => {
+    navigate(`/patients/${patientId}`);
+  };
 
   const filteredPatients = MOCK_PATIENTS.filter((patient) => {
     const matchesSearch =
@@ -183,10 +189,10 @@ export function PatientsList() {
       {/* Header */}
       <div style={styles.header}>
         <div style={styles.headerLeft}>
-          <h2 style={styles.title}>Patients</h2>
+          <h2 style={styles.title}>Pacienți</h2>
           <div style={styles.aiIndicator}>
             <Sparkles size={14} color={COLORS.purple} />
-            <span>AI Diagnostics Active</span>
+            <span>Diagnostice AI Active</span>
           </div>
         </div>
         <span style={styles.count}>{MOCK_PATIENTS.length} total</span>
@@ -197,7 +203,7 @@ export function PatientsList() {
         <Search size={18} color={COLORS.textTertiary} />
         <input
           type="text"
-          placeholder="Search patients..."
+          placeholder="Caută pacienți..."
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
           style={styles.searchInput}
@@ -223,7 +229,7 @@ export function PatientsList() {
                 color: isSelected ? config?.color || COLORS.tealDark : COLORS.textSecondary,
               }}
             >
-              {status === 'all' ? 'All' : config?.label}
+              {status === 'all' ? 'Toți' : config?.label}
               <span style={styles.filterCount}>
                 {status === 'all' ? statusCounts.all : statusCounts[status]}
               </span>
@@ -237,7 +243,7 @@ export function PatientsList() {
         {filteredPatients.length === 0 ? (
           <div style={styles.emptyState}>
             <User size={32} color={COLORS.textTertiary} />
-            <p style={styles.emptyText}>No patients found</p>
+            <p style={styles.emptyText}>Niciun pacient găsit</p>
           </div>
         ) : (
           filteredPatients.map((patient, index) => {
@@ -256,7 +262,10 @@ export function PatientsList() {
                     borderLeftColor: hasAIInsight ? status.color : 'transparent',
                   }}
                 >
-                <div style={styles.patientMainRow}>
+                <div
+                  style={styles.patientMainRow}
+                  onClick={() => handlePatientClick(patient.id)}
+                >
                   {/* Avatar */}
                   <div
                     style={{
@@ -295,7 +304,7 @@ export function PatientsList() {
                     </div>
 
                     <div style={styles.patientMeta}>
-                      <span>{patient.age} years</span>
+                      <span>{patient.age} ani</span>
                       <span style={styles.metaDivider}>|</span>
                       <span>{patient.condition}</span>
                     </div>
@@ -317,7 +326,7 @@ export function PatientsList() {
                   </div>
 
                   {/* Actions */}
-                  <div style={styles.actions}>
+                  <div style={styles.actions} onClick={(e) => e.stopPropagation()}>
                     {hasAIInsight && (
                       <button
                         style={{
@@ -333,8 +342,12 @@ export function PatientsList() {
                     <button style={styles.actionButton} title="Message">
                       <MessageSquare size={16} color={COLORS.textSecondary} />
                     </button>
-                    <button style={styles.actionButton} title="View profile">
-                      <ChevronRight size={16} color={COLORS.textSecondary} />
+                    <button
+                      style={styles.viewProfileButton}
+                      onClick={() => handlePatientClick(patient.id)}
+                      title="View profile"
+                    >
+                      <ChevronRight size={16} color={COLORS.teal} />
                     </button>
                   </div>
                 </div>
@@ -345,7 +358,7 @@ export function PatientsList() {
                     <div style={styles.aiInsightHeader}>
                       <div style={styles.aiInsightTitle}>
                         <Sparkles size={16} color={COLORS.purple} />
-                        <span>AI Diagnostic Summary</span>
+                        <span>Rezumat Diagnostic AI</span>
                       </div>
                       <div
                         style={{
@@ -360,7 +373,8 @@ export function PatientsList() {
                           return <TrendIcon size={12} />;
                         })()}
                         <span style={{ textTransform: 'capitalize' }}>
-                          {patient.aiInsight.trend}
+                          {patient.aiInsight.trend === 'improving' ? 'În îmbunătățire' :
+                           patient.aiInsight.trend === 'stable' ? 'Stabil' : 'În declin'}
                         </span>
                       </div>
                     </div>
@@ -369,7 +383,7 @@ export function PatientsList() {
                       <div style={styles.insightSection}>
                         <div style={styles.insightLabel}>
                           <AlertCircle size={14} color={COLORS.warning} />
-                          <span>Analysis</span>
+                          <span>Analiză</span>
                         </div>
                         <p style={styles.insightText}>{patient.aiInsight.summary}</p>
                       </div>
@@ -377,7 +391,7 @@ export function PatientsList() {
                       <div style={styles.insightSection}>
                         <div style={styles.insightLabel}>
                           <Activity size={14} color={COLORS.teal} />
-                          <span>Recommendation</span>
+                          <span>Recomandare</span>
                         </div>
                         <p style={styles.insightText}>{patient.aiInsight.recommendation}</p>
                       </div>
@@ -386,11 +400,11 @@ export function PatientsList() {
                     <div style={styles.aiInsightActions}>
                       <button style={styles.aiActionButton}>
                         <Calendar size={14} />
-                        Schedule Follow-up
+                        Programează Control
                       </button>
                       <button style={{ ...styles.aiActionButton, ...styles.aiActionButtonPrimary }}>
                         <Activity size={14} />
-                        Order Labs
+                        Comandă Analize
                       </button>
                     </div>
                   </div>
@@ -408,7 +422,7 @@ export function PatientsList() {
                         ? patient.aiInsight.summary.substring(0, 80) + '...'
                         : patient.aiInsight.summary}
                     </span>
-                    <span style={styles.expandHint}>Click to expand</span>
+                    <span style={styles.expandHint}>Click pentru detalii</span>
                   </div>
                 )}
                 </div>
@@ -545,6 +559,8 @@ const styles: Record<string, React.CSSProperties> = {
     alignItems: 'center',
     gap: '14px',
     padding: '14px',
+    cursor: 'pointer',
+    transition: 'background-color 150ms ease',
   },
   avatar: {
     width: '44px',
@@ -635,6 +651,18 @@ const styles: Record<string, React.CSSProperties> = {
     borderRadius: BorderRadius.sm,
     cursor: 'pointer',
     transition: 'background-color 150ms ease',
+  },
+  viewProfileButton: {
+    width: '32px',
+    height: '32px',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: COLORS.tealLight,
+    border: 'none',
+    borderRadius: BorderRadius.sm,
+    cursor: 'pointer',
+    transition: 'all 150ms ease',
   },
   expandButton: {
     width: '32px',

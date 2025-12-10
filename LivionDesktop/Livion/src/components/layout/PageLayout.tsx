@@ -42,6 +42,9 @@ export function PageLayout({
       case 'schedule':
         navigate('/schedule');
         break;
+      case 'settings':
+        navigate('/settings');
+        break;
       default:
         break;
     }

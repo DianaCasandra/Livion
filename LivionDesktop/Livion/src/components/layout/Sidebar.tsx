@@ -25,19 +25,19 @@ interface SidebarProps {
 }
 
 const navItems = [
-  { id: 'dashboard' as ActivePage, icon: Activity, label: 'Dashboard' },
-  { id: 'patients' as ActivePage, icon: Users, label: 'Patients' },
-  { id: 'schedule' as ActivePage, icon: CalendarIcon, label: 'Schedule' },
-  { id: 'notifications' as ActivePage, icon: Bell, label: 'Notifications' },
-  { id: 'settings' as ActivePage, icon: Settings, label: 'Settings' },
+  { id: 'dashboard' as ActivePage, icon: Activity, label: 'Panou Principal' },
+  { id: 'patients' as ActivePage, icon: Users, label: 'Pacienți' },
+  { id: 'schedule' as ActivePage, icon: CalendarIcon, label: 'Program' },
+  { id: 'notifications' as ActivePage, icon: Bell, label: 'Notificări' },
+  { id: 'settings' as ActivePage, icon: Settings, label: 'Setări' },
 ];
 
 export function Sidebar({
   activePage,
   onNavigate,
   onLogout,
-  userName = 'Dr. Harper',
-  userRole = 'Cardiologist',
+  userName = 'Dr. Radu',
+  userRole = 'Cardiolog',
 }: SidebarProps) {
   return (
     <aside style={styles.sidebar}>

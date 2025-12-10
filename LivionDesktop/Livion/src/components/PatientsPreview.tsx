@@ -22,14 +22,14 @@ export function PatientsPreview({ onViewAll }: PatientsPreviewProps) {
       {/* Header */}
       <div style={styles.header}>
         <div style={styles.headerLeft}>
-          <h3 style={styles.title}>Patients</h3>
+          <h3 style={styles.title}>Pacienți</h3>
           <div style={styles.aiIndicator}>
             <Sparkles size={12} color={COLORS.purple} />
-            <span>AI Active</span>
+            <span>AI Activ</span>
           </div>
         </div>
         <button style={styles.viewAllButton} onClick={onViewAll}>
-          View all
+          Vezi toți
           <ChevronRight size={16} />
         </button>
       </div>

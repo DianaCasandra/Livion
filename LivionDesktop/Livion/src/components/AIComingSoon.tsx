@@ -17,26 +17,26 @@ interface UpcomingFeature {
 const upcomingFeatures: UpcomingFeature[] = [
   {
     icon: Brain,
-    title: 'AI Diagnostics Assistant',
-    description: 'Get AI-powered suggestions based on patient symptoms and history',
+    title: 'Asistent AI Diagnostic',
+    description: 'Obțineți sugestii bazate pe AI pornind de la simptomele și istoricul pacientului',
     color: COLORS.purple,
   },
   {
     icon: LineChart,
-    title: 'Predictive Analytics',
-    description: 'Identify at-risk patients before complications arise',
+    title: 'Analiză Predictivă',
+    description: 'Identificați pacienții cu risc înainte de apariția complicațiilor',
     color: COLORS.teal,
   },
   {
     icon: MessageSquare,
-    title: 'Smart Documentation',
-    description: 'Auto-generate clinical notes from patient interactions',
+    title: 'Documentație Inteligentă',
+    description: 'Generare automată a notelor clinice din interacțiunile cu pacienții',
     color: COLORS.blue,
   },
   {
     icon: Zap,
-    title: 'Treatment Recommendations',
-    description: 'Evidence-based treatment suggestions tailored to each patient',
+    title: 'Recomandări de Tratament',
+    description: 'Sugestii de tratament bazate pe dovezi, personalizate pentru fiecare pacient',
     color: COLORS.amber,
   },
 ];
@@ -50,14 +50,14 @@ export function AIComingSoon() {
           <Sparkles size={24} color={COLORS.purple} />
         </div>
         <div style={styles.headerText}>
-          <h2 style={styles.title}>AI Features</h2>
-          <span style={styles.badge}>Coming Soon</span>
+          <h2 style={styles.title}>Funcții AI</h2>
+          <span style={styles.badge}>În curând</span>
         </div>
       </div>
 
       {/* Description */}
       <p style={styles.description}>
-        We're building intelligent tools to help you provide better care. Here's what's on the horizon:
+        Construim instrumente inteligente pentru a vă ajuta să oferiți îngrijire mai bună. Iată ce urmează:
       </p>
 
       {/* Features grid */}
@@ -88,11 +88,11 @@ export function AIComingSoon() {
         <div style={styles.ctaContent}>
           <Sparkles size={16} color={COLORS.purple} />
           <span style={styles.ctaText}>
-            Want early access? Join our beta program
+            Doriți acces timpuriu? Alăturați-vă programului beta
           </span>
         </div>
         <button style={styles.ctaButton}>
-          Join Beta
+          Înscrie-te
         </button>
       </div>
     </GlassCard>

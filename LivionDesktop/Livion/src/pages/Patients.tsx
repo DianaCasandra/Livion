@@ -9,8 +9,8 @@ export function Patients() {
   return (
     <PageLayout
       activePage="patients"
-      title="Patients"
-      subtitle="Manage your patients with AI-powered diagnostics"
+      title="Pacienți"
+      subtitle="Gestionați pacienții cu diagnostice bazate pe AI"
       showBackButton
     >
       <PatientsList />

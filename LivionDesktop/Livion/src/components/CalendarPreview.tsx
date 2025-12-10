@@ -22,9 +22,9 @@ export function CalendarPreview({ onViewAll }: CalendarPreviewProps) {
       {/* Header */}
       <div style={styles.header}>
         <div style={styles.headerLeft}>
-          <h3 style={styles.title}>Today's Schedule</h3>
+          <h3 style={styles.title}>Programul de Azi</h3>
           <span style={styles.dateLabel}>
-            {today.toLocaleDateString('en-US', {
+            {today.toLocaleDateString('ro-RO', {
               weekday: 'short',
               month: 'short',
               day: 'numeric',
@@ -32,7 +32,7 @@ export function CalendarPreview({ onViewAll }: CalendarPreviewProps) {
           </span>
         </div>
         <button style={styles.viewAllButton} onClick={onViewAll}>
-          View all
+          Vezi tot
           <ChevronRight size={16} />
         </button>
       </div>
@@ -41,11 +41,11 @@ export function CalendarPreview({ onViewAll }: CalendarPreviewProps) {
       <div style={styles.summary}>
         <div style={styles.summaryItem}>
           <User size={14} color={COLORS.teal} />
-          <span>{getTodayAppointments().length} appointments</span>
+          <span>{getTodayAppointments().length} programări</span>
         </div>
         <div style={styles.summaryItem}>
           <Clock size={14} color={COLORS.textSecondary} />
-          <span>Next: {appointments[0]?.startTime || 'None'}</span>
+          <span>Următoarea: {appointments[0]?.startTime || 'Niciuna'}</span>
         </div>
       </div>
 
