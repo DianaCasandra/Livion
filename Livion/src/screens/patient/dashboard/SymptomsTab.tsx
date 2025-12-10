@@ -37,17 +37,18 @@ import { ThemedText } from '../../../components/atoms/ThemedText';
 import { ChatPopupModal } from '../../../components/molecules/ChatPopupModal';
 import { UrgentContactModal } from '../../../components/molecules/UrgentContactModal';
 import { COLORS } from '@/src/constants/Colors';
+import { useLanguage } from '../../../components/providers/LanguageProvider';
 
 // Doctor data
 const DOCTOR_INFO = {
-  name: 'Dr. Sarah Harper',
+  name: 'Dr. Diana Popescu',
   role: 'Family Physician',
   specialty: 'Internal Medicine',
-  phone: '+1 (555) 123-4567',
-  location: 'Livion Health Center',
+  phone: '+40 721 123 456',
+  location: 'Centrul Medical Livion',
   rating: 4.9,
-  experience: '15 years',
-  nextAppointment: 'Dec 12, 2025 at 10:00 AM',
+  experience: '15 ani',
+  nextAppointment: '12 Dec 2025, 10:00',
 };
 
 // Pain level colors
@@ -105,9 +106,13 @@ function TabButton({ active, label, icon: Icon, onPress }: any) {
 function PainScale({
   value,
   onChange,
+  noPainLabel,
+  severeLabel,
 }: {
   value: number;
   onChange: (v: number) => void;
+  noPainLabel: string;
+  severeLabel: string;
 }) {
   const animatedScale = useRef(new Animated.Value(1)).current;
 
@@ -130,8 +135,8 @@ function PainScale({
   return (
     <View style={styles.painScale}>
       <View style={styles.painLabels}>
-        <ThemedText style={styles.painLabelText}>No pain</ThemedText>
-        <ThemedText style={styles.painLabelText}>Severe</ThemedText>
+        <ThemedText style={styles.painLabelText}>{noPainLabel}</ThemedText>
+        <ThemedText style={styles.painLabelText}>{severeLabel}</ThemedText>
       </View>
       <View style={styles.painTrack}>
         {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((level) => (
@@ -162,7 +167,7 @@ function PainScale({
 }
 
 // History item component
-function HistoryItem({ date, symptoms, painLevel, notes, index }: any) {
+function HistoryItem({ date, symptoms, painLevel, notes, index, loggedAtLabel }: any) {
   const slideAnim = useRef(new Animated.Value(30)).current;
   const fadeAnim = useRef(new Animated.Value(0)).current;
 
@@ -217,7 +222,7 @@ function HistoryItem({ date, symptoms, painLevel, notes, index }: any) {
         )}
         <View style={styles.historyMeta}>
           <Clock size={12} color={COLORS.textTertiary} />
-          <ThemedText style={styles.historyTime}>Logged at 9:30 AM</ThemedText>
+          <ThemedText style={styles.historyTime}>{loggedAtLabel} 9:30 AM</ThemedText>
         </View>
       </Pressable>
     </Animated.View>
@@ -272,6 +277,7 @@ function QuickActionButton({
 }
 
 export default function SymptomsTab() {
+  const { t } = useLanguage();
   const [activeTab, setActiveTab] = useState<'physician' | 'symptoms'>('physician');
   const [painLevel, setPainLevel] = useState(3);
   const [symptoms, setSymptoms] = useState('');
@@ -311,25 +317,25 @@ export default function SymptomsTab() {
     }
   }, [painLevel]);
 
-  // Mock history data
+  // Mock history data - translated
   const historyData = [
     {
-      date: 'Today',
-      symptoms: 'Mild fatigue, slight headache',
+      date: t.symptoms.history.today,
+      symptoms: t.symptoms.history.entry1Symptoms,
       painLevel: 3,
-      notes: 'Better after rest',
+      notes: t.symptoms.history.entry1Notes,
     },
     {
-      date: 'Yesterday',
-      symptoms: 'Muscle tension in shoulders',
+      date: t.symptoms.history.yesterday,
+      symptoms: t.symptoms.history.entry2Symptoms,
       painLevel: 4,
       notes: '',
     },
     {
-      date: 'Oct 5',
-      symptoms: 'General tiredness',
+      date: t.symptoms.history.entry3Date,
+      symptoms: t.symptoms.history.entry3Symptoms,
       painLevel: 2,
-      notes: 'Good day overall',
+      notes: t.symptoms.history.entry3Notes,
     },
   ];
 
@@ -365,9 +371,9 @@ export default function SymptomsTab() {
           {/* Header */}
           <View style={styles.header}>
             <View>
-              <ThemedText style={styles.headerTitle}>My Care</ThemedText>
+              <ThemedText style={styles.headerTitle}>{t.symptoms.title}</ThemedText>
               <ThemedText style={styles.headerSubtitle}>
-                Connect with your physician
+                {t.symptoms.subtitle}
               </ThemedText>
             </View>
             <Pressable style={styles.historyBtn}>
@@ -379,13 +385,13 @@ export default function SymptomsTab() {
           <View style={styles.tabSwitcher}>
             <TabButton
               active={activeTab === 'physician'}
-              label="Family Physician"
+              label={t.symptoms.familyPhysician}
               icon={Stethoscope}
               onPress={() => setActiveTab('physician')}
             />
             <TabButton
               active={activeTab === 'symptoms'}
-              label="Symptoms Log"
+              label={t.symptoms.symptomsLog}
               icon={ClipboardList}
               onPress={() => setActiveTab('symptoms')}
             />
@@ -442,7 +448,7 @@ export default function SymptomsTab() {
                 <View style={styles.doctorActions}>
                   <Pressable style={styles.doctorActionBtn} onPress={handleCall}>
                     <Phone size={18} color={COLORS.cardWhite} />
-                    <ThemedText style={styles.doctorActionText}>Call</ThemedText>
+                    <ThemedText style={styles.doctorActionText}>{t.symptoms.call}</ThemedText>
                   </Pressable>
                   <Pressable
                     style={[styles.doctorActionBtn, styles.doctorActionBtnSecondary]}
@@ -450,7 +456,7 @@ export default function SymptomsTab() {
                   >
                     <MessageCircle size={18} color={COLORS.teal} />
                     <ThemedText style={styles.doctorActionTextSecondary}>
-                      Message
+                      {t.symptoms.message}
                     </ThemedText>
                   </Pressable>
                 </View>
@@ -460,21 +466,21 @@ export default function SymptomsTab() {
               <View style={styles.quickActions}>
                 <QuickActionButton
                   icon={Phone}
-                  label="Call"
+                  label={t.symptoms.call}
                   color={COLORS.teal}
                   bgColor={COLORS.tealLight}
                   onPress={handleCall}
                 />
                 <QuickActionButton
                   icon={MessageCircle}
-                  label="Chat"
+                  label={t.symptoms.chat}
                   color={COLORS.amber}
                   bgColor={COLORS.amberLight}
                   onPress={() => setChatVisible(true)}
                 />
                 <QuickActionButton
                   icon={Calendar}
-                  label="Schedule"
+                  label={t.symptoms.schedule}
                   color={COLORS.success}
                   bgColor={COLORS.successLight}
                   onPress={() => {}}
@@ -485,7 +491,7 @@ export default function SymptomsTab() {
               <Card style={styles.infoCard}>
                 <View style={styles.infoCardHeader}>
                   <Ionicons name="time-outline" size={20} color={COLORS.teal} />
-                  <ThemedText style={styles.infoCardTitle}>Office Hours</ThemedText>
+                  <ThemedText style={styles.infoCardTitle}>{t.symptoms.officeHours}</ThemedText>
                 </View>
                 <ThemedText style={styles.infoCardText}>
                   Monday - Friday: 8:00 AM - 5:00 PM{'\n'}
@@ -497,28 +503,26 @@ export default function SymptomsTab() {
               <Card style={styles.infoCard}>
                 <View style={styles.infoCardHeader}>
                   <Ionicons name="alert-circle-outline" size={20} color={COLORS.amber} />
-                  <ThemedText style={styles.infoCardTitle}>Emergency Contact</ThemedText>
+                  <ThemedText style={styles.infoCardTitle}>{t.symptoms.emergencyContact}</ThemedText>
                 </View>
                 <ThemedText style={styles.infoCardText}>
-                  For after-hours emergencies, please call the main office number.
-                  For life-threatening emergencies, call 911.
+                  {t.symptoms.emergencyText}
                 </ThemedText>
               </Card>
 
-              <Card style={styles.infoCard} highlight="amber">
+              <Card style={styles.infoCard} highlight="teal">
                 <View style={styles.infoCardHeader}>
-                  <Ionicons name="document-text-outline" size={20} color={COLORS.amber} />
-                  <ThemedText style={styles.infoCardTitle}>Quick Tip</ThemedText>
+                  <Ionicons name="document-text-outline" size={20} color={COLORS.teal} />
+                  <ThemedText style={styles.infoCardTitle}>{t.symptoms.quickTip}</ThemedText>
                 </View>
                 <ThemedText style={styles.infoCardText}>
-                  Log your symptoms regularly to help {DOCTOR_INFO.name.split(' ')[0]} track your health progress
-                  and provide better care during your appointments.
+                  {t.symptoms.quickTipText} {DOCTOR_INFO.name.split(' ')[0]} {t.symptoms.quickTipText2}
                 </ThemedText>
                 <Pressable
                   style={styles.infoCardAction}
                   onPress={() => setActiveTab('symptoms')}
                 >
-                  <ThemedText style={styles.infoCardActionText}>Log symptoms now</ThemedText>
+                  <ThemedText style={styles.infoCardActionText}>{t.symptoms.logSymptomsNow}</ThemedText>
                   <Ionicons name="chevron-forward" size={16} color={COLORS.teal} />
                 </Pressable>
               </Card>
@@ -539,7 +543,7 @@ export default function SymptomsTab() {
                 <View style={styles.checkinHeader}>
                   <View style={styles.checkinBadge}>
                     <ThemedText style={styles.checkinBadgeText}>
-                      LOG SYMPTOMS FOR DOCTOR
+                      {t.symptoms.logForDoctor}
                     </ThemedText>
                   </View>
                 </View>
@@ -547,11 +551,11 @@ export default function SymptomsTab() {
                 {/* Symptoms Input */}
                 <View style={styles.inputGroup}>
                   <ThemedText style={styles.inputLabel}>
-                    Describe your symptoms
+                    {t.symptoms.describeSymptoms}
                   </ThemedText>
                   <TextInput
                     style={styles.textInput}
-                    placeholder="What symptoms are you experiencing?"
+                    placeholder={t.symptoms.symptomsPlaceholder}
                     placeholderTextColor={COLORS.textTertiary}
                     value={symptoms}
                     onChangeText={setSymptoms}
@@ -563,9 +567,14 @@ export default function SymptomsTab() {
                 {/* Pain Scale */}
                 <View style={styles.inputGroup}>
                   <ThemedText style={styles.inputLabel}>
-                    Pain or discomfort level
+                    {t.symptoms.painLevel}
                   </ThemedText>
-                  <PainScale value={painLevel} onChange={setPainLevel} />
+                  <PainScale
+                    value={painLevel}
+                    onChange={setPainLevel}
+                    noPainLabel={t.symptoms.noPain}
+                    severeLabel={t.symptoms.severe}
+                  />
                   {painLevel >= 7 && (
                     <View style={styles.painWarning}>
                       <Ionicons
@@ -580,8 +589,8 @@ export default function SymptomsTab() {
                         ]}
                       >
                         {painLevel >= 9
-                          ? 'Critical level - Consider seeking immediate care'
-                          : 'Elevated level - Your doctor will be notified'}
+                          ? t.symptoms.criticalLevel
+                          : t.symptoms.elevatedLevel}
                       </ThemedText>
                     </View>
                   )}
@@ -590,11 +599,11 @@ export default function SymptomsTab() {
                 {/* Notes Input */}
                 <View style={styles.inputGroup}>
                   <ThemedText style={styles.inputLabel}>
-                    Additional notes for {DOCTOR_INFO.name.split(' ')[0]}
+                    {t.symptoms.additionalNotes} {DOCTOR_INFO.name.split(' ')[0]}
                   </ThemedText>
                   <TextInput
                     style={[styles.textInput, styles.textInputSmall]}
-                    placeholder="Any other details your doctor should know?"
+                    placeholder={t.symptoms.notesPlaceholder}
                     placeholderTextColor={COLORS.textTertiary}
                     value={notes}
                     onChangeText={setNotes}
@@ -606,7 +615,7 @@ export default function SymptomsTab() {
                 {/* Submit Button */}
                 <Pressable style={styles.submitBtn} onPress={handleSubmit}>
                   <ThemedText style={styles.submitBtnText}>
-                    Send to Doctor
+                    {t.symptoms.sendToDoctor}
                   </ThemedText>
                   <Send size={18} color={COLORS.cardWhite} />
                 </Pressable>
@@ -620,33 +629,33 @@ export default function SymptomsTab() {
                   color={COLORS.textTertiary}
                 />
                 <ThemedText style={styles.disclaimerText}>
-                  Your symptoms will be shared securely with {DOCTOR_INFO.name}.
-                  For emergencies, call 911.
+                  {t.symptoms.symptomsShared} {DOCTOR_INFO.name}.
+                  {' '}{t.symptoms.forEmergencies}
                 </ThemedText>
               </View>
 
               {/* History Section */}
               <View style={styles.sectionHeader}>
-                <ThemedText style={styles.sectionTitle}>Recent Entries</ThemedText>
+                <ThemedText style={styles.sectionTitle}>{t.symptoms.recentEntries}</ThemedText>
                 <Pressable>
-                  <ThemedText style={styles.seeAllText}>See all</ThemedText>
+                  <ThemedText style={styles.seeAllText}>{t.symptoms.seeAll}</ThemedText>
                 </Pressable>
               </View>
 
               <View style={styles.historyList}>
                 {historyData.map((item, index) => (
-                  <HistoryItem key={index} {...item} index={index} />
+                  <HistoryItem key={index} {...item} index={index} loggedAtLabel={t.symptoms.loggedAt} />
                 ))}
               </View>
 
               {/* Weekly Summary */}
               <Card style={styles.summaryCard}>
-                <ThemedText style={styles.summaryTitle}>This Week</ThemedText>
+                <ThemedText style={styles.summaryTitle}>{t.symptoms.thisWeek}</ThemedText>
                 <View style={styles.summaryStats}>
                   <View style={styles.summaryStat}>
                     <ThemedText style={styles.summaryStatValue}>5</ThemedText>
                     <ThemedText style={styles.summaryStatLabel}>
-                      Entries logged
+                      {t.symptoms.entriesLogged}
                     </ThemedText>
                   </View>
                   <View style={styles.summaryDivider} />
@@ -657,14 +666,14 @@ export default function SymptomsTab() {
                       3.2
                     </ThemedText>
                     <ThemedText style={styles.summaryStatLabel}>
-                      Avg. pain level
+                      {t.symptoms.avgPainLevel}
                     </ThemedText>
                   </View>
                   <View style={styles.summaryDivider} />
                   <View style={styles.summaryStat}>
                     <TrendingDown size={24} color={COLORS.success} />
                     <ThemedText style={styles.summaryStatLabel}>
-                      Improving
+                      {t.symptoms.improving}
                     </ThemedText>
                   </View>
                 </View>

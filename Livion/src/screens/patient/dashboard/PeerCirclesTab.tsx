@@ -21,6 +21,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { ThemedText } from '../../../components/atoms/ThemedText';
 import { Card } from '../../../components/atoms/Card';
 import { COLORS } from '@/src/constants/Colors';
+import { useLanguage } from '../../../components/providers/LanguageProvider';
 
 // Peer post component
 function PeerPost({ author, text, meta, likes, comments, index }: any) {
@@ -63,6 +64,7 @@ function PeerPost({ author, text, meta, likes, comments, index }: any) {
 }
 
 export default function PeerCirclesTab() {
+  const { t } = useLanguage();
   const [postAsPseudonymous, setPostAsPseudonymous] = useState(true);
 
   // Animations
@@ -76,13 +78,13 @@ export default function PeerCirclesTab() {
     ]).start();
   }, []);
 
-  // Mock peer posts
+  // Mock peer posts - using translations
   const peerPosts = [
-    { author: 'Anonymous', text: "Today I finally reached my step goal three days in a row. Small wins matter!", meta: 'Activity - 2h ago', likes: 18, comments: 3 },
-    { author: 'Anonymous', text: "Found a helpful article about managing evening blood pressure. Happy to share if anyone is interested.", meta: 'Education - 5h ago', likes: 12, comments: 4 },
-    { author: 'Support Circle', text: "How did your check-ups go this week? Share a quick update so others know they're not alone.", meta: 'Prompt - today', likes: 7, comments: 6 },
-    { author: 'Anonymous', text: "First week back to regular walking after my procedure. Taking it slow but feeling optimistic.", meta: 'Recovery - 1d ago', likes: 24, comments: 8 },
-    { author: 'Anonymous', text: "Anyone else find it helpful to track their meals? I started a simple food diary and it's been eye-opening.", meta: 'Nutrition - 2d ago', likes: 15, comments: 5 },
+    { author: t.peerCircles.anonymous, text: t.peerCircles.posts.post1, meta: t.peerCircles.posts.post1Meta, likes: 18, comments: 3 },
+    { author: t.peerCircles.anonymous, text: t.peerCircles.posts.post2, meta: t.peerCircles.posts.post2Meta, likes: 12, comments: 4 },
+    { author: t.peerCircles.supportCircle, text: t.peerCircles.posts.post3, meta: t.peerCircles.posts.post3Meta, likes: 7, comments: 6 },
+    { author: t.peerCircles.anonymous, text: t.peerCircles.posts.post4, meta: t.peerCircles.posts.post4Meta, likes: 24, comments: 8 },
+    { author: t.peerCircles.anonymous, text: t.peerCircles.posts.post5, meta: t.peerCircles.posts.post5Meta, likes: 15, comments: 5 },
   ];
 
   return (
@@ -97,8 +99,8 @@ export default function PeerCirclesTab() {
             <View style={styles.headerContent}>
               <Users size={28} color={COLORS.teal} />
               <View style={styles.headerText}>
-                <ThemedText style={styles.headerTitle}>Peer Circles</ThemedText>
-                <ThemedText style={styles.headerSubtitle}>Connect with others on similar journeys</ThemedText>
+                <ThemedText style={styles.headerTitle}>{t.peerCircles.title}</ThemedText>
+                <ThemedText style={styles.headerSubtitle}>{t.peerCircles.subtitle}</ThemedText>
               </View>
             </View>
           </View>
@@ -108,16 +110,16 @@ export default function PeerCirclesTab() {
             <Card style={styles.privacyCard} highlight="amber">
               <View style={styles.privacyHeader}>
                 <Shield size={20} color={COLORS.amber} />
-                <ThemedText style={styles.privacyTitle}>Peer Support Circle</ThemedText>
+                <ThemedText style={styles.privacyTitle}>{t.peerCircles.peerSupportCircle}</ThemedText>
               </View>
               <ThemedText style={styles.privacyText}>
-                A moderated space to share experiences. This does not replace medical advice.
+                {t.peerCircles.moderatedSpace}
               </ThemedText>
               <View style={styles.privacyToggle}>
                 <View style={styles.privacyToggleInfo}>
-                  <ThemedText style={styles.privacyToggleLabel}>Post anonymously</ThemedText>
+                  <ThemedText style={styles.privacyToggleLabel}>{t.peerCircles.postAnonymously}</ThemedText>
                   <ThemedText style={styles.privacyToggleHint}>
-                    Your identity is hidden from peers
+                    {t.peerCircles.identityHidden}
                   </ThemedText>
                 </View>
                 <Switch
@@ -133,18 +135,18 @@ export default function PeerCirclesTab() {
             <Card style={styles.composeCard}>
               <TextInput
                 style={styles.composeInput}
-                placeholder="Share an update with your circle..."
+                placeholder={t.peerCircles.sharePlaceholder}
                 placeholderTextColor={COLORS.textTertiary}
                 multiline
                 numberOfLines={3}
               />
               <Pressable style={styles.postButton}>
-                <ThemedText style={styles.postButtonText}>Post</ThemedText>
+                <ThemedText style={styles.postButtonText}>{t.peerCircles.post}</ThemedText>
               </Pressable>
             </Card>
 
             {/* Posts Feed */}
-            <ThemedText style={styles.feedTitle}>Recent Posts</ThemedText>
+            <ThemedText style={styles.feedTitle}>{t.peerCircles.recentPosts}</ThemedText>
             {peerPosts.map((post, index) => (
               <PeerPost key={index} {...post} index={index} />
             ))}
@@ -153,7 +155,7 @@ export default function PeerCirclesTab() {
             <View style={styles.moderationNotice}>
               <Ionicons name="shield-checkmark-outline" size={14} color={COLORS.textTertiary} />
               <ThemedText style={styles.moderationText}>
-                Posts are reviewed for safety. Inappropriate content will be removed.
+                {t.peerCircles.moderationNotice}
               </ThemedText>
             </View>
 

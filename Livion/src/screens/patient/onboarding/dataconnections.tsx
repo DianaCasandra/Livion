@@ -8,28 +8,24 @@ import { Button } from '../../../components/atoms/Button';
 import { ThemedText } from '../../../components/atoms/ThemedText';
 import { OnboardingHeader } from '../../../components/molecules/OnboardingHeader';
 import { COLORS, Spacing, GlassStyles } from '@/src/constants/Colors';
-
-type DeviceConnection = {
-  id: string;
-  name: string;
-  hint: string;
-  connectLabel: string;
-};
-
-const DEVICES: DeviceConnection[] = [
-  { id: 'apple', name: 'Apple Health', hint: 'Steps • Heart Rate • Sleep • Activity', connectLabel: 'Connect' },
-  { id: 'google', name: 'Google Fit', hint: 'Steps • HR • Mobility', connectLabel: 'Connect' },
-  { id: 'glucose', name: 'Glucose Monitor', hint: 'CGM trend • Fast sync', connectLabel: 'Connect' },
-  { id: 'other', name: 'Other Bluetooth devices', hint: "We'll search nearby sensors automatically", connectLabel: 'Search' },
-];
+import { useLanguage } from '../../../components/providers/LanguageProvider';
 
 export default function DataConnectionsScreen() {
   const navigation = useNavigation();
+  const { t } = useLanguage();
   const [connections, setConnections] = useState<Record<string, boolean>>({});
 
   const toggleConnection = (id: string) => {
     setConnections((prev) => ({ ...prev, [id]: !prev[id] }));
   };
+
+  // Device list with translations
+  const DEVICES = [
+    { id: 'apple', name: t.dataConnections.devices.appleHealth.name, hint: t.dataConnections.devices.appleHealth.hint, connectLabel: t.dataConnections.connect },
+    { id: 'google', name: t.dataConnections.devices.googleFit.name, hint: t.dataConnections.devices.googleFit.hint, connectLabel: t.dataConnections.connect },
+    { id: 'glucose', name: t.dataConnections.devices.glucoseMonitor.name, hint: t.dataConnections.devices.glucoseMonitor.hint, connectLabel: t.dataConnections.connect },
+    { id: 'other', name: t.dataConnections.devices.otherBluetooth.name, hint: t.dataConnections.devices.otherBluetooth.hint, connectLabel: t.common.search },
+  ];
 
   return (
     <View style={styles.root}>
@@ -45,10 +41,10 @@ export default function DataConnectionsScreen() {
           <View style={styles.heroCard}>
             <View style={styles.heroContent}>
               <ThemedText variant="display" weight="bold" style={styles.heroTitle}>
-                Data Connections
+                {t.dataConnections.title}
               </ThemedText>
               <ThemedText variant="body" style={styles.heroSubtitle}>
-                Sync wearables and sensors to power your care insights.
+                {t.dataConnections.subtitle}
               </ThemedText>
             </View>
 
@@ -60,7 +56,7 @@ export default function DataConnectionsScreen() {
           </View>
 
           <ThemedText variant="heading" weight="semibold" style={styles.sectionTitle}>
-            Connect your devices
+            {t.dataConnections.connectDevices}
           </ThemedText>
 
           <View style={styles.cardList}>
@@ -73,7 +69,7 @@ export default function DataConnectionsScreen() {
                   {device.hint}
                 </ThemedText>
                 <Chip
-                  label={connections[device.id] ? 'Connected' : device.connectLabel}
+                  label={connections[device.id] ? t.common.connected : device.connectLabel}
                   variant={connections[device.id] ? 'status-ok' : 'teal'}
                   onPress={() => toggleConnection(device.id)}
                   style={styles.deviceButton}
@@ -90,7 +86,7 @@ export default function DataConnectionsScreen() {
             onPress={() => navigation.navigate('Risk' as never)}
           >
             <ThemedText variant="label" weight="semibold" style={styles.buttonText}>
-              Continue
+              {t.common.continue}
             </ThemedText>
           </Button>
 

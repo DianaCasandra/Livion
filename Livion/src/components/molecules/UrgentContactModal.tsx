@@ -17,6 +17,7 @@ import {
 } from 'react-native';
 import { COLORS, BorderRadius, Spacing } from '../../constants/Colors';
 import { ThemedText } from '../atoms/ThemedText';
+import { useLanguage } from '../providers/LanguageProvider';
 
 type UrgentContactModalProps = {
   visible: boolean;
@@ -31,10 +32,11 @@ export function UrgentContactModal({
   visible,
   onClose,
   onChat,
-  doctorName = 'Dr. Harper',
-  doctorPhone = '+1 (555) 123-4567',
+  doctorName = 'Dr. Diana',
+  doctorPhone = '+40 721 123 456',
   severity = 'high',
 }: UrgentContactModalProps) {
+  const { t } = useLanguage();
   // Animation values
   const scale = useRef(new Animated.Value(0.9)).current;
   const opacity = useRef(new Animated.Value(0)).current;
@@ -94,7 +96,7 @@ export function UrgentContactModal({
   };
 
   const handleEmergency = () => {
-    Linking.openURL('tel:911');
+    Linking.openURL('tel:112');
   };
 
   const isCritical = severity === 'critical';
@@ -136,14 +138,14 @@ export function UrgentContactModal({
 
           {/* Title */}
           <ThemedText style={styles.title}>
-            {isCritical ? 'Urgent Attention Needed' : 'High Symptom Alert'}
+            {isCritical ? t.urgent.urgentAttention : t.urgent.highSymptomAlert}
           </ThemedText>
 
           {/* Description */}
           <ThemedText style={styles.description}>
             {isCritical
-              ? 'Your symptoms indicate you may need immediate medical attention. Please contact your doctor or emergency services.'
-              : 'Your symptom levels are elevated. Consider reaching out to your care team for guidance.'}
+              ? t.urgent.criticalDescription
+              : t.urgent.highDescription}
           </ThemedText>
 
           {/* Doctor Info Card */}
@@ -155,7 +157,7 @@ export function UrgentContactModal({
             </View>
             <View style={styles.doctorInfo}>
               <ThemedText style={styles.doctorName}>{doctorName}</ThemedText>
-              <ThemedText style={styles.doctorRole}>Family Physician</ThemedText>
+              <ThemedText style={styles.doctorRole}>{t.symptoms.familyPhysician}</ThemedText>
             </View>
           </View>
 
@@ -165,14 +167,14 @@ export function UrgentContactModal({
             <Pressable style={styles.callButton} onPress={handleCall}>
               <Phone size={20} color={COLORS.cardWhite} />
               <ThemedText style={styles.callButtonText}>
-                Call {doctorName.split(' ')[0]}
+                {t.urgent.callDoctor} {doctorName.split(' ')[0]}
               </ThemedText>
             </Pressable>
 
             {/* Chat Button */}
             <Pressable style={styles.chatButton} onPress={onChat}>
               <MessageCircle size={20} color={COLORS.teal} />
-              <ThemedText style={styles.chatButtonText}>Send Message</ThemedText>
+              <ThemedText style={styles.chatButtonText}>{t.urgent.sendMessage}</ThemedText>
             </Pressable>
           </View>
 
@@ -181,7 +183,7 @@ export function UrgentContactModal({
             <Pressable style={styles.emergencyButton} onPress={handleEmergency}>
               <Ionicons name="warning" size={18} color={COLORS.error} />
               <ThemedText style={styles.emergencyText}>
-                Call Emergency Services (911)
+                {t.urgent.callEmergency}
               </ThemedText>
             </Pressable>
           )}
@@ -189,7 +191,7 @@ export function UrgentContactModal({
           {/* Dismiss Option */}
           <Pressable style={styles.dismissButton} onPress={onClose}>
             <ThemedText style={styles.dismissText}>
-              I'm okay, dismiss this alert
+              {t.urgent.dismissAlert}
             </ThemedText>
           </Pressable>
         </Animated.View>

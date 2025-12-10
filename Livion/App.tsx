@@ -1,6 +1,6 @@
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import { UserProvider, MockDataProvider } from '@/src/components/providers';
+import { UserProvider, MockDataProvider, LanguageProvider } from '@/src/components/providers';
 import { ThemeProvider } from '@/src/components/providers/ThemeProvider';
 
 // Patient Onboarding Screens
@@ -23,9 +23,10 @@ const Stack = createNativeStackNavigator();
 export default function App() {
   return (
     <ThemeProvider>
-      <UserProvider>
-        <MockDataProvider>
-          <NavigationContainer>
+      <LanguageProvider>
+        <UserProvider>
+          <MockDataProvider>
+            <NavigationContainer>
             <Stack.Navigator
               initialRouteName="Welcome"
               screenOptions={{ headerShown: false }}
@@ -45,9 +46,10 @@ export default function App() {
               <Stack.Screen name="LabResults" component={LabResultsScreen} />
               <Stack.Screen name="LabResultDetail" component={LabResultDetailScreen} />
             </Stack.Navigator>
-          </NavigationContainer>
-        </MockDataProvider>
-      </UserProvider>
+            </NavigationContainer>
+          </MockDataProvider>
+        </UserProvider>
+      </LanguageProvider>
     </ThemeProvider>
   );
 }

@@ -12,8 +12,10 @@ import {
   X,
   ChevronRight,
   LogOut,
+  Globe,
+  Check,
 } from 'lucide-react-native';
-import React, { useRef, useEffect } from 'react';
+import React, { useRef, useEffect, useState } from 'react';
 import {
   Animated,
   Dimensions,
@@ -27,17 +29,11 @@ import {
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { ThemedText } from '../atoms/ThemedText';
 import { COLORS } from '@/src/constants/Colors';
+import { useLanguage } from '../providers/LanguageProvider';
 
 const { width: SCREEN_WIDTH } = Dimensions.get('window');
 
-// Menu items configuration
-const MENU_ITEMS = [
-  { id: 'profile', icon: User, label: 'My Profile', color: COLORS.teal },
-  { id: 'glossary', icon: BookOpen, label: 'Lab Results & Glossary', color: COLORS.amber },
-  { id: 'doctors', icon: Stethoscope, label: 'My Doctors', color: COLORS.success },
-  { id: 'settings', icon: Settings, label: 'Settings', color: COLORS.textSecondary },
-  { id: 'help', icon: HelpCircle, label: 'Help & Support', color: COLORS.textSecondary },
-];
+// Menu items will be generated dynamically based on language
 
 type SideMenuProps = {
   visible: boolean;
@@ -57,6 +53,18 @@ export function SideMenu({
   const insets = useSafeAreaInsets();
   const slideAnim = useRef(new Animated.Value(SCREEN_WIDTH)).current;
   const fadeAnim = useRef(new Animated.Value(0)).current;
+  const [showLanguageSelector, setShowLanguageSelector] = useState(false);
+  const { language, setLanguage, t } = useLanguage();
+
+  // Menu items configuration with translations
+  const MENU_ITEMS = [
+    { id: 'profile', icon: User, label: t.menu.myProfile, color: COLORS.teal },
+    { id: 'glossary', icon: BookOpen, label: t.menu.labResults, color: COLORS.amber },
+    { id: 'doctors', icon: Stethoscope, label: t.menu.myDoctors, color: COLORS.success },
+    { id: 'language', icon: Globe, label: t.menu.language, color: COLORS.teal },
+    { id: 'settings', icon: Settings, label: t.menu.settings, color: COLORS.textSecondary },
+    { id: 'help', icon: HelpCircle, label: t.menu.helpSupport, color: COLORS.textSecondary },
+  ];
 
   useEffect(() => {
     if (visible) {
@@ -98,6 +106,12 @@ export function SideMenu({
   };
 
   const handleMenuPress = (id: string) => {
+    // Handle language toggle without closing menu
+    if (id === 'language') {
+      setShowLanguageSelector(!showLanguageSelector);
+      return;
+    }
+
     // Close menu first, then navigate
     Animated.parallel([
       Animated.timing(slideAnim, {
@@ -112,6 +126,7 @@ export function SideMenu({
       }),
     ]).start(() => {
       onClose();
+      setShowLanguageSelector(false);
       // Handle navigation based on menu item
       switch (id) {
         case 'glossary':
@@ -127,6 +142,11 @@ export function SideMenu({
           break;
       }
     });
+  };
+
+  const handleLanguageSelect = async (lang: 'en' | 'ro') => {
+    await setLanguage(lang);
+    setShowLanguageSelector(false);
   };
 
   if (!visible) return null;
@@ -165,24 +185,62 @@ export function SideMenu({
 
           <ScrollView style={styles.menuContent} showsVerticalScrollIndicator={false}>
             {MENU_ITEMS.map((item) => (
-              <Pressable
-                key={item.id}
-                style={styles.menuItem}
-                onPress={() => handleMenuPress(item.id)}
-              >
-                <View style={[styles.menuItemIcon, { backgroundColor: item.color + '15' }]}>
-                  <item.icon size={22} color={item.color} />
-                </View>
-                <ThemedText style={styles.menuItemLabel}>{item.label}</ThemedText>
-                <ChevronRight size={20} color={COLORS.textTertiary} />
-              </Pressable>
+              <React.Fragment key={item.id}>
+                <Pressable
+                  style={styles.menuItem}
+                  onPress={() => handleMenuPress(item.id)}
+                >
+                  <View style={[styles.menuItemIcon, { backgroundColor: item.color + '15' }]}>
+                    <item.icon size={22} color={item.color} />
+                  </View>
+                  <ThemedText style={styles.menuItemLabel}>{item.label}</ThemedText>
+                  {item.id === 'language' ? (
+                    <View style={styles.languageIndicator}>
+                      <ThemedText style={styles.currentLanguage}>
+                        {language === 'en' ? 'EN' : 'RO'}
+                      </ThemedText>
+                      <ChevronRight
+                        size={20}
+                        color={COLORS.textTertiary}
+                        style={{ transform: [{ rotate: showLanguageSelector ? '90deg' : '0deg' }] }}
+                      />
+                    </View>
+                  ) : (
+                    <ChevronRight size={20} color={COLORS.textTertiary} />
+                  )}
+                </Pressable>
+
+                {/* Language Selector Dropdown */}
+                {item.id === 'language' && showLanguageSelector && (
+                  <View style={styles.languageSelector}>
+                    <Pressable
+                      style={[styles.languageOption, language === 'en' && styles.languageOptionSelected]}
+                      onPress={() => handleLanguageSelect('en')}
+                    >
+                      <ThemedText style={[styles.languageOptionText, language === 'en' && styles.languageOptionTextSelected]}>
+                        {t.language.english}
+                      </ThemedText>
+                      {language === 'en' && <Check size={18} color={COLORS.teal} />}
+                    </Pressable>
+                    <Pressable
+                      style={[styles.languageOption, language === 'ro' && styles.languageOptionSelected]}
+                      onPress={() => handleLanguageSelect('ro')}
+                    >
+                      <ThemedText style={[styles.languageOptionText, language === 'ro' && styles.languageOptionTextSelected]}>
+                        {t.language.romanian}
+                      </ThemedText>
+                      {language === 'ro' && <Check size={18} color={COLORS.teal} />}
+                    </Pressable>
+                  </View>
+                )}
+              </React.Fragment>
             ))}
           </ScrollView>
 
           <View style={styles.menuFooter}>
             <Pressable style={styles.menuLogout} onPress={() => handleMenuPress('logout')}>
               <LogOut size={20} color={COLORS.error} />
-              <ThemedText style={styles.menuLogoutText}>Log Out</ThemedText>
+              <ThemedText style={styles.menuLogoutText}>{t.menu.logOut}</ThemedText>
             </Pressable>
           </View>
         </Animated.View>
@@ -306,5 +364,45 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: '500',
     color: COLORS.error,
+  },
+  languageIndicator: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 6,
+  },
+  currentLanguage: {
+    fontSize: 13,
+    fontWeight: '600',
+    color: COLORS.teal,
+    backgroundColor: COLORS.teal + '15',
+    paddingHorizontal: 8,
+    paddingVertical: 3,
+    borderRadius: 6,
+  },
+  languageSelector: {
+    marginLeft: 58,
+    marginRight: 20,
+    marginBottom: 8,
+    backgroundColor: COLORS.background,
+    borderRadius: 12,
+    overflow: 'hidden',
+  },
+  languageOption: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    paddingVertical: 12,
+    paddingHorizontal: 16,
+  },
+  languageOptionSelected: {
+    backgroundColor: COLORS.teal + '10',
+  },
+  languageOptionText: {
+    fontSize: 15,
+    color: COLORS.textSecondary,
+  },
+  languageOptionTextSelected: {
+    color: COLORS.teal,
+    fontWeight: '600',
   },
 });

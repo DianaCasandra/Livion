@@ -44,31 +44,34 @@ import { SideMenu } from '../../../components/molecules/SideMenu';
 import { SupportModal } from '../../../components/molecules/SupportModal';
 import { WelcomeBlob } from '../../../components/molecules/WelcomeBlob';
 import { COLORS } from '@/src/constants/Colors';
+import { useLanguage } from '../../../components/providers/LanguageProvider';
 
-// Get current greeting
-const getGreeting = () => {
+// Get current greeting key
+const getGreetingKey = () => {
   const currentHour = new Date().getHours();
-  return currentHour < 12 ? 'Good morning' : currentHour < 18 ? 'Good afternoon' : 'Good evening';
+  return currentHour < 12 ? 'morning' : currentHour < 18 ? 'afternoon' : 'evening';
 };
-
-// Initial tasks data
-const INITIAL_TASKS = [
-  { id: '1', title: 'Morning blood pressure', time: 'Before 9:00 AM', done: true, doneTime: 'Completed at 8:30 AM' },
-  { id: '2', title: '10 minute walk', time: 'Before 3:00 PM', done: true, doneTime: 'Completed at 1:15 PM' },
-  { id: '3', title: 'Evening check-in', time: 'Before 10:00 PM', done: false, doneTime: null },
-];
-
-// Mood options data
-const MOOD_OPTIONS = [
-  { id: 'great', icon: Smile, label: 'Great', color: COLORS.teal },
-  { id: 'okay', icon: Meh, label: 'Okay', color: COLORS.amber },
-  { id: 'low', icon: Frown, label: 'Low', color: COLORS.warning },
-  { id: 'rough', icon: AlertCircle, label: 'Rough', color: COLORS.error },
-];
 
 export default function HomeTab() {
   const navigation = useNavigation();
-  const greeting = getGreeting();
+  const { t } = useLanguage();
+  const greetingKey = getGreetingKey();
+  const greeting = t.home.greetings[greetingKey as keyof typeof t.home.greetings];
+
+  // Initial tasks data with translations
+  const INITIAL_TASKS = [
+    { id: '1', title: t.home.tasks.morningBloodPressure, time: t.home.tasks.beforeMorning, done: true, doneTime: `${t.home.completedAt} 8:30` },
+    { id: '2', title: t.home.tasks.tenMinuteWalk, time: t.home.tasks.beforeAfternoon, done: true, doneTime: `${t.home.completedAt} 13:15` },
+    { id: '3', title: t.home.tasks.eveningCheckIn, time: t.home.tasks.beforeEvening, done: false, doneTime: null },
+  ];
+
+  // Mood options data with translations
+  const MOOD_OPTIONS = [
+    { id: 'great', icon: Smile, label: t.home.moods.great, color: COLORS.teal },
+    { id: 'okay', icon: Meh, label: t.home.moods.okay, color: COLORS.amber },
+    { id: 'low', icon: Frown, label: t.home.moods.low, color: COLORS.warning },
+    { id: 'rough', icon: AlertCircle, label: t.home.moods.rough, color: COLORS.error },
+  ];
 
   const [showDashboard, setShowDashboard] = useState(false);
   const [menuVisible, setMenuVisible] = useState(false);
@@ -98,7 +101,7 @@ export default function HomeTab() {
           return {
             ...task,
             done: !task.done,
-            doneTime: !task.done ? `Completed at ${timeStr}` : null,
+            doneTime: !task.done ? `${t.home.completedAt} ${timeStr}` : null,
           };
         }
         return task;
@@ -162,9 +165,10 @@ export default function HomeTab() {
           <Animated.View style={[styles.welcomeWrapper, { opacity: welcomeOpacity }]}>
             <WelcomeBlob
               onPress={handleBlobPress}
-              healthStatus="You are in healthy shape"
+              healthStatus={t.home.healthStatus}
               greeting={greeting}
               userName="Darian"
+              tapHint={t.home.tapToSee}
             />
           </Animated.View>
         </SafeAreaView>
@@ -205,15 +209,15 @@ export default function HomeTab() {
               </View>
 
               {/* Vitals Section */}
-              <ThemedText style={styles.sectionTitle}>Your day at a glance</ThemedText>
+              <ThemedText style={styles.sectionTitle}>{t.home.dayAtGlance}</ThemedText>
 
               <View style={styles.vitalsGrid}>
                 <VitalCard
                   icon={Activity}
                   iconColor={COLORS.amber}
                   value="7,820"
-                  unit="steps"
-                  subtitle="78% of goal"
+                  unit={t.home.steps}
+                  subtitle={`78% ${t.home.ofGoal}`}
                   progress={78}
                 />
                 <View style={styles.vitalsRow}>
@@ -221,8 +225,8 @@ export default function HomeTab() {
                     icon={Heart}
                     iconColor={COLORS.teal}
                     value="68"
-                    unit="bpm"
-                    subtitle="resting"
+                    unit={t.home.bpm}
+                    subtitle={t.home.resting}
                     style={styles.vitalHalf}
                   />
                   <VitalCard
@@ -230,7 +234,7 @@ export default function HomeTab() {
                     iconColor="#8B5CF6"
                     value="7h 42m"
                     unit=""
-                    subtitle="good sleep"
+                    subtitle={t.home.goodSleep}
                     style={styles.vitalHalf}
                   />
                 </View>
@@ -240,7 +244,7 @@ export default function HomeTab() {
               <Card style={styles.moodCard} highlight="teal">
                 <View style={styles.moodHeader}>
                   <Sparkles size={20} color={COLORS.teal} />
-                  <ThemedText style={styles.moodTitle}>How are you feeling?</ThemedText>
+                  <ThemedText style={styles.moodTitle}>{t.home.howFeeling}</ThemedText>
                 </View>
                 <View style={styles.moodOptions}>
                   {MOOD_OPTIONS.map((mood) => {
@@ -264,15 +268,15 @@ export default function HomeTab() {
                   })}
                 </View>
                 <ThemedText style={styles.moodHint}>
-                  {selectedMood ? 'Mood logged!' : 'Tap to log your mood'}
+                  {selectedMood ? t.home.moodLogged : t.home.tapToLog}
                 </ThemedText>
               </Card>
 
               {/* Today's Tasks */}
               <View style={styles.tasksHeader}>
-                <ThemedText style={styles.sectionTitle}>Today's plan</ThemedText>
+                <ThemedText style={styles.sectionTitle}>{t.home.todaysPlan}</ThemedText>
                 <ThemedText style={[styles.taskCount, completedCount === tasks.length && { color: COLORS.success }]}>
-                  {completedCount === tasks.length ? 'All done!' : `${completedCount} of ${tasks.length} done`}
+                  {completedCount === tasks.length ? t.home.allDone : `${completedCount} ${t.home.ofDone} ${tasks.length} ${t.home.done}`}
                 </ThemedText>
               </View>
 
@@ -280,9 +284,9 @@ export default function HomeTab() {
                 {completedCount === tasks.length ? (
                   <View style={styles.allDoneContainer}>
                     <CheckCircle2 size={36} color={COLORS.success} />
-                    <ThemedText style={styles.allDoneTitle}>Great job!</ThemedText>
+                    <ThemedText style={styles.allDoneTitle}>{t.home.greatJob}</ThemedText>
                     <ThemedText style={styles.allDoneSubtitle}>
-                      You've completed all your tasks for today
+                      {t.home.completedAllTasks}
                     </ThemedText>
                   </View>
                 ) : (
@@ -299,29 +303,29 @@ export default function HomeTab() {
               </Card>
 
               {/* Insights Section */}
-              <ThemedText style={styles.sectionTitle}>Insights for you</ThemedText>
+              <ThemedText style={styles.sectionTitle}>{t.home.insightsForYou}</ThemedText>
 
               <Card style={styles.insightCard} highlight="amber">
                 <View style={styles.insightBadge}>
-                  <ThemedText style={styles.insightBadgeText}>NEW</ThemedText>
+                  <ThemedText style={styles.insightBadgeText}>{t.home.new}</ThemedText>
                 </View>
-                <ThemedText style={styles.insightTitle}>Your evening readings improved</ThemedText>
+                <ThemedText style={styles.insightTitle}>{t.home.insights.eveningReadings}</ThemedText>
                 <ThemedText style={styles.insightBody}>
-                  Blood pressure has been trending down over the last 3 evenings. Keep up the good work!
+                  {t.home.insights.eveningReadingsBody}
                 </ThemedText>
                 <Pressable style={styles.insightAction}>
-                  <ThemedText style={styles.insightActionText}>See details</ThemedText>
+                  <ThemedText style={styles.insightActionText}>{t.home.seeDetails}</ThemedText>
                   <Ionicons name="chevron-forward" size={16} color={COLORS.teal} />
                 </Pressable>
               </Card>
 
               <Card style={styles.insightCard}>
-                <ThemedText style={styles.insightTitle}>Breathing looks steady</ThemedText>
+                <ThemedText style={styles.insightTitle}>{t.home.insights.breathingSteady}</ThemedText>
                 <ThemedText style={styles.insightBody}>
-                  Your respiratory rate has stayed within your normal range all week.
+                  {t.home.insights.breathingSteadyBody}
                 </ThemedText>
                 <Pressable style={styles.insightAction}>
-                  <ThemedText style={styles.insightActionText}>Learn more</ThemedText>
+                  <ThemedText style={styles.insightActionText}>{t.home.learnMore}</ThemedText>
                   <Ionicons name="chevron-forward" size={16} color={COLORS.teal} />
                 </Pressable>
               </Card>
@@ -410,7 +414,7 @@ const styles = StyleSheet.create({
   // Vitals Grid
   vitalsGrid: {
     gap: 10,
-    marginBottom: 16,
+    marginBottom: 20,
   },
   vitalsRow: {
     flexDirection: 'row',

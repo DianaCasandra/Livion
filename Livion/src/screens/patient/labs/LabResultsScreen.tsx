@@ -30,15 +30,16 @@ import { ThemedText } from '../../../components/atoms/ThemedText';
 import { OnboardingHeader } from '../../../components/molecules/OnboardingHeader';
 import { AnimatedBlobBackground } from '../../../components/atoms/AnimatedBlobBackground';
 import { COLORS, Spacing, BorderRadius } from '@/src/constants/Colors';
+import { useLanguage } from '../../../components/providers/LanguageProvider';
 
-// Mock lab result sets data
-export const LAB_RESULT_SETS = [
+// Lab result sets base data (titles/subtitles come from translations)
+export const LAB_RESULT_SETS_BASE = [
   {
     id: '1',
     date: '2025-01-15',
-    title: 'Complete Blood Count',
-    subtitle: 'CBC with Differential',
-    provider: 'City Medical Lab',
+    titleKey: 'cbc',
+    subtitleKey: 'cbcSub',
+    providerKey: 'cityMedical',
     status: 'normal',
     flaggedCount: 0,
     totalTests: 8,
@@ -46,9 +47,9 @@ export const LAB_RESULT_SETS = [
   {
     id: '2',
     date: '2025-01-10',
-    title: 'Metabolic Panel',
-    subtitle: 'Comprehensive Metabolic Panel',
-    provider: 'City Medical Lab',
+    titleKey: 'metabolic',
+    subtitleKey: 'metabolicSub',
+    providerKey: 'cityMedical',
     status: 'attention',
     flaggedCount: 2,
     totalTests: 14,
@@ -56,9 +57,9 @@ export const LAB_RESULT_SETS = [
   {
     id: '3',
     date: '2024-12-20',
-    title: 'Lipid Panel',
-    subtitle: 'Cholesterol & Triglycerides',
-    provider: 'HealthFirst Labs',
+    titleKey: 'lipid',
+    subtitleKey: 'lipidSub',
+    providerKey: 'healthFirst',
     status: 'attention',
     flaggedCount: 1,
     totalTests: 5,
@@ -66,9 +67,9 @@ export const LAB_RESULT_SETS = [
   {
     id: '4',
     date: '2024-12-05',
-    title: 'Thyroid Panel',
-    subtitle: 'TSH, T3, T4',
-    provider: 'City Medical Lab',
+    titleKey: 'thyroid',
+    subtitleKey: 'thyroidSub',
+    providerKey: 'cityMedical',
     status: 'normal',
     flaggedCount: 0,
     totalTests: 4,
@@ -76,18 +77,21 @@ export const LAB_RESULT_SETS = [
   {
     id: '5',
     date: '2024-11-18',
-    title: 'Vitamin & Mineral Panel',
-    subtitle: 'Vitamin D, B12, Iron',
-    provider: 'HealthFirst Labs',
+    titleKey: 'vitamin',
+    subtitleKey: 'vitaminSub',
+    providerKey: 'healthFirst',
     status: 'flagged',
     flaggedCount: 3,
     totalTests: 6,
   },
 ];
 
-function formatDate(dateString: string): string {
+// Export for detail screen (will be populated with translations)
+export let LAB_RESULT_SETS: any[] = [];
+
+function formatDate(dateString: string, locale: string = 'ro-RO'): string {
   const date = new Date(dateString);
-  return date.toLocaleDateString('en-US', {
+  return date.toLocaleDateString(locale, {
     month: 'short',
     day: 'numeric',
     year: 'numeric',
@@ -120,7 +124,7 @@ function getStatusIcon(status: string) {
   }
 }
 
-function LabResultCard({ item, index, onPress }: { item: typeof LAB_RESULT_SETS[0]; index: number; onPress: () => void }) {
+function LabResultCard({ item, index, onPress, t, locale }: { item: any; index: number; onPress: () => void; t: any; locale: string }) {
   const slideAnim = useRef(new Animated.Value(30)).current;
   const fadeAnim = useRef(new Animated.Value(0)).current;
   const scaleAnim = useRef(new Animated.Value(1)).current;
@@ -194,7 +198,7 @@ function LabResultCard({ item, index, onPress }: { item: typeof LAB_RESULT_SETS[
           <View style={styles.cardInfo}>
             <View style={styles.infoItem}>
               <Calendar size={14} color={COLORS.textTertiary} />
-              <ThemedText style={styles.infoText}>{formatDate(item.date)}</ThemedText>
+              <ThemedText style={styles.infoText}>{formatDate(item.date, locale)}</ThemedText>
             </View>
             <View style={styles.infoDivider} />
             <ThemedText style={styles.providerText}>{item.provider}</ThemedText>
@@ -205,11 +209,11 @@ function LabResultCard({ item, index, onPress }: { item: typeof LAB_RESULT_SETS[
             <View style={[styles.statusBadge, { backgroundColor: statusColor + '15' }]}>
               <StatusIcon size={14} color={statusColor} />
               <ThemedText style={[styles.statusText, { color: statusColor }]}>
-                {item.status === 'normal' ? 'All Normal' : `${item.flaggedCount} Flagged`}
+                {item.status === 'normal' ? t.labs.allNormal : `${item.flaggedCount} ${t.labs.flagged}`}
               </ThemedText>
             </View>
             <ThemedText style={styles.testCount}>
-              {item.totalTests} tests
+              {item.totalTests} {t.labs.tests}
             </ThemedText>
           </View>
         </View>
@@ -220,8 +224,21 @@ function LabResultCard({ item, index, onPress }: { item: typeof LAB_RESULT_SETS[
 
 export default function LabResultsScreen() {
   const navigation = useNavigation();
+  const { t, language } = useLanguage();
+  const locale = language === 'ro' ? 'ro-RO' : 'en-US';
 
-  const handleResultPress = (resultSet: typeof LAB_RESULT_SETS[0]) => {
+  // Create translated lab result sets
+  const labResultSets = LAB_RESULT_SETS_BASE.map(item => ({
+    ...item,
+    title: t.labs.resultSets[item.titleKey as keyof typeof t.labs.resultSets],
+    subtitle: t.labs.resultSets[item.subtitleKey as keyof typeof t.labs.resultSets],
+    provider: t.labs.providers[item.providerKey as keyof typeof t.labs.providers],
+  }));
+
+  // Update global export for detail screen
+  LAB_RESULT_SETS = labResultSets;
+
+  const handleResultPress = (resultSet: any) => {
     navigation.navigate('LabResultDetail' as never, { resultSetId: resultSet.id } as never);
   };
 
@@ -239,43 +256,45 @@ export default function LabResultsScreen() {
         >
           {/* Page Title */}
           <View style={styles.titleSection}>
-            <ThemedText style={styles.pageTitle}>Lab Results</ThemedText>
+            <ThemedText style={styles.pageTitle}>{t.labs.title}</ThemedText>
             <ThemedText style={styles.pageSubtitle}>
-              View your recent blood work and test results
+              {t.labs.subtitle}
             </ThemedText>
           </View>
 
           {/* Summary Card */}
           <View style={styles.summaryCard}>
             <View style={styles.summaryItem}>
-              <ThemedText style={styles.summaryValue}>{LAB_RESULT_SETS.length}</ThemedText>
-              <ThemedText style={styles.summaryLabel}>Total Reports</ThemedText>
+              <ThemedText style={styles.summaryValue}>{labResultSets.length}</ThemedText>
+              <ThemedText style={styles.summaryLabel}>{t.labs.totalReports}</ThemedText>
             </View>
             <View style={styles.summaryDivider} />
             <View style={styles.summaryItem}>
               <ThemedText style={[styles.summaryValue, { color: COLORS.success }]}>
-                {LAB_RESULT_SETS.filter(r => r.status === 'normal').length}
+                {labResultSets.filter(r => r.status === 'normal').length}
               </ThemedText>
-              <ThemedText style={styles.summaryLabel}>All Normal</ThemedText>
+              <ThemedText style={styles.summaryLabel}>{t.labs.allNormal}</ThemedText>
             </View>
             <View style={styles.summaryDivider} />
             <View style={styles.summaryItem}>
               <ThemedText style={[styles.summaryValue, { color: COLORS.warning }]}>
-                {LAB_RESULT_SETS.filter(r => r.status !== 'normal').length}
+                {labResultSets.filter(r => r.status !== 'normal').length}
               </ThemedText>
-              <ThemedText style={styles.summaryLabel}>Need Review</ThemedText>
+              <ThemedText style={styles.summaryLabel}>{t.labs.needReview}</ThemedText>
             </View>
           </View>
 
           {/* Results List */}
           <View style={styles.resultsSection}>
-            <ThemedText style={styles.sectionTitle}>Recent Results</ThemedText>
-            {LAB_RESULT_SETS.map((item, index) => (
+            <ThemedText style={styles.sectionTitle}>{t.labs.recentResults}</ThemedText>
+            {labResultSets.map((item, index) => (
               <LabResultCard
                 key={item.id}
                 item={item}
                 index={index}
                 onPress={() => handleResultPress(item)}
+                t={t}
+                locale={locale}
               />
             ))}
           </View>

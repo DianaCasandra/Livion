@@ -35,31 +35,62 @@ export function Card({ children, style, onPress, highlight }: CardProps) {
     Animated.spring(scale, { toValue: 1, useNativeDriver: true, speed: 50 }).start();
   };
 
+  // Extract flex from style to apply to wrapper
+  const flatStyle = StyleSheet.flatten(style) || {};
+  const { flex, ...restStyle } = flatStyle as any;
+  const hasFlex = flex !== undefined;
+
+  const content = (
+    <Animated.View
+      style={[
+        styles.card,
+        highlight === 'teal' && styles.cardTealHighlight,
+        highlight === 'amber' && styles.cardAmberHighlight,
+        { transform: [{ scale }] },
+        restStyle,
+      ]}
+    >
+      {children}
+    </Animated.View>
+  );
+
+  // Wrap with View for flex support
+  if (hasFlex) {
+    return (
+      <View style={{ flex }}>
+        <Pressable
+          onPressIn={onPressIn}
+          onPressOut={onPressOut}
+          onPress={onPress}
+          disabled={!onPress}
+          style={{ flex: 1 }}
+        >
+          {content}
+        </Pressable>
+      </View>
+    );
+  }
+
   return (
-    <Pressable onPressIn={onPressIn} onPressOut={onPressOut} onPress={onPress} disabled={!onPress}>
-      <Animated.View
-        style={[
-          styles.card,
-          highlight === 'teal' && styles.cardTealHighlight,
-          highlight === 'amber' && styles.cardAmberHighlight,
-          { transform: [{ scale }] },
-          style,
-        ]}
-      >
-        {children}
-      </Animated.View>
+    <Pressable
+      onPressIn={onPressIn}
+      onPressOut={onPressOut}
+      onPress={onPress}
+      disabled={!onPress}
+    >
+      {content}
     </Pressable>
   );
 }
 
 const styles = StyleSheet.create({
   card: {
-    backgroundColor: 'rgba(255, 255, 255, 0.72)',
+    backgroundColor: COLORS.cardWhite,
     borderRadius: 24,
     padding: 16,
     marginBottom: 12,
     borderWidth: 1,
-    borderColor: 'rgba(255, 255, 255, 0.8)',
+    borderColor: COLORS.border,
     ...Platform.select({
       ios: {
         shadowColor: '#000',
@@ -73,11 +104,11 @@ const styles = StyleSheet.create({
   cardTealHighlight: {
     borderLeftWidth: 3,
     borderLeftColor: COLORS.teal,
-    backgroundColor: 'rgba(3, 208, 197, 0.08)',
+    backgroundColor: COLORS.tealLight,
   },
   cardAmberHighlight: {
     borderLeftWidth: 3,
     borderLeftColor: COLORS.amber,
-    backgroundColor: 'rgba(255, 110, 30, 0.06)',
+    backgroundColor: COLORS.amberLight,
   },
 });

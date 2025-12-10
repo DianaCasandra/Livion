@@ -15,11 +15,13 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
+import { useLanguage } from '../../../components/providers/LanguageProvider';
 
 const { width: SCREEN_W, height: SCREEN_H } = Dimensions.get('window');
 
 export default function WelcomeScreen() {
   const navigation = useNavigation();
+  const { t } = useLanguage();
   const anim1 = useRef(new Animated.Value(0)).current;
   const anim2 = useRef(new Animated.Value(0)).current;
 
@@ -75,7 +77,7 @@ export default function WelcomeScreen() {
               align="center"
               style={[styles.softTitle, { color: COLORS.teal }]}
             >
-              Your health story. Yours to share.
+              {t.welcome.tagline}
             </ThemedText>
 
             <TouchableOpacity
@@ -87,7 +89,7 @@ export default function WelcomeScreen() {
                 align="center"
                 style={[styles.linkText, { color: COLORS.amber }]}
               >
-                User Promise & Privacy Explainer
+                {t.welcome.privacyLink}
               </ThemedText>
             </TouchableOpacity>
           </View>
@@ -102,7 +104,7 @@ export default function WelcomeScreen() {
               style={[styles.button, { backgroundColor: COLORS.amber + '9a' }]}
             >
              <ThemedText variant="label" weight="semibold" style={{ color: COLORS.cardWhite, textAlign: "center" }}>
-                Get Started
+                {t.welcome.getStarted}
               </ThemedText>
             </Button>
           </View>

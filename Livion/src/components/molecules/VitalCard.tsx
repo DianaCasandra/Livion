@@ -38,18 +38,16 @@ export function VitalCard({
 }: VitalCardProps) {
   return (
     <Card style={[styles.card, style]} onPress={onPress}>
-      <View style={styles.content}>
-        <View style={[styles.iconCircle, { backgroundColor: iconColor + '18' }]}>
-          <Icon size={22} color={iconColor} strokeWidth={2.5} />
-        </View>
-        <View style={styles.info}>
-          <View style={styles.valueRow}>
-            <ThemedText style={styles.value}>{value}</ThemedText>
-            {unit ? <ThemedText style={styles.unit}>{unit}</ThemedText> : null}
-          </View>
-          <ThemedText style={[styles.subtitle, { color: iconColor }]}>{subtitle}</ThemedText>
+      <View style={styles.iconRow}>
+        <View style={[styles.iconCircle, { backgroundColor: iconColor + '20' }]}>
+          <Icon size={24} color={iconColor} strokeWidth={2.5} />
         </View>
       </View>
+      <View style={styles.valueRow}>
+        <ThemedText style={styles.value}>{value}</ThemedText>
+        {unit ? <ThemedText style={styles.unit}>{unit}</ThemedText> : null}
+      </View>
+      <ThemedText style={[styles.subtitle, { color: iconColor }]}>{subtitle}</ThemedText>
       {progress !== undefined && (
         <View style={styles.progressBar}>
           <View style={[styles.progressFill, { width: `${progress}%`, backgroundColor: iconColor }]} />
@@ -61,50 +59,46 @@ export function VitalCard({
 
 const styles = StyleSheet.create({
   card: {
-    padding: 16,
+    padding: 14,
     marginBottom: 0,
+    backgroundColor: COLORS.cardWhite,
   },
-  content: {
-    flexDirection: 'row',
-    alignItems: 'center',
+  iconRow: {
+    marginBottom: 10,
   },
   iconCircle: {
-    width: 44,
-    height: 44,
-    borderRadius: 22,
+    width: 40,
+    height: 40,
+    borderRadius: 20,
     justifyContent: 'center',
     alignItems: 'center',
-    marginRight: 14,
-  },
-  info: {
-    flex: 1,
   },
   valueRow: {
     flexDirection: 'row',
     alignItems: 'baseline',
+    flexWrap: 'wrap',
     gap: 4,
   },
   value: {
-    fontSize: 26,
+    fontSize: 22,
     fontWeight: '700',
-    color: COLORS.textPrimary,
-    lineHeight: 32,
+    color: '#1a1a2e',
   },
   unit: {
-    fontSize: 14,
+    fontSize: 13,
     fontWeight: '500',
-    color: COLORS.textSecondary,
+    color: '#64748b',
   },
   subtitle: {
-    fontSize: 13,
+    fontSize: 12,
     fontWeight: '600',
-    marginTop: 2,
+    marginTop: 3,
   },
   progressBar: {
     height: 4,
     backgroundColor: COLORS.border,
     borderRadius: 2,
-    marginTop: 12,
+    marginTop: 10,
     overflow: 'hidden',
   },
   progressFill: {

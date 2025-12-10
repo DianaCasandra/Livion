@@ -20,9 +20,10 @@ type WelcomeBlobProps = {
   healthStatus: string;
   greeting: string;
   userName: string;
+  tapHint?: string;
 };
 
-export function WelcomeBlob({ onPress, healthStatus, greeting, userName }: WelcomeBlobProps) {
+export function WelcomeBlob({ onPress, healthStatus, greeting, userName, tapHint = 'Tap to see your details' }: WelcomeBlobProps) {
   const pulseAnim = useRef(new Animated.Value(1)).current;
   const glowAnim = useRef(new Animated.Value(0.3)).current;
   const floatAnim = useRef(new Animated.Value(0)).current;
@@ -142,7 +143,7 @@ export function WelcomeBlob({ onPress, healthStatus, greeting, userName }: Welco
       {/* Health Status Message */}
       <View style={styles.messageContainer}>
         <ThemedText style={styles.healthMessage}>{healthStatus}</ThemedText>
-        <ThemedText style={styles.tapHint}>Tap to see your details</ThemedText>
+        <ThemedText style={styles.tapHint}>{tapHint}</ThemedText>
       </View>
     </View>
   );

@@ -8,9 +8,11 @@ import { ThemedText } from '../../../components/atoms/ThemedText';
 import { OnboardingHeader } from '../../../components/molecules/OnboardingHeader';
 import { ToggleRow } from '../../../components/molecules/ToggleRow';
 import { BorderRadius, Spacing, COLORS, GlassStyles } from '@/src/constants/Colors';
+import { useLanguage } from '../../../components/providers/LanguageProvider';
 
 export default function ConsentScreen() {
   const navigation = useNavigation();
+  const { t } = useLanguage();
 
   const [dataSources, setDataSources] = useState(false);
   const [wearables, setWearables] = useState(false);
@@ -35,17 +37,17 @@ export default function ConsentScreen() {
         <ScrollView contentContainerStyle={styles.container}>
           <GlassCard style={styles.card} shadowSize="lg">
             <ThemedText variant="display" weight="bold" style={styles.title} align="center">
-              Consent & Preferences
+              {t.consent.title}
             </ThemedText>
 
             <ThemedText variant="body" style={styles.body} align="center">
-              Adjust what you want Livion to use or access. You can modify these anytime.
+              {t.consent.subtitle}
             </ThemedText>
 
             {/* Data Sources */}
             <View style={styles.section}>
               <ToggleRow
-                label="Data Sources"
+                label={t.consent.dataSources}
                 value={dataSources}
                 onValueChange={setDataSources}
                 centerText
@@ -54,14 +56,14 @@ export default function ConsentScreen() {
               {dataSources && (
                 <View style={styles.subToggleGroup}>
                   <ToggleRow
-                    label="Wearables"
+                    label={t.consent.wearables}
                     value={wearables}
                     onValueChange={setWearables}
                     small
                     centerText
                   />
                   <ToggleRow
-                    label="EHR"
+                    label={t.consent.ehr}
                     value={ehr}
                     onValueChange={setEhr}
                     small
@@ -73,19 +75,19 @@ export default function ConsentScreen() {
 
             {/* Sharing Scopes */}
             <ThemedText variant="heading" weight="semibold" align="center" style={styles.subtitle}>
-              Sharing Scopes
+              {t.consent.sharingScopesTitle}
             </ThemedText>
 
             <View style={styles.section}>
-              <ToggleRow label="Private" value={privateShare} onValueChange={setPrivateShare} centerText />
-              <ToggleRow label="Circle" value={circleShare} onValueChange={setCircleShare} centerText />
-              <ToggleRow label="Clinician" value={clinicianShare} onValueChange={setClinicianShare} centerText />
+              <ToggleRow label={t.consent.private} value={privateShare} onValueChange={setPrivateShare} centerText />
+              <ToggleRow label={t.consent.circle} value={circleShare} onValueChange={setCircleShare} centerText />
+              <ToggleRow label={t.consent.clinician} value={clinicianShare} onValueChange={setClinicianShare} centerText />
             </View>
 
             {/* Additional Toggles */}
             <View style={styles.section}>
-              <ToggleRow label="Research opt-in" value={research} onValueChange={setResearch} centerText />
-              <ToggleRow label="Purpose binding & data minimization" value={purposeBinding} onValueChange={setPurposeBinding} centerText />
+              <ToggleRow label={t.consent.researchOptIn} value={research} onValueChange={setResearch} centerText />
+              <ToggleRow label={t.consent.purposeBinding} value={purposeBinding} onValueChange={setPurposeBinding} centerText />
             </View>
 
             <Button
@@ -96,13 +98,13 @@ export default function ConsentScreen() {
               onPress={() => navigation.navigate('DataConnections' as never)}
             >
               <ThemedText variant="label" weight="semibold" style={styles.buttonText}>
-                Continue
+                {t.common.continue}
               </ThemedText>
             </Button>
           </GlassCard>
 
           <ThemedText variant="caption" align="center" style={styles.disclaimer}>
-            You can adjust all consent settings later from your profile.
+            {t.consent.disclaimer}
           </ThemedText>
         </ScrollView>
       </SafeAreaView>

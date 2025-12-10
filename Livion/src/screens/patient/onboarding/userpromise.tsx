@@ -12,6 +12,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { BackButton } from '../../../components/atoms/BackButton';
 import { ThemedText } from '../../../components/atoms/ThemedText';
 import { Spacing, COLORS } from '@/src/constants/Colors';
+import { useLanguage } from '../../../components/providers/LanguageProvider';
 
 // Icons Lucide
 import {
@@ -47,6 +48,7 @@ const additionalIcons = [
 
 export default function UserPromise() {
   const navigation = useNavigation();
+  const { t } = useLanguage();
 
   const slide = useRef(new Animated.Value(20)).current;
   const opacity = useRef(new Animated.Value(0)).current;
@@ -121,7 +123,7 @@ export default function UserPromise() {
           >
             {/* Title */}
             <ThemedText variant="display" weight="bold" style={styles.title}>
-              LIVION "User Promise" Manifesto
+              {t.userPromise.title}
             </ThemedText>
 
             {/* Main Card */}
@@ -131,44 +133,44 @@ export default function UserPromise() {
                 {/* Items 1-5 */}
                 <ManifestoItem
                   icon={<Sparkles size={20} color={ICON_COLOR} />}
-                  textBold="1. You are not a datapoint."
-                  text=" You're a story — full of days, pauses, and restarts. Livion listens, not just measures."
+                  textBold={t.userPromise.manifesto.item1Bold}
+                  text={t.userPromise.manifesto.item1Text}
                 />
 
                 <ManifestoItem
                   icon={<ShieldCheck size={20} color={ICON_COLOR} />}
-                  textBold="2. We protect what's yours."
-                  text=" Your data is private by default. We'll never sell it or trade it. You choose what to share."
+                  textBold={t.userPromise.manifesto.item2Bold}
+                  text={t.userPromise.manifesto.item2Text}
                 />
 
                 <ManifestoItem
                   icon={<Leaf size={20} color={ICON_COLOR} />}
-                  textBold="3. Small steps count."
-                  text=" Health isn't a race. Small moments matter — Livion helps you notice them."
+                  textBold={t.userPromise.manifesto.item3Bold}
+                  text={t.userPromise.manifesto.item3Text}
                 />
 
                 <ManifestoItem
                   icon={<CircleCheck size={20} color={ICON_COLOR} />}
-                  textBold="4. Your journey is unique."
-                  text=" Our AI adapts to you, never judges you."
+                  textBold={t.userPromise.manifesto.item4Bold}
+                  text={t.userPromise.manifesto.item4Text}
                 />
 
                 <ManifestoItem
                   icon={<HeartHandshake size={20} color={ICON_COLOR} />}
-                  textBold="5. You're part of something bigger."
-                  text=" Every choice contributes to a mission of stronger communities and honest care."
+                  textBold={t.userPromise.manifesto.item5Bold}
+                  text={t.userPromise.manifesto.item5Text}
                 />
 
                 {/* Items 6-13 */}
                 {[
-                  ['6. Everyone belongs.', ' Diversity is our foundation.'],
-                  ['7. Connection is care.', ' Healing grows through shared progress.'],
-                  ['8. We lead with clarity.', ' Transparency is care.'],
-                  ['9. Progress feels good.', ' We design for joy, not guilt.'],
-                  ['10. Rest is also progress.', ' Doing nothing can be healthy.'],
-                  ['11. Your voice shapes Livion.', ' We build this with you.'],
-                  ['12. We aim for lasting change.', ' Beyond screens — real-world good.'],
-                  ['13. Health is hope.', ' Every tap is toward collective wellbeing.'],
+                  [t.userPromise.manifesto.item6Bold, t.userPromise.manifesto.item6Text],
+                  [t.userPromise.manifesto.item7Bold, t.userPromise.manifesto.item7Text],
+                  [t.userPromise.manifesto.item8Bold, t.userPromise.manifesto.item8Text],
+                  [t.userPromise.manifesto.item9Bold, t.userPromise.manifesto.item9Text],
+                  [t.userPromise.manifesto.item10Bold, t.userPromise.manifesto.item10Text],
+                  [t.userPromise.manifesto.item11Bold, t.userPromise.manifesto.item11Text],
+                  [t.userPromise.manifesto.item12Bold, t.userPromise.manifesto.item12Text],
+                  [t.userPromise.manifesto.item13Bold, t.userPromise.manifesto.item13Text],
                 ].map(([bold, rest], i) => (
                   <ManifestoItem
                     key={i}
@@ -191,7 +193,7 @@ export default function UserPromise() {
                 align="center"
                 style={styles.subtitle}
               >
-                Privacy Explainer
+                {t.userPromise.privacyExplainer}
               </ThemedText>
 
               <ThemedText
@@ -199,7 +201,7 @@ export default function UserPromise() {
                 align="center"
                 style={styles.paragraph}
               >
-                This is placeholder text for a future plain-language privacy explainer...
+                {t.userPromise.privacyPlaceholder1}
               </ThemedText>
 
               <ThemedText
@@ -207,7 +209,7 @@ export default function UserPromise() {
                 align="center"
                 style={styles.paragraph}
               >
-                Here we'll clarify what stays on-device, how encryption works...
+                {t.userPromise.privacyPlaceholder2}
               </ThemedText>
             </View>
           </Animated.View>

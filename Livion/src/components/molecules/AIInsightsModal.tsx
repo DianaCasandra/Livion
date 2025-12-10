@@ -28,70 +28,15 @@ import {
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { COLORS, BorderRadius, Spacing } from '../../constants/Colors';
 import { ThemedText } from '../atoms/ThemedText';
+import { useLanguage } from '../providers/LanguageProvider';
 
 type AIInsightsModalProps = {
   visible: boolean;
   onClose: () => void;
 };
 
-// Insight card data
-const INSIGHT_CATEGORIES = [
-  {
-    id: 'prevention',
-    icon: Shield,
-    title: 'Prevention',
-    color: COLORS.teal,
-    bgColor: COLORS.tealLight,
-    insights: [
-      { title: 'Stay Active', desc: '30 min daily walking reduces heart risk by 35%' },
-      { title: 'Sleep Quality', desc: '7-8 hours improves immune function' },
-    ],
-  },
-  {
-    id: 'heart',
-    icon: Heart,
-    title: 'Heart Health',
-    color: COLORS.error,
-    bgColor: COLORS.errorLight,
-    insights: [
-      { title: 'Blood Pressure', desc: 'Your readings show improvement this week' },
-      { title: 'Resting Heart Rate', desc: 'Trending down - great progress!' },
-    ],
-  },
-  {
-    id: 'activity',
-    icon: Activity,
-    title: 'Activity',
-    color: COLORS.amber,
-    bgColor: COLORS.amberLight,
-    insights: [
-      { title: 'Step Goal', desc: "You're averaging 7,500 steps daily" },
-      { title: 'Active Minutes', desc: '45 min more than last week' },
-    ],
-  },
-  {
-    id: 'mental',
-    icon: Brain,
-    title: 'Mental Wellness',
-    color: COLORS.purple,
-    bgColor: COLORS.purpleLight,
-    insights: [
-      { title: 'Stress Levels', desc: 'Consider 5-min breathing exercises' },
-      { title: 'Mood Tracking', desc: 'Consistent logging helps identify patterns' },
-    ],
-  },
-  {
-    id: 'nutrition',
-    icon: Leaf,
-    title: 'Nutrition',
-    color: COLORS.success,
-    bgColor: COLORS.successLight,
-    insights: [
-      { title: 'Hydration', desc: 'Aim for 8 glasses of water daily' },
-      { title: 'Balanced Diet', desc: 'Add more leafy greens this week' },
-    ],
-  },
-];
+// Note: Insight categories are now created inside the component
+// with translations support (see INSIGHT_CATEGORIES_TRANSLATED)
 
 // Quick stat component
 function QuickStat({ icon: Icon, value, label, color }: any) {
@@ -107,7 +52,7 @@ function QuickStat({ icon: Icon, value, label, color }: any) {
 }
 
 // Insight category card
-function InsightCard({ category, index, onPress }: any) {
+function InsightCard({ category, index, onPress, insightsLabel }: any) {
   const slideAnim = useRef(new Animated.Value(50)).current;
   const fadeAnim = useRef(new Animated.Value(0)).current;
   const scaleAnim = useRef(new Animated.Value(1)).current;
@@ -167,7 +112,7 @@ function InsightCard({ category, index, onPress }: any) {
           <View style={styles.insightCardTitleWrap}>
             <ThemedText style={styles.insightCardTitle}>{category.title}</ThemedText>
             <ThemedText style={styles.insightCardCount}>
-              {category.insights.length} insights
+              {category.insights.length} {insightsLabel}
             </ThemedText>
           </View>
           <ChevronRight size={20} color={COLORS.textTertiary} />
@@ -190,8 +135,68 @@ function InsightCard({ category, index, onPress }: any) {
 }
 
 export function AIInsightsModal({ visible, onClose }: AIInsightsModalProps) {
+  const { t } = useLanguage();
   const insets = useSafeAreaInsets();
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
+
+  // Translated insight categories
+  const INSIGHT_CATEGORIES_TRANSLATED = [
+    {
+      id: 'prevention',
+      icon: Shield,
+      title: t.aiInsights.categories.prevention,
+      color: COLORS.teal,
+      bgColor: COLORS.tealLight,
+      insights: [
+        { title: t.aiInsights.prevention.stayActive, desc: t.aiInsights.prevention.stayActiveDesc },
+        { title: t.aiInsights.prevention.sleepQuality, desc: t.aiInsights.prevention.sleepQualityDesc },
+      ],
+    },
+    {
+      id: 'heart',
+      icon: Heart,
+      title: t.aiInsights.categories.heart,
+      color: COLORS.error,
+      bgColor: COLORS.errorLight,
+      insights: [
+        { title: t.aiInsights.heart.bloodPressure, desc: t.aiInsights.heart.bloodPressureDesc },
+        { title: t.aiInsights.heart.restingHeartRate, desc: t.aiInsights.heart.restingHeartRateDesc },
+      ],
+    },
+    {
+      id: 'activity',
+      icon: Activity,
+      title: t.aiInsights.categories.activity,
+      color: COLORS.amber,
+      bgColor: COLORS.amberLight,
+      insights: [
+        { title: t.aiInsights.activity.stepGoal, desc: t.aiInsights.activity.stepGoalDesc },
+        { title: t.aiInsights.activity.activeMinutes, desc: t.aiInsights.activity.activeMinutesDesc },
+      ],
+    },
+    {
+      id: 'mental',
+      icon: Brain,
+      title: t.aiInsights.categories.mental,
+      color: COLORS.purple,
+      bgColor: COLORS.purpleLight,
+      insights: [
+        { title: t.aiInsights.mental.stressLevels, desc: t.aiInsights.mental.stressLevelsDesc },
+        { title: t.aiInsights.mental.moodTracking, desc: t.aiInsights.mental.moodTrackingDesc },
+      ],
+    },
+    {
+      id: 'nutrition',
+      icon: Leaf,
+      title: t.aiInsights.categories.nutrition,
+      color: COLORS.success,
+      bgColor: COLORS.successLight,
+      insights: [
+        { title: t.aiInsights.nutrition.hydration, desc: t.aiInsights.nutrition.hydrationDesc },
+        { title: t.aiInsights.nutrition.balancedDiet, desc: t.aiInsights.nutrition.balancedDietDesc },
+      ],
+    },
+  ];
 
   // Animation values
   const slideAnim = useRef(new Animated.Value(300)).current;
@@ -252,9 +257,9 @@ export function AIInsightsModal({ visible, onClose }: AIInsightsModalProps) {
                 <Sparkles size={24} color={COLORS.amber} />
               </View>
               <View>
-                <ThemedText style={styles.headerTitle}>AI Insights</ThemedText>
+                <ThemedText style={styles.headerTitle}>{t.aiInsights.title}</ThemedText>
                 <ThemedText style={styles.headerSubtitle}>
-                  Personalized for you
+                  {t.aiInsights.personalizedForYou}
                 </ThemedText>
               </View>
             </View>
@@ -268,19 +273,19 @@ export function AIInsightsModal({ visible, onClose }: AIInsightsModalProps) {
             <QuickStat
               icon={TrendingUp}
               value="85%"
-              label="Health Score"
+              label={t.aiInsights.healthScore}
               color={COLORS.teal}
             />
             <QuickStat
               icon={Heart}
-              value="Good"
-              label="Heart Health"
+              value={t.aiInsights.good}
+              label={t.aiInsights.heartHealth}
               color="#ef4444"
             />
             <QuickStat
               icon={Activity}
-              value="Active"
-              label="Lifestyle"
+              value={t.aiInsights.active}
+              label={t.aiInsights.lifestyle}
               color={COLORS.amber}
             />
           </View>
@@ -289,7 +294,7 @@ export function AIInsightsModal({ visible, onClose }: AIInsightsModalProps) {
           <View style={styles.aiBanner}>
             <Sparkles size={18} color={COLORS.amber} />
             <ThemedText style={styles.aiBannerText}>
-              Based on your data, focus on heart health and staying active this week.
+              {t.aiInsights.aiBannerText}
             </ThemedText>
           </View>
 
@@ -299,12 +304,13 @@ export function AIInsightsModal({ visible, onClose }: AIInsightsModalProps) {
             contentContainerStyle={styles.insightsContent}
             showsVerticalScrollIndicator={false}
           >
-            {INSIGHT_CATEGORIES.map((category, index) => (
+            {INSIGHT_CATEGORIES_TRANSLATED.map((category, index) => (
               <InsightCard
                 key={category.id}
                 category={category}
                 index={index}
                 onPress={() => setSelectedCategory(category.id)}
+                insightsLabel={t.aiInsights.insights}
               />
             ))}
 
@@ -319,7 +325,7 @@ export function AIInsightsModal({ visible, onClose }: AIInsightsModalProps) {
               color={COLORS.textTertiary}
             />
             <ThemedText style={styles.footerText}>
-              Insights are AI-generated suggestions, not medical advice.
+              {t.aiInsights.disclaimer}
             </ThemedText>
           </View>
         </Animated.View>

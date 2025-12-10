@@ -9,17 +9,12 @@ import { Chip } from '../../../components/atoms/Chip';
 import { ThemedText } from '../../../components/atoms/ThemedText';
 import { OnboardingHeader } from '../../../components/molecules/OnboardingHeader';
 import { BorderRadius, COLORS, Spacing, GlassStyles } from '@/src/constants/Colors';
-
-const QUESTIONS = [
-  'Do you experience severe headaches daily?',
-  'Have you had episodes of dizziness or fainting?',
-  'Are you experiencing chest pain or pressure?',
-  'Do you have persistent shortness of breath?',
-  'Do you notice unusual swelling in your legs or ankles?',
-];
+import { useLanguage } from '../../../components/providers/LanguageProvider';
 
 export default function RiskAssessmentScreen() {
   const navigation = useNavigation();
+  const { t } = useLanguage();
+  const QUESTIONS = t.risk.questions;
   const [answers, setAnswers] = useState<(string | null)[]>(Array(QUESTIONS.length).fill(null));
 
   const yesCount = answers.filter((a) => a === 'yes').length;
@@ -42,11 +37,11 @@ export default function RiskAssessmentScreen() {
         <ScrollView contentContainerStyle={styles.container}>
           <GlassCard shadowSize="lg">
             <ThemedText variant="display" weight="bold" align="center" style={styles.title}>
-              Risk Snapshot
+              {t.risk.title}
             </ThemedText>
 
             <ThemedText variant="body" align="center" style={styles.body}>
-              Please complete the following triage questions regarding your current symptoms. We will examine your state as a starting point in your health journey.
+              {t.risk.subtitle}
             </ThemedText>
 
             <View style={styles.questionsContainer}>
@@ -57,13 +52,13 @@ export default function RiskAssessmentScreen() {
                   </ThemedText>
                   <View style={styles.answerButtons}>
                     <Chip
-                      label="Yes"
+                      label={t.common.yes}
                       variant={answers[i] === 'yes' ? 'status-action' : 'teal'}
                       style={{ marginRight: Spacing.sm }}
                       onPress={() => handleAnswer(i, 'yes')}
                     />
                     <Chip
-                      label="No"
+                      label={t.common.no}
                       variant={answers[i] === 'no' ? 'status-ok' : 'teal'}
                       onPress={() => handleAnswer(i, 'no')}
                     />
@@ -75,13 +70,13 @@ export default function RiskAssessmentScreen() {
             {yesCount >= 3 && (
               <View style={styles.guidanceContainer}>
                 <ThemedText variant="subtitle" weight="bold" style={styles.guidanceTitle}>
-                  Seek Care
+                  {t.risk.seekCare}
                 </ThemedText>
                 <ThemedText variant="body" align="center" style={styles.guidanceText}>
-                  Based on your responses, it is recommended to contact your healthcare provider immediately. For emergencies, call:
+                  {t.risk.seekCareMessage}
                 </ThemedText>
                 <ThemedText variant="body" style={styles.guidanceText}>
-                  - 112 (EU)
+                  {t.risk.emergencyNumber}
                 </ThemedText>
               </View>
             )}
@@ -93,7 +88,7 @@ export default function RiskAssessmentScreen() {
               onPress={() => navigation.navigate('Dashboard' as never)}
             >
               <ThemedText variant="label" weight="semibold" style={styles.buttonText}>
-                Finish Assessment
+                {t.risk.finishAssessment}
               </ThemedText>
             </Button>
           </GlassCard>

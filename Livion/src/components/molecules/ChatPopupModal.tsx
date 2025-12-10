@@ -20,6 +20,7 @@ import {
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { COLORS, BorderRadius, Spacing } from '../../constants/Colors';
 import { ThemedText } from '../atoms/ThemedText';
+import { useLanguage } from '../providers/LanguageProvider';
 
 type Message = {
   id: string;
@@ -115,10 +116,11 @@ export function ChatPopupModal({
   visible,
   onClose,
   onCall,
-  doctorName = 'Dr. Harper',
+  doctorName = 'Dr. Diana',
   doctorRole = 'Family Physician',
   initialMessages = [],
 }: ChatPopupModalProps) {
+  const { t } = useLanguage();
   const insets = useSafeAreaInsets();
   const [message, setMessage] = useState('');
   const [messages, setMessages] = useState<Message[]>(
@@ -127,10 +129,10 @@ export function ChatPopupModal({
       : [
           {
             id: '1',
-            text: `Hi there! I'm here to help. What would you like to discuss about your symptoms?`,
+            text: t.chat.initialMessage,
             isUser: false,
             sender: doctorName,
-            time: 'Just now',
+            time: t.chat.justNow,
           },
         ]
   );
@@ -179,7 +181,7 @@ export function ChatPopupModal({
       id: Date.now().toString(),
       text: message.trim(),
       isUser: true,
-      time: 'Just now',
+      time: t.chat.justNow,
     };
 
     setMessages((prev) => [...prev, newMessage]);
@@ -194,10 +196,10 @@ export function ChatPopupModal({
     setTimeout(() => {
       const responseMessage: Message = {
         id: (Date.now() + 1).toString(),
-        text: "Thank you for sharing. I've noted your symptoms. Would you like me to schedule a follow-up call to discuss this further?",
+        text: t.chat.responseMessage,
         isUser: false,
         sender: doctorName,
-        time: 'Just now',
+        time: t.chat.justNow,
       };
       setMessages((prev) => [...prev, responseMessage]);
       setTimeout(() => {
@@ -259,7 +261,7 @@ export function ChatPopupModal({
             <View style={styles.securityBanner}>
               <Shield size={14} color={COLORS.teal} />
               <ThemedText style={styles.securityText}>
-                Secure conversation with your care team
+                {t.chat.secureConversation}
               </ThemedText>
             </View>
 
@@ -286,7 +288,7 @@ export function ChatPopupModal({
             <View style={[styles.inputArea, { paddingBottom: 12 + insets.bottom }]}>
               <TextInput
                 style={styles.messageInput}
-                placeholder="Type your message..."
+                placeholder={t.chat.typePlaceholder}
                 placeholderTextColor={COLORS.textTertiary}
                 value={message}
                 onChangeText={setMessage}

@@ -10,6 +10,7 @@ import {
 } from 'react-native';
 import { BorderRadius, COLORS, Spacing } from '../../constants/Colors';
 import { ThemedText } from '../atoms/ThemedText';
+import { useLanguage } from '../providers/LanguageProvider';
 
 type InsightModalProps = {
     visible: boolean;
@@ -18,7 +19,9 @@ type InsightModalProps = {
     message: string;
 };
 
-export function InsightModal({ visible, onClose, title = "Insight", message }: InsightModalProps) {
+export function InsightModal({ visible, onClose, title, message }: InsightModalProps) {
+    const { t } = useLanguage();
+    const displayTitle = title || t.insight.title;
 
     // ---------- ANIMATION ----------
     const scale = useRef(new Animated.Value(0.9)).current;
@@ -85,7 +88,7 @@ export function InsightModal({ visible, onClose, title = "Insight", message }: I
                             paddingRight: 28,
                         }}
                     >
-                        {title}
+                        {displayTitle}
                     </ThemedText>
 
                     {/* ---------- SCROLLABLE CONTENT ---------- */}
@@ -111,7 +114,7 @@ export function InsightModal({ visible, onClose, title = "Insight", message }: I
                             style={styles.okText}
                             color="inverse"
                         >
-                            OK
+                            {t.insight.ok}
                         </ThemedText>
                     </Pressable>
 

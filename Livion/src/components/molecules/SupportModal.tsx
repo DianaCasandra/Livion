@@ -20,6 +20,7 @@ import {
 } from 'react-native';
 import { ThemedText } from '../atoms/ThemedText';
 import { COLORS } from '@/src/constants/Colors';
+import { useLanguage } from '../providers/LanguageProvider';
 
 type SupportModalProps = {
   visible: boolean;
@@ -34,6 +35,8 @@ export function SupportModal({
   onCallDoctor,
   onSendMessage,
 }: SupportModalProps) {
+  const { t } = useLanguage();
+
   const handleCall = () => {
     onCallDoctor?.();
     onClose();
@@ -57,9 +60,9 @@ export function SupportModal({
             </Pressable>
           </View>
 
-          <ThemedText style={styles.title}>We're here for you</ThemedText>
+          <ThemedText style={styles.title}>{t.support.title}</ThemedText>
           <ThemedText style={styles.subtitle}>
-            It's okay to have rough days. Would you like to reach out to your care team?
+            {t.support.subtitle}
           </ThemedText>
 
           <View style={styles.actions}>
@@ -68,8 +71,8 @@ export function SupportModal({
                 <Phone size={22} color={COLORS.teal} />
               </View>
               <View style={styles.actionText}>
-                <ThemedText style={styles.actionTitle}>Call Dr. Sarah</ThemedText>
-                <ThemedText style={styles.actionSubtitle}>Family Physician</ThemedText>
+                <ThemedText style={styles.actionTitle}>{t.support.callDoctor}</ThemedText>
+                <ThemedText style={styles.actionSubtitle}>{t.support.familyPhysician}</ThemedText>
               </View>
               <ChevronRight size={20} color={COLORS.textTertiary} />
             </Pressable>
@@ -79,15 +82,15 @@ export function SupportModal({
                 <MessageCircle size={22} color={COLORS.amber} />
               </View>
               <View style={styles.actionText}>
-                <ThemedText style={styles.actionTitle}>Send a message</ThemedText>
-                <ThemedText style={styles.actionSubtitle}>Get a response within 24h</ThemedText>
+                <ThemedText style={styles.actionTitle}>{t.support.sendMessage}</ThemedText>
+                <ThemedText style={styles.actionSubtitle}>{t.support.responseTime}</ThemedText>
               </View>
               <ChevronRight size={20} color={COLORS.textTertiary} />
             </Pressable>
           </View>
 
           <Pressable style={styles.dismissBtn} onPress={onClose}>
-            <ThemedText style={styles.dismissText}>I'm okay for now</ThemedText>
+            <ThemedText style={styles.dismissText}>{t.support.okayForNow}</ThemedText>
           </Pressable>
         </View>
       </View>

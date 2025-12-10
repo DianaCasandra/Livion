@@ -29,118 +29,10 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { ThemedText } from '../../../components/atoms/ThemedText';
 import { AIInsightsModal } from '../../../components/molecules/AIInsightsModal';
 import { COLORS } from '@/src/constants/Colors';
+import { useLanguage } from '../../../components/providers/LanguageProvider';
 
-// Mock doctors data
-const DOCTORS = [
-  {
-    id: 'all',
-    name: 'All',
-    initials: 'All',
-    color: COLORS.teal,
-    specialty: 'All Tasks',
-    icon: null,
-  },
-  {
-    id: 'dr-harper',
-    name: 'Dr. Harper',
-    initials: 'H',
-    color: COLORS.blue,
-    specialty: 'Family Medicine',
-    icon: Stethoscope,
-  },
-  {
-    id: 'dr-chen',
-    name: 'Dr. Chen',
-    initials: 'C',
-    color: COLORS.error,
-    specialty: 'Cardiology',
-    icon: Heart,
-  },
-  {
-    id: 'dr-patel',
-    name: 'Dr. Patel',
-    initials: 'P',
-    color: COLORS.purple,
-    specialty: 'Neurology',
-    icon: Brain,
-  },
-  {
-    id: 'dr-kim',
-    name: 'Dr. Kim',
-    initials: 'K',
-    color: COLORS.warning,
-    specialty: 'Orthopedics',
-    icon: Bone,
-  },
-  {
-    id: 'dr-johnson',
-    name: 'Dr. Johnson',
-    initials: 'J',
-    color: COLORS.success,
-    specialty: 'Ophthalmology',
-    icon: Eye,
-  },
-];
-
-// Mock tasks with doctor assignments
-const TASKS_DATA = [
-  {
-    id: '1',
-    title: 'Blood pressure check',
-    time: '8:00 AM',
-    doctorId: 'dr-harper',
-    completed: true,
-  },
-  {
-    id: '2',
-    title: 'Take heart medication',
-    time: '9:00 AM',
-    doctorId: 'dr-chen',
-    completed: true,
-  },
-  {
-    id: '3',
-    title: '15 min morning walk',
-    time: '10:00 AM',
-    doctorId: 'dr-harper',
-    completed: false,
-  },
-  {
-    id: '4',
-    title: 'Cognitive exercises',
-    time: '11:00 AM',
-    doctorId: 'dr-patel',
-    completed: false,
-  },
-  {
-    id: '5',
-    title: 'Stretching routine',
-    time: '2:00 PM',
-    doctorId: 'dr-kim',
-    completed: false,
-  },
-  {
-    id: '6',
-    title: 'Eye drops',
-    time: '4:00 PM',
-    doctorId: 'dr-johnson',
-    completed: false,
-  },
-  {
-    id: '7',
-    title: 'Evening BP reading',
-    time: '6:00 PM',
-    doctorId: 'dr-chen',
-    completed: false,
-  },
-  {
-    id: '8',
-    title: 'Sleep meditation',
-    time: '9:00 PM',
-    doctorId: 'dr-patel',
-    completed: false,
-  },
-];
+// Note: Doctors and tasks data are now created inside the component
+// with translations support (see DOCTORS_TRANSLATED and TASKS_TRANSLATED)
 
 // Doctor circle component
 function DoctorCircle({ doctor, isSelected, onPress, index }: any) {
@@ -216,7 +108,7 @@ function DoctorCircle({ doctor, isSelected, onPress, index }: any) {
         <ThemedText
           style={[styles.doctorName, isSelected && styles.doctorNameSelected]}
         >
-          {doctor.id === 'all' ? 'All' : doctor.name.split(' ')[1]}
+          {doctor.name}
         </ThemedText>
       </Pressable>
     </Animated.View>
@@ -298,7 +190,7 @@ function TaskItem({ task, doctor, onToggle, index }: any) {
             <ThemedText style={styles.taskTime}>{task.time}</ThemedText>
             <View style={[styles.taskDoctorBadge, { backgroundColor: doctor.color + '20' }]}>
               <ThemedText style={[styles.taskDoctorText, { color: doctor.color }]}>
-                {doctor.name.split(' ')[1]}
+                {doctor.name}
               </ThemedText>
             </View>
           </View>
@@ -311,9 +203,75 @@ function TaskItem({ task, doctor, onToggle, index }: any) {
 }
 
 export default function CarePlanTab() {
+  const { t } = useLanguage();
   const [selectedDoctor, setSelectedDoctor] = useState('all');
-  const [tasks, setTasks] = useState(TASKS_DATA);
   const [aiModalVisible, setAiModalVisible] = useState(false);
+
+  // Create translated doctors data
+  const DOCTORS_TRANSLATED = [
+    {
+      id: 'all',
+      name: t.carePlan.all,
+      initials: t.carePlan.all,
+      color: COLORS.teal,
+      specialty: t.carePlan.allTasks,
+      icon: null,
+    },
+    {
+      id: 'dr-diana',
+      name: 'Dr. Diana',
+      initials: 'D',
+      color: COLORS.blue,
+      specialty: t.carePlan.doctors.familyMedicine,
+      icon: Stethoscope,
+    },
+    {
+      id: 'dr-laurentiu',
+      name: 'Dr. Laurențiu',
+      initials: 'L',
+      color: COLORS.error,
+      specialty: t.carePlan.doctors.cardiology,
+      icon: Heart,
+    },
+    {
+      id: 'dr-adriana',
+      name: 'Dr. Adriana',
+      initials: 'A',
+      color: COLORS.purple,
+      specialty: t.carePlan.doctors.neurology,
+      icon: Brain,
+    },
+    {
+      id: 'dr-cristian',
+      name: 'Dr. Cristian',
+      initials: 'C',
+      color: COLORS.warning,
+      specialty: t.carePlan.doctors.orthopedics,
+      icon: Bone,
+    },
+    {
+      id: 'dr-laura',
+      name: 'Dr. Laura',
+      initials: 'L',
+      color: COLORS.success,
+      specialty: t.carePlan.doctors.ophthalmology,
+      icon: Eye,
+    },
+  ];
+
+  // Create translated tasks data
+  const TASKS_TRANSLATED = [
+    { id: '1', title: t.carePlan.tasks.bloodPressureCheck, time: '8:00', doctorId: 'dr-diana', completed: true },
+    { id: '2', title: t.carePlan.tasks.takeHeartMedication, time: '9:00', doctorId: 'dr-laurentiu', completed: true },
+    { id: '3', title: t.carePlan.tasks.morningWalk, time: '10:00', doctorId: 'dr-diana', completed: false },
+    { id: '4', title: t.carePlan.tasks.cognitiveExercises, time: '11:00', doctorId: 'dr-adriana', completed: false },
+    { id: '5', title: t.carePlan.tasks.stretchingRoutine, time: '14:00', doctorId: 'dr-cristian', completed: false },
+    { id: '6', title: t.carePlan.tasks.eyeDrops, time: '16:00', doctorId: 'dr-laura', completed: false },
+    { id: '7', title: t.carePlan.tasks.eveningBPReading, time: '18:00', doctorId: 'dr-laurentiu', completed: false },
+    { id: '8', title: t.carePlan.tasks.sleepMeditation, time: '21:00', doctorId: 'dr-adriana', completed: false },
+  ];
+
+  const [tasks, setTasks] = useState(TASKS_TRANSLATED);
 
   // Animations
   const fadeAnim = useRef(new Animated.Value(0)).current;
@@ -354,7 +312,7 @@ export default function CarePlanTab() {
   const progress = totalCount > 0 ? Math.round((completedCount / totalCount) * 100) : 0;
 
   // Get doctor by ID
-  const getDoctorById = (id: string) => DOCTORS.find((d) => d.id === id) || DOCTORS[0];
+  const getDoctorById = (id: string) => DOCTORS_TRANSLATED.find((d) => d.id === id) || DOCTORS_TRANSLATED[0];
 
   return (
     <View style={styles.root}>
@@ -366,7 +324,7 @@ export default function CarePlanTab() {
         >
           {/* Header */}
           <View style={styles.header}>
-            <ThemedText style={styles.headerTitle}>Care Plan</ThemedText>
+            <ThemedText style={styles.headerTitle}>{t.carePlan.title}</ThemedText>
             <View style={styles.headerRight}>
               <View style={styles.progressPill}>
                 <ThemedText style={styles.progressText}>
@@ -386,9 +344,9 @@ export default function CarePlanTab() {
                 <Sparkles size={24} color={COLORS.amber} />
               </View>
               <View style={styles.aiButtonContent}>
-                <ThemedText style={styles.aiButtonTitle}>AI Health Insights</ThemedText>
+                <ThemedText style={styles.aiButtonTitle}>{t.carePlan.aiInsights}</ThemedText>
                 <ThemedText style={styles.aiButtonSubtitle}>
-                  Prevention & wellness tips
+                  {t.carePlan.aiSubtitle}
                 </ThemedText>
               </View>
               <ChevronRight size={22} color={COLORS.amber} />
@@ -397,13 +355,13 @@ export default function CarePlanTab() {
 
           {/* Doctor Circles */}
           <View style={styles.doctorsSection}>
-            <ThemedText style={styles.doctorsSectionTitle}>Your Care Team</ThemedText>
+            <ThemedText style={styles.doctorsSectionTitle}>{t.carePlan.yourCareTeam}</ThemedText>
             <ScrollView
               horizontal
               showsHorizontalScrollIndicator={false}
               contentContainerStyle={styles.doctorsScroll}
             >
-              {DOCTORS.map((doctor, index) => (
+              {DOCTORS_TRANSLATED.map((doctor, index) => (
                 <DoctorCircle
                   key={doctor.id}
                   doctor={doctor}
@@ -428,7 +386,7 @@ export default function CarePlanTab() {
                 ]}
               />
             </View>
-            <ThemedText style={styles.progressLabel}>{progress}% complete</ThemedText>
+            <ThemedText style={styles.progressLabel}>{progress}% {t.carePlan.complete}</ThemedText>
           </View>
 
           {/* Tasks List */}
@@ -450,9 +408,9 @@ export default function CarePlanTab() {
             ) : (
               <View style={styles.emptyState}>
                 <CheckCircle2 size={48} color={COLORS.teal} />
-                <ThemedText style={styles.emptyTitle}>All done!</ThemedText>
+                <ThemedText style={styles.emptyTitle}>{t.carePlan.allDone}</ThemedText>
                 <ThemedText style={styles.emptySubtitle}>
-                  No tasks from this doctor
+                  {t.carePlan.noTasksFromDoctor}
                 </ThemedText>
               </View>
             )}

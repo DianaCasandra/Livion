@@ -32,6 +32,7 @@ import { ThemedText } from '../../../components/atoms/ThemedText';
 import { OnboardingHeader } from '../../../components/molecules/OnboardingHeader';
 import { AnimatedBlobBackground } from '../../../components/atoms/AnimatedBlobBackground';
 import { COLORS, Spacing, BorderRadius } from '@/src/constants/Colors';
+import { useLanguage } from '../../../components/providers/LanguageProvider';
 import { LAB_RESULT_SETS } from './LabResultsScreen';
 
 // Mock detailed results data for each result set
@@ -124,7 +125,7 @@ function getStatusIcon(status: string) {
 }
 
 // Threshold bar component
-function ThresholdBar({ value, min, max, status }: { value: number; min: number; max: number; status: string }) {
+function ThresholdBar({ value, min, max, status, normalRangeLabel }: { value: number; min: number; max: number; status: string; normalRangeLabel: string }) {
   const range = max - min;
   const extendedMin = min - range * 0.2;
   const extendedMax = max + range * 0.2;
@@ -181,14 +182,14 @@ function ThresholdBar({ value, min, max, status }: { value: number; min: number;
       {/* Min/Max labels */}
       <View style={styles.thresholdLabels}>
         <ThemedText style={styles.thresholdLabel}>{min}</ThemedText>
-        <ThemedText style={styles.thresholdLabelNormal}>Normal Range</ThemedText>
+        <ThemedText style={styles.thresholdLabelNormal}>{normalRangeLabel}</ThemedText>
         <ThemedText style={styles.thresholdLabel}>{max}</ThemedText>
       </View>
     </View>
   );
 }
 
-function LabResultItem({ item, index }: { item: LabResult; index: number }) {
+function LabResultItem({ item, index, t }: { item: LabResult; index: number; t: any }) {
   const [expanded, setExpanded] = useState(item.status !== 'normal');
   const slideAnim = useRef(new Animated.Value(30)).current;
   const fadeAnim = useRef(new Animated.Value(0)).current;
@@ -261,6 +262,7 @@ function LabResultItem({ item, index }: { item: LabResult; index: number }) {
               min={item.min}
               max={item.max}
               status={item.status}
+              normalRangeLabel={t.labs.normalRange}
             />
 
             {item.description && (
@@ -271,7 +273,7 @@ function LabResultItem({ item, index }: { item: LabResult; index: number }) {
             )}
 
             <View style={styles.referenceRow}>
-              <ThemedText style={styles.referenceLabel}>Reference Range:</ThemedText>
+              <ThemedText style={styles.referenceLabel}>{t.labs.referenceRange}:</ThemedText>
               <ThemedText style={styles.referenceValue}>
                 {item.min} - {item.max} {item.unit}
               </ThemedText>
@@ -286,6 +288,8 @@ function LabResultItem({ item, index }: { item: LabResult; index: number }) {
 export default function LabResultDetailScreen() {
   const navigation = useNavigation();
   const route = useRoute();
+  const { t, language } = useLanguage();
+  const locale = language === 'ro' ? 'ro-RO' : 'en-US';
   const { resultSetId } = (route.params as { resultSetId: string }) || { resultSetId: '1' };
 
   const resultSet = LAB_RESULT_SETS.find(r => r.id === resultSetId);
@@ -319,7 +323,7 @@ export default function LabResultDetailScreen() {
               <View style={styles.metaItem}>
                 <Calendar size={16} color={COLORS.textSecondary} />
                 <ThemedText style={styles.metaText}>
-                  {new Date(resultSet.date).toLocaleDateString('en-US', {
+                  {new Date(resultSet.date).toLocaleDateString(locale, {
                     month: 'long',
                     day: 'numeric',
                     year: 'numeric',
@@ -339,7 +343,7 @@ export default function LabResultDetailScreen() {
                 <ThemedText style={[styles.quickStatValue, { color: COLORS.success }]}>
                   {normalCount}
                 </ThemedText>
-                <ThemedText style={styles.quickStatLabel}>Normal</ThemedText>
+                <ThemedText style={styles.quickStatLabel}>{t.labs.normal}</ThemedText>
               </View>
               {flaggedCount > 0 && (
                 <View style={[styles.quickStatItem, { backgroundColor: COLORS.warning + '15' }]}>
@@ -347,7 +351,7 @@ export default function LabResultDetailScreen() {
                   <ThemedText style={[styles.quickStatValue, { color: COLORS.warning }]}>
                     {flaggedCount}
                   </ThemedText>
-                  <ThemedText style={styles.quickStatLabel}>Flagged</ThemedText>
+                  <ThemedText style={styles.quickStatLabel}>{t.labs.flagged}</ThemedText>
                 </View>
               )}
             </View>
@@ -355,11 +359,11 @@ export default function LabResultDetailScreen() {
 
           {/* Results List */}
           <View style={styles.resultsSection}>
-            <ThemedText style={styles.sectionTitle}>Test Results</ThemedText>
-            <ThemedText style={styles.sectionHint}>Tap any result to see details</ThemedText>
+            <ThemedText style={styles.sectionTitle}>{t.labs.testResults}</ThemedText>
+            <ThemedText style={styles.sectionHint}>{t.labs.tapToSeeDetails}</ThemedText>
 
             {results.map((item, index) => (
-              <LabResultItem key={item.id} item={item} index={index} />
+              <LabResultItem key={item.id} item={item} index={index} t={t} />
             ))}
           </View>
 
@@ -367,7 +371,7 @@ export default function LabResultDetailScreen() {
           <View style={styles.disclaimer}>
             <Info size={14} color={COLORS.textTertiary} />
             <ThemedText style={styles.disclaimerText}>
-              These results should be reviewed with your healthcare provider. Flagged values may require follow-up.
+              {t.labs.disclaimer}
             </ThemedText>
           </View>
 

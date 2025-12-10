@@ -8,22 +8,23 @@ import PeerCirclesTab from '../screens/patient/dashboard/PeerCirclesTab';
 import SymptomsTab from '../screens/patient/dashboard/SymptomsTab';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { COLORS } from '../constants/Colors';
+import { useLanguage } from '../components/providers/LanguageProvider';
 
 const Tab = createBottomTabNavigator();
 
 export default function DashboardTabs() {
-
+   const { t } = useLanguage();
    const insets = useSafeAreaInsets();
-   
+
   return (
     <Tab.Navigator
       screenOptions={{
         headerShown: false,
-        tabBarStyle: { 
-          ...styles.tabBar ,    
+        tabBarStyle: {
+          ...styles.tabBar ,
           paddingBottom: insets.bottom + 6,
           height: 60 + insets.bottom
-        }, 
+        },
         tabBarActiveTintColor: COLORS.teal,
         tabBarInactiveTintColor: COLORS.textSecondary,
         tabBarLabelStyle: styles.tabBarLabel,
@@ -33,7 +34,7 @@ export default function DashboardTabs() {
         name="HomeTab"
         component={HomeTab}
         options={{
-          tabBarLabel: 'Home',
+          tabBarLabel: t.navigation.home,
           tabBarIcon: ({ color, size }) => (
             <Ionicons name="home-outline" size={size} color={color} />
           ),
@@ -43,7 +44,7 @@ export default function DashboardTabs() {
         name="CarePlanTab"
         component={CarePlanTab}
         options={{
-          tabBarLabel: 'Care Plan',
+          tabBarLabel: t.navigation.carePlan,
           tabBarIcon: ({ color, size }) => (
             <Ionicons name="clipboard-outline" size={size} color={color} />
           ),
@@ -53,7 +54,7 @@ export default function DashboardTabs() {
         name="SymptomsTab"
         component={SymptomsTab}
         options={{
-          tabBarLabel: 'Health',
+          tabBarLabel: t.navigation.symptoms,
           tabBarIcon: ({ color, size }) => (
             <Ionicons name="pulse-outline" size={size} color={color} />
           ),
@@ -63,7 +64,7 @@ export default function DashboardTabs() {
         name="PeerCirclesTab"
         component={PeerCirclesTab}
         options={{
-          tabBarLabel: 'Circles',
+          tabBarLabel: t.navigation.circles,
           tabBarIcon: ({ color, size }) => (
             <Ionicons name="people-outline" size={size} color={color} />
           ),
