@@ -27,7 +27,7 @@ const generateTimeSlots = (): string[] => {
 const TIME_SLOTS = generateTimeSlots();
 
 const formatDisplayDate = (date: Date): string => {
-  return date.toLocaleDateString('en-US', {
+  return date.toLocaleDateString('ro-RO', {
     weekday: 'short',
     month: 'short',
     day: 'numeric',
@@ -111,7 +111,7 @@ export function Calendar() {
       {/* Header */}
       <div style={styles.header}>
         <div style={styles.headerLeft}>
-          <h2 style={styles.title}>Schedule</h2>
+          <h2 style={styles.title}>Program</h2>
           <div style={styles.viewToggle}>
             <button
               onClick={() => setView('day')}
@@ -120,7 +120,7 @@ export function Calendar() {
                 ...(view === 'day' && styles.viewButtonActive),
               }}
             >
-              Day
+              Zi
             </button>
             <button
               onClick={() => setView('week')}
@@ -129,13 +129,13 @@ export function Calendar() {
                 ...(view === 'week' && styles.viewButtonActive),
               }}
             >
-              Week
+              Săptămână
             </button>
           </div>
         </div>
         <div style={styles.headerRight}>
           <button onClick={goToToday} style={styles.todayButton}>
-            Today
+            Astăzi
           </button>
           <div style={styles.navigation}>
             <button onClick={() => navigateDate('prev')} style={styles.navButton}>
@@ -180,7 +180,7 @@ export function Calendar() {
                     color: isSelected(day) ? COLORS.cardWhite : COLORS.textSecondary,
                   }}
                 >
-                  {day.toLocaleDateString('en-US', { weekday: 'short' })}
+                  {day.toLocaleDateString('ro-RO', { weekday: 'short' })}
                 </span>
                 <span
                   style={{
@@ -210,25 +210,25 @@ export function Calendar() {
         <div style={styles.summaryBar}>
           <div style={styles.summaryItem}>
             <span style={styles.summaryValue}>{appointments.length}</span>
-            <span style={styles.summaryLabel}>appointments</span>
+            <span style={styles.summaryLabel}>programări</span>
           </div>
           <div style={styles.summaryDivider} />
           <div style={styles.summaryItem}>
             <span style={styles.summaryValue}>
               {appointments.filter((a) => a.status === 'confirmed').length}
             </span>
-            <span style={styles.summaryLabel}>confirmed</span>
+            <span style={styles.summaryLabel}>confirmate</span>
           </div>
           <div style={styles.summaryDivider} />
           <div style={styles.summaryItem}>
             <span style={styles.summaryValue}>
               {appointments.filter((a) => a.status === 'pending').length}
             </span>
-            <span style={styles.summaryLabel}>pending</span>
+            <span style={styles.summaryLabel}>în așteptare</span>
           </div>
           <button style={styles.addButton}>
-            <Plus size={16} />
-            <span>New</span>
+            <Plus size={18} strokeWidth={2.5} />
+            <span>Programare Nouă</span>
           </button>
         </div>
 
@@ -249,9 +249,7 @@ export function Calendar() {
                 <div style={styles.timeLabel}>
                   {isHourMark && (
                     <span style={styles.timeLabelText}>
-                      {parseInt(time.split(':')[0]) > 12
-                        ? `${parseInt(time.split(':')[0]) - 12} PM`
-                        : `${parseInt(time.split(':')[0])} AM`}
+                      {time}
                     </span>
                   )}
                 </div>
@@ -472,17 +470,18 @@ const styles: Record<string, React.CSSProperties> = {
   addButton: {
     display: 'flex',
     alignItems: 'center',
-    gap: '6px',
+    gap: '8px',
     marginLeft: 'auto',
-    padding: '8px 14px',
+    padding: '12px 20px',
     backgroundColor: COLORS.teal,
     border: 'none',
-    borderRadius: BorderRadius.sm,
-    fontSize: Typography.fontSize.sm,
-    fontWeight: Typography.fontWeight.medium,
+    borderRadius: BorderRadius.md,
+    fontSize: Typography.fontSize.base,
+    fontWeight: Typography.fontWeight.semibold,
     color: COLORS.cardWhite,
     cursor: 'pointer',
     transition: 'all 150ms ease',
+    boxShadow: `0 4px 12px ${COLORS.teal}40`,
   },
 
   // Time grid

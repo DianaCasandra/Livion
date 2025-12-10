@@ -21,19 +21,19 @@ export const appointmentTypeConfig: Record<AppointmentType, TypeConfig> = {
     icon: MapPin,
     color: COLORS.teal,
     bgColor: COLORS.tealLight,
-    label: 'In-Person',
+    label: 'În Persoană',
   },
   video: {
     icon: Video,
     color: COLORS.blue,
     bgColor: COLORS.blueLight,
-    label: 'Video Call',
+    label: 'Video',
   },
   phone: {
     icon: Phone,
     color: COLORS.purple,
     bgColor: COLORS.purpleLight,
-    label: 'Phone',
+    label: 'Telefon',
   },
 };
 

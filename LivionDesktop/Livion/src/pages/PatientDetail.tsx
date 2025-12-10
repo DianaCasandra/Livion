@@ -12,6 +12,7 @@ import {
   Video,
   Clock,
   Calendar,
+  CalendarPlus,
   ChevronRight,
   Download,
   Sparkles,
@@ -189,6 +190,10 @@ export function PatientDetail() {
               <FileSignature size={18} />
               Trimite Rețetă
             </button>
+            <button style={{ ...styles.actionBtn, ...styles.actionBtnAppointment }}>
+              <CalendarPlus size={18} strokeWidth={2.5} />
+              Programare Nouă
+            </button>
             <button style={{ ...styles.actionBtn, ...styles.actionBtnPrimary }}>
               <Video size={18} />
               Începe Consultația
@@ -238,16 +243,16 @@ export function PatientDetail() {
             <div style={styles.warningIcon}>
               <AlertCircle size={48} color={COLORS.amber} />
             </div>
-            <h2 style={styles.warningTitle}>Digital Certificate Required</h2>
+            <h2 style={styles.warningTitle}>Certificat Digital Necesar</h2>
             <p style={styles.warningText}>
-              You need to upload your digital certificate before you can send prescriptions or medical documents to patients.
+              Trebuie să încărcați certificatul digital pentru a putea trimite rețete sau documente medicale pacienților.
             </p>
             <div style={styles.warningActions}>
               <button
                 style={styles.warningCancelBtn}
                 onClick={() => setShowSignatureWarning(false)}
               >
-                Cancel
+                Anulează
               </button>
               <button
                 style={styles.warningSettingsBtn}
@@ -257,7 +262,7 @@ export function PatientDetail() {
                 }}
               >
                 <Settings size={16} />
-                Go to Settings
+                Mergi la Setări
               </button>
             </div>
           </div>
@@ -276,7 +281,7 @@ interface OverviewTabProps {
 
 function OverviewTab({ patient, details }: OverviewTabProps) {
   const isStale = areVitalsStale(patient.vitals.timestamp);
-  const vitalsLabel = isStale ? 'Last Vitals' : 'Current Vitals';
+  const vitalsLabel = isStale ? 'Semne Vitale Anterioare' : 'Semne Vitale Actuale';
   const vitalsColor = isStale ? COLORS.warning : COLORS.success;
 
   return (
@@ -299,19 +304,19 @@ function OverviewTab({ patient, details }: OverviewTabProps) {
         </div>
         <div style={styles.vitalsGrid}>
           <div style={styles.vitalItem}>
-            <span style={styles.vitalLabel}>Blood Pressure</span>
+            <span style={styles.vitalLabel}>Tensiune Arterială</span>
             <span style={styles.vitalValue}>{patient.vitals.bp}</span>
           </div>
           <div style={styles.vitalItem}>
-            <span style={styles.vitalLabel}>Heart Rate</span>
+            <span style={styles.vitalLabel}>Ritm Cardiac</span>
             <span style={styles.vitalValue}>{patient.vitals.hr} bpm</span>
           </div>
           <div style={styles.vitalItem}>
-            <span style={styles.vitalLabel}>Temperature</span>
-            <span style={styles.vitalValue}>{patient.vitals.temp}°F</span>
+            <span style={styles.vitalLabel}>Temperatură</span>
+            <span style={styles.vitalValue}>{patient.vitals.temp}°C</span>
           </div>
           <div style={styles.vitalItem}>
-            <span style={styles.vitalLabel}>O₂ Saturation</span>
+            <span style={styles.vitalLabel}>Saturație O₂</span>
             <span style={styles.vitalValue}>{patient.vitals.o2}</span>
           </div>
         </div>
@@ -322,7 +327,7 @@ function OverviewTab({ patient, details }: OverviewTabProps) {
         <GlassCard padding="md" style={styles.aiCard}>
           <h3 style={styles.cardTitle}>
             <Sparkles size={18} color={COLORS.purple} />
-            AI Analysis
+            Analiză AI
           </h3>
           <div style={styles.aiContent}>
             <div style={styles.aiTrend}>
@@ -344,7 +349,7 @@ function OverviewTab({ patient, details }: OverviewTabProps) {
             </div>
             <p style={styles.aiSummary}>{patient.aiInsight.summary}</p>
             <div style={styles.aiRecommendation}>
-              <strong>Recommendation:</strong> {patient.aiInsight.recommendation}
+              <strong>Recomandare:</strong> {patient.aiInsight.recommendation}
             </div>
           </div>
         </GlassCard>
@@ -354,7 +359,7 @@ function OverviewTab({ patient, details }: OverviewTabProps) {
       <GlassCard padding="md" style={styles.medicationsCard}>
         <h3 style={styles.cardTitle}>
           <Pill size={18} color={COLORS.amber} />
-          Current Medications
+          Medicație Curentă
         </h3>
         <div style={styles.medicationsList}>
           {details.medications.map((med, idx) => (
@@ -373,7 +378,7 @@ function OverviewTab({ patient, details }: OverviewTabProps) {
       <GlassCard padding="md" style={styles.conditionsCard}>
         <h3 style={styles.cardTitle}>
           <AlertTriangle size={18} color={COLORS.error} />
-          Allergies & Conditions
+          Alergii și Afecțiuni
         </h3>
         <div style={styles.tagsList}>
           {details.allergies.map((allergy, idx) => (
@@ -395,7 +400,7 @@ interface RecordsTabProps {
 function RecordsTab({ records }: RecordsTabProps) {
   return (
     <GlassCard padding="md">
-      <h3 style={styles.sectionTitle}>Medical Records</h3>
+      <h3 style={styles.sectionTitle}>Fișe Medicale</h3>
       <div style={styles.recordsList}>
         {records.map((record) => (
           <div key={record.id} style={styles.recordItem}>
@@ -428,7 +433,7 @@ interface LabsTabProps {
 function LabsTab({ labs }: LabsTabProps) {
   return (
     <GlassCard padding="md">
-      <h3 style={styles.sectionTitle}>Laboratory Results</h3>
+      <h3 style={styles.sectionTitle}>Rezultate Analize</h3>
       <div style={styles.labsList}>
         {labs.map((lab) => (
           <div key={lab.id} style={styles.labItem}>
@@ -486,7 +491,7 @@ interface ImagingTabProps {
 function ImagingTab({ imaging }: ImagingTabProps) {
   return (
     <GlassCard padding="md">
-      <h3 style={styles.sectionTitle}>Imaging Studies</h3>
+      <h3 style={styles.sectionTitle}>Studii Imagistice</h3>
       <div style={styles.imagingGrid}>
         {imaging.map((study) => (
           <div key={study.id} style={styles.imagingItem}>
@@ -515,7 +520,7 @@ function ImagingTab({ imaging }: ImagingTabProps) {
             </div>
             <button style={styles.viewBtn}>
               <ChevronRight size={16} />
-              View
+              Vizualizare
             </button>
           </div>
         ))}
@@ -531,7 +536,7 @@ interface ConsultationsTabProps {
 function ConsultationsTab({ consultations }: ConsultationsTabProps) {
   return (
     <GlassCard padding="md">
-      <h3 style={styles.sectionTitle}>Consultation History</h3>
+      <h3 style={styles.sectionTitle}>Istoric Consultații</h3>
       <div style={styles.consultationsList}>
         {consultations.map((consultation) => (
           <div key={consultation.id} style={styles.consultationItem}>
@@ -562,13 +567,13 @@ function ConsultationsTab({ consultations }: ConsultationsTabProps) {
             <div style={styles.aiSummarySection}>
               <div style={styles.aiSummaryHeader}>
                 <Sparkles size={16} color={COLORS.purple} />
-                <span>AI Summary</span>
+                <span>Rezumat AI</span>
               </div>
               <p style={styles.aiSummaryText}>{consultation.aiSummary}</p>
 
               {consultation.keyPoints && consultation.keyPoints.length > 0 && (
                 <div style={styles.keyPoints}>
-                  <span style={styles.keyPointsTitle}>Key Points:</span>
+                  <span style={styles.keyPointsTitle}>Puncte Cheie:</span>
                   <ul style={styles.keyPointsList}>
                     {consultation.keyPoints.map((point, idx) => (
                       <li key={idx} style={styles.keyPointItem}>{point}</li>
@@ -580,7 +585,7 @@ function ConsultationsTab({ consultations }: ConsultationsTabProps) {
               {consultation.followUp && (
                 <div style={styles.followUp}>
                   <Calendar size={14} color={COLORS.amber} />
-                  <span>Follow-up: {consultation.followUp}</span>
+                  <span>Control: {consultation.followUp}</span>
                 </div>
               )}
             </div>
@@ -588,11 +593,11 @@ function ConsultationsTab({ consultations }: ConsultationsTabProps) {
             <div style={styles.consultationActions}>
               <button style={styles.consultationBtn}>
                 <FileText size={14} />
-                View Notes
+                Vezi Notițe
               </button>
               <button style={styles.consultationBtn}>
                 <Download size={14} />
-                Export
+                Exportă
               </button>
             </div>
           </div>
@@ -664,9 +669,9 @@ function PrescriptionModal({ patient, onClose }: PrescriptionModalProps) {
             <div style={styles.sentIcon}>
               <CheckCircle size={48} color={COLORS.success} />
             </div>
-            <h2 style={styles.sentTitle}>Prescription Sent!</h2>
+            <h2 style={styles.sentTitle}>Rețetă Trimisă!</h2>
             <p style={styles.sentText}>
-              The prescription has been sent to {patient.name} at their registered email and phone.
+              Rețeta a fost trimisă către {patient.name} la adresa de email și telefonul înregistrate.
             </p>
           </div>
         </div>
@@ -681,7 +686,7 @@ function PrescriptionModal({ patient, onClose }: PrescriptionModalProps) {
         <div style={styles.modalHeader}>
           <div style={styles.modalTitleRow}>
             <FileSignature size={24} color={COLORS.teal} />
-            <h2 style={styles.modalTitle}>New Prescription</h2>
+            <h2 style={styles.modalTitle}>Rețetă Nouă</h2>
           </div>
           <button style={styles.closeButton} onClick={onClose}>
             <X size={20} />
@@ -696,7 +701,7 @@ function PrescriptionModal({ patient, onClose }: PrescriptionModalProps) {
           <div>
             <span style={styles.prescriptionPatientName}>{patient.name}</span>
             <span style={styles.prescriptionPatientInfo}>
-              {patient.age} years • {patient.condition}
+              {patient.age} ani • {patient.condition}
             </span>
           </div>
         </div>
@@ -705,12 +710,12 @@ function PrescriptionModal({ patient, onClose }: PrescriptionModalProps) {
         <div style={styles.prescriptionForm}>
           {/* Diagnosis */}
           <div style={styles.formSection}>
-            <label style={styles.formLabel}>Diagnosis / Reason</label>
+            <label style={styles.formLabel}>Diagnostic / Motiv</label>
             <input
               type="text"
               value={diagnosis}
               onChange={e => setDiagnosis(e.target.value)}
-              placeholder="e.g., Hypertension management, Upper respiratory infection"
+              placeholder="ex. Managementul hipertensiunii, Infecție respiratorie superioară"
               style={styles.formInput}
             />
           </div>
@@ -718,17 +723,17 @@ function PrescriptionModal({ patient, onClose }: PrescriptionModalProps) {
           {/* Medications */}
           <div style={styles.formSection}>
             <div style={styles.formLabelRow}>
-              <label style={styles.formLabel}>Medications</label>
+              <label style={styles.formLabel}>Medicamente</label>
               <button style={styles.addMedButton} onClick={addMedication}>
                 <Plus size={14} />
-                Add Medication
+                Adaugă Medicament
               </button>
             </div>
 
             {medications.map((med, index) => (
               <div key={index} style={styles.medicationCard}>
                 <div style={styles.medicationHeader}>
-                  <span style={styles.medicationNumber}>Medication {index + 1}</span>
+                  <span style={styles.medicationNumber}>Medicament {index + 1}</span>
                   {medications.length > 1 && (
                     <button
                       style={styles.removeMedButton}
@@ -740,53 +745,53 @@ function PrescriptionModal({ patient, onClose }: PrescriptionModalProps) {
                 </div>
                 <div style={styles.medicationGrid}>
                   <div style={styles.formGroup}>
-                    <label style={styles.smallLabel}>Drug Name</label>
+                    <label style={styles.smallLabel}>Denumire Medicament</label>
                     <input
                       type="text"
                       value={med.name}
                       onChange={e => updateMedication(index, 'name', e.target.value)}
-                      placeholder="e.g., Amoxicillin"
+                      placeholder="ex. Amoxicilină"
                       style={styles.formInputSmall}
                     />
                   </div>
                   <div style={styles.formGroup}>
-                    <label style={styles.smallLabel}>Dosage</label>
+                    <label style={styles.smallLabel}>Dozaj</label>
                     <input
                       type="text"
                       value={med.dosage}
                       onChange={e => updateMedication(index, 'dosage', e.target.value)}
-                      placeholder="e.g., 500mg"
+                      placeholder="ex. 500mg"
                       style={styles.formInputSmall}
                     />
                   </div>
                   <div style={styles.formGroup}>
-                    <label style={styles.smallLabel}>Frequency</label>
+                    <label style={styles.smallLabel}>Frecvență</label>
                     <input
                       type="text"
                       value={med.frequency}
                       onChange={e => updateMedication(index, 'frequency', e.target.value)}
-                      placeholder="e.g., Twice daily"
+                      placeholder="ex. De două ori pe zi"
                       style={styles.formInputSmall}
                     />
                   </div>
                   <div style={styles.formGroup}>
-                    <label style={styles.smallLabel}>Duration</label>
+                    <label style={styles.smallLabel}>Durată</label>
                     <input
                       type="text"
                       value={med.duration}
                       onChange={e => updateMedication(index, 'duration', e.target.value)}
-                      placeholder="e.g., 7 days"
+                      placeholder="ex. 7 zile"
                       style={styles.formInputSmall}
                     />
                   </div>
                 </div>
                 <div style={styles.formGroup}>
-                  <label style={styles.smallLabel}>Special Instructions</label>
+                  <label style={styles.smallLabel}>Instrucțiuni Speciale</label>
                   <input
                     type="text"
                     value={med.instructions}
                     onChange={e => updateMedication(index, 'instructions', e.target.value)}
-                    placeholder="e.g., Take with food, avoid alcohol"
+                    placeholder="ex. Luați cu mâncare, evitați alcoolul"
                     style={styles.formInputSmall}
                   />
                 </div>
@@ -796,11 +801,11 @@ function PrescriptionModal({ patient, onClose }: PrescriptionModalProps) {
 
           {/* Additional Notes */}
           <div style={styles.formSection}>
-            <label style={styles.formLabel}>Additional Notes (Optional)</label>
+            <label style={styles.formLabel}>Note Suplimentare (Opțional)</label>
             <textarea
               value={notes}
               onChange={e => setNotes(e.target.value)}
-              placeholder="Any additional instructions or notes for the patient..."
+              placeholder="Orice instrucțiuni sau notițe suplimentare pentru pacient..."
               style={styles.formTextarea}
               rows={3}
             />
@@ -811,11 +816,11 @@ function PrescriptionModal({ patient, onClose }: PrescriptionModalProps) {
         <div style={styles.modalFooter}>
           <div style={styles.signaturePreview}>
             <FileSignature size={16} color={COLORS.textTertiary} />
-            <span>Will be signed as Dr. Sarah Harper, MD</span>
+            <span>Va fi semnat ca Dr. Alexandru Radu, Cardiolog</span>
           </div>
           <div style={styles.modalActions}>
             <button style={styles.cancelButton} onClick={onClose}>
-              Cancel
+              Anulează
             </button>
             <button
               style={{
@@ -827,7 +832,7 @@ function PrescriptionModal({ patient, onClose }: PrescriptionModalProps) {
               disabled={!isValid || isSending}
             >
               <Send size={16} />
-              {isSending ? 'Sending...' : 'Send Prescription'}
+              {isSending ? 'Se trimite...' : 'Trimite Rețeta'}
             </button>
           </div>
         </div>
@@ -964,6 +969,13 @@ const styles: Record<string, React.CSSProperties> = {
     backgroundColor: COLORS.purpleLight,
     borderColor: COLORS.purple,
     color: COLORS.purple,
+  },
+  actionBtnAppointment: {
+    backgroundColor: COLORS.teal,
+    borderColor: COLORS.teal,
+    color: COLORS.cardWhite,
+    boxShadow: `0 4px 12px ${COLORS.teal}40`,
+    fontWeight: Typography.fontWeight.semibold,
   },
 
   // Tabs

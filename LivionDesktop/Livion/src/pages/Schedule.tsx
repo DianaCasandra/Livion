@@ -9,8 +9,8 @@ export function Schedule() {
   return (
     <PageLayout
       activePage="schedule"
-      title="Schedule"
-      subtitle="Manage your appointments and availability"
+      title="Program"
+      subtitle="Gestionați programările și disponibilitatea dumneavoastră"
       showBackButton
     >
       <Calendar />

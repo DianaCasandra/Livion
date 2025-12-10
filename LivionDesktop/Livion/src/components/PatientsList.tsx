@@ -8,6 +8,7 @@ import { useNavigate } from 'react-router-dom';
 import {
   Search,
   User,
+  UserPlus,
   Heart,
   Activity,
   AlertTriangle,
@@ -195,7 +196,13 @@ export function PatientsList() {
             <span>Diagnostice AI Active</span>
           </div>
         </div>
-        <span style={styles.count}>{MOCK_PATIENTS.length} total</span>
+        <div style={styles.headerRight}>
+          <span style={styles.count}>{MOCK_PATIENTS.length} în total</span>
+          <button style={styles.addPatientButton}>
+            <UserPlus size={18} strokeWidth={2.5} />
+            <span>Pacient Nou</span>
+          </button>
+        </div>
       </div>
 
       {/* Search bar */}
@@ -471,9 +478,29 @@ const styles: Record<string, React.CSSProperties> = {
     fontWeight: Typography.fontWeight.medium,
     color: COLORS.purple,
   },
+  headerRight: {
+    display: 'flex',
+    alignItems: 'center',
+    gap: '16px',
+  },
   count: {
     fontSize: Typography.fontSize.sm,
     color: COLORS.textTertiary,
+  },
+  addPatientButton: {
+    display: 'flex',
+    alignItems: 'center',
+    gap: '8px',
+    padding: '12px 20px',
+    backgroundColor: COLORS.teal,
+    border: 'none',
+    borderRadius: BorderRadius.md,
+    fontSize: Typography.fontSize.base,
+    fontWeight: Typography.fontWeight.semibold,
+    color: COLORS.cardWhite,
+    cursor: 'pointer',
+    transition: 'all 150ms ease',
+    boxShadow: `0 4px 12px ${COLORS.teal}40`,
   },
   searchContainer: {
     display: 'flex',

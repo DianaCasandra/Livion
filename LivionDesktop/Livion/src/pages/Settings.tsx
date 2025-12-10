@@ -233,13 +233,13 @@ export function Settings() {
                 >
                   <Upload size={32} color={COLORS.textTertiary} />
                   <span style={styles.uploadText}>Click pentru a încărca certificatul</span>
-                  <span style={styles.uploadHint}>PNG, JPG, PDF până la 2MB</span>
+                  <span style={styles.uploadHint}>.cert, .pfx, .p12 până la 2MB</span>
                 </div>
               )}
               <input
                 ref={fileInputRef}
                 type="file"
-                accept="image/*"
+                accept=".cert,.pfx,.p12,.pem,.crt,.cer"
                 onChange={handleSignatureUpload}
                 style={{ display: 'none' }}
               />

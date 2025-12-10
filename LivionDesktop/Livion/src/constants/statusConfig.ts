@@ -20,19 +20,19 @@ export const statusConfig: Record<PatientStatus, StatusConfig> = {
     color: COLORS.success,
     bgColor: COLORS.successLight,
     icon: Heart,
-    label: 'Stable',
+    label: 'Stabil',
   },
   attention: {
     color: COLORS.warning,
     bgColor: COLORS.warningLight,
     icon: Activity,
-    label: 'Needs Attention',
+    label: 'Atenție',
   },
   critical: {
     color: COLORS.error,
     bgColor: COLORS.errorLight,
     icon: AlertTriangle,
-    label: 'Critical',
+    label: 'Critic',
   },
 };
 

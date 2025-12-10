@@ -26,24 +26,24 @@ export function Login() {
         {/* Logo and branding */}
         <div style={styles.logoSection}>
           <img src="/logo.png" alt="Livion Logo" style={styles.logoImage} />
-          <p style={styles.subtitle}>Clinician Portal</p>
+          <p style={styles.subtitle}>Portal Medic</p>
         </div>
 
         {/* Login card */}
         <GlassCard variant="strong" padding="lg" style={styles.loginCard}>
           <div style={styles.cardHeader}>
             <Stethoscope size={24} color={COLORS.teal} />
-            <h2 style={styles.cardTitle}>Welcome Back</h2>
+            <h2 style={styles.cardTitle}>Bine ați revenit</h2>
           </div>
 
           <p style={styles.cardDescription}>
-            Access your patient dashboard, appointments, and AI-powered insights.
+            Accesați panoul pacienților, programările și analizele bazate pe AI.
           </p>
 
           {/* Demo notice */}
           <div style={styles.demoNotice}>
             <span style={styles.demoBadge}>DEMO</span>
-            <span style={styles.demoText}>No credentials required</span>
+            <span style={styles.demoText}>Nu necesită autentificare</span>
           </div>
 
           {/* Login button */}
@@ -57,7 +57,7 @@ export function Login() {
               boxShadow: isHovered ? Shadows.glow.teal : Shadows.md,
             }}
           >
-            <span>Enter Dashboard</span>
+            <span>Intră în Panou</span>
             <ArrowRight
               size={20}
               style={{
@@ -70,7 +70,7 @@ export function Login() {
 
         {/* Footer */}
         <p style={styles.footer}>
-          Secure healthcare platform for clinicians
+          Platformă medicală securizată pentru clinicieni
         </p>
       </div>
     </div>
