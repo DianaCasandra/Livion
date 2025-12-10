@@ -388,12 +388,34 @@ export const en = {
       entry3Symptoms: 'General tiredness',
       entry3Notes: 'Good day overall',
     },
+    scheduling: {
+      title: 'Schedule an Appointment',
+      subtitle: 'Select an available time slot',
+      confirm: 'Confirm Appointment',
+      days: {
+        monday: 'Monday',
+        tuesday: 'Tuesday',
+        wednesday: 'Wednesday',
+        thursday: 'Thursday',
+        friday: 'Friday',
+        saturday: 'Saturday',
+        sunday: 'Sunday',
+      },
+    },
   },
 
   // Peer Circles Tab
   peerCircles: {
     title: 'Peer Circles',
     subtitle: 'Connect with others on similar journeys',
+    topics: {
+      title: 'Interests',
+      activeLife: 'Active Life',
+      cholesterol: 'Low Cholesterol',
+      nutrition: 'Nutrition',
+      mentalHealth: 'Mental Health',
+      fitness: 'Fitness',
+    },
     yourCircles: 'Your Circles',
     discoverCircles: 'Discover Circles',
     members: 'members',

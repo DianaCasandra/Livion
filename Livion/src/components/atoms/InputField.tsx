@@ -80,9 +80,9 @@ const styles = StyleSheet.create({
     marginTop: 10,
   },
   input: {
-    backgroundColor: Colors.background.cardGlass,
+    backgroundColor: 'rgba(120, 120, 130, 0.35)',
     borderWidth: 1,
-    borderColor: Colors.border.medium,
+    borderColor: 'rgba(255, 255, 255, 0.25)',
     borderRadius: BorderRadius.md,
     paddingVertical: Spacing.md,
     paddingHorizontal: Spacing.md,

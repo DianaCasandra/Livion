@@ -4,7 +4,7 @@
  */
 
 import { Ionicons } from '@expo/vector-icons';
-import { Users, Shield, Heart, MessageSquare } from 'lucide-react-native';
+import { Users, Shield, Heart, MessageSquare, Activity, Salad, Brain, Dumbbell, HeartPulse } from 'lucide-react-native';
 import React, { useRef, useEffect, useState } from 'react';
 import {
   Animated,
@@ -63,9 +63,49 @@ function PeerPost({ author, text, meta, likes, comments, index }: any) {
   );
 }
 
+// Topic filter chip component
+function TopicChip({ label, icon: Icon, active, onPress }: any) {
+  const scaleAnim = useRef(new Animated.Value(1)).current;
+
+  const handlePress = () => {
+    Animated.sequence([
+      Animated.timing(scaleAnim, { toValue: 0.95, duration: 100, useNativeDriver: true }),
+      Animated.timing(scaleAnim, { toValue: 1, duration: 100, useNativeDriver: true }),
+    ]).start();
+    onPress();
+  };
+
+  return (
+    <Pressable onPress={handlePress}>
+      <Animated.View
+        style={[
+          styles.topicChip,
+          active && styles.topicChipActive,
+          { transform: [{ scale: scaleAnim }] },
+        ]}
+      >
+        <Icon size={14} color={active ? COLORS.cardWhite : COLORS.teal} />
+        <ThemedText style={[styles.topicChipText, active && styles.topicChipTextActive]}>
+          {label}
+        </ThemedText>
+      </Animated.View>
+    </Pressable>
+  );
+}
+
 export default function PeerCirclesTab() {
   const { t } = useLanguage();
   const [postAsPseudonymous, setPostAsPseudonymous] = useState(true);
+  const [selectedTopic, setSelectedTopic] = useState<string | null>(null);
+
+  // Topic filters
+  const topics = [
+    { id: 'active', label: t.peerCircles.topics?.activeLife || 'Viață Activă', icon: Activity },
+    { id: 'cholesterol', label: t.peerCircles.topics?.cholesterol || 'Colesterol', icon: HeartPulse },
+    { id: 'nutrition', label: t.peerCircles.topics?.nutrition || 'Nutriție', icon: Salad },
+    { id: 'mental', label: t.peerCircles.topics?.mentalHealth || 'Sănătate Mentală', icon: Brain },
+    { id: 'fitness', label: t.peerCircles.topics?.fitness || 'Fitness', icon: Dumbbell },
+  ];
 
   // Animations
   const fadeAnim = useRef(new Animated.Value(0)).current;
@@ -80,12 +120,17 @@ export default function PeerCirclesTab() {
 
   // Mock peer posts - using translations
   const peerPosts = [
-    { author: t.peerCircles.anonymous, text: t.peerCircles.posts.post1, meta: t.peerCircles.posts.post1Meta, likes: 18, comments: 3 },
-    { author: t.peerCircles.anonymous, text: t.peerCircles.posts.post2, meta: t.peerCircles.posts.post2Meta, likes: 12, comments: 4 },
-    { author: t.peerCircles.supportCircle, text: t.peerCircles.posts.post3, meta: t.peerCircles.posts.post3Meta, likes: 7, comments: 6 },
-    { author: t.peerCircles.anonymous, text: t.peerCircles.posts.post4, meta: t.peerCircles.posts.post4Meta, likes: 24, comments: 8 },
-    { author: t.peerCircles.anonymous, text: t.peerCircles.posts.post5, meta: t.peerCircles.posts.post5Meta, likes: 15, comments: 5 },
+    { author: t.peerCircles.anonymous, text: t.peerCircles.posts.post1, meta: t.peerCircles.posts.post1Meta, likes: 18, comments: 3, topic: 'active' },
+    { author: t.peerCircles.anonymous, text: t.peerCircles.posts.post2, meta: t.peerCircles.posts.post2Meta, likes: 12, comments: 4, topic: 'cholesterol' },
+    { author: t.peerCircles.supportCircle, text: t.peerCircles.posts.post3, meta: t.peerCircles.posts.post3Meta, likes: 7, comments: 6, topic: 'mental' },
+    { author: t.peerCircles.anonymous, text: t.peerCircles.posts.post4, meta: t.peerCircles.posts.post4Meta, likes: 24, comments: 8, topic: 'fitness' },
+    { author: t.peerCircles.anonymous, text: t.peerCircles.posts.post5, meta: t.peerCircles.posts.post5Meta, likes: 15, comments: 5, topic: 'nutrition' },
   ];
+
+  // Filter posts by selected topic
+  const filteredPosts = selectedTopic
+    ? peerPosts.filter(post => post.topic === selectedTopic)
+    : peerPosts;
 
   return (
     <View style={styles.root}>
@@ -107,9 +152,9 @@ export default function PeerCirclesTab() {
 
           <ScrollView style={styles.scrollView} contentContainerStyle={styles.scrollContent} showsVerticalScrollIndicator={false}>
             {/* Privacy Notice */}
-            <Card style={styles.privacyCard} highlight="amber">
+            <Card style={styles.privacyCard} highlight="teal">
               <View style={styles.privacyHeader}>
-                <Shield size={20} color={COLORS.amber} />
+                <Shield size={20} color={COLORS.teal} />
                 <ThemedText style={styles.privacyTitle}>{t.peerCircles.peerSupportCircle}</ThemedText>
               </View>
               <ThemedText style={styles.privacyText}>
@@ -131,6 +176,28 @@ export default function PeerCirclesTab() {
               </View>
             </Card>
 
+            {/* Topic Filters */}
+            <View style={styles.topicsSection}>
+              <ThemedText style={styles.topicsTitle}>
+                {t.peerCircles.topics?.title || 'Interese'}
+              </ThemedText>
+              <ScrollView
+                horizontal
+                showsHorizontalScrollIndicator={false}
+                contentContainerStyle={styles.topicsScroll}
+              >
+                {topics.map((topic) => (
+                  <TopicChip
+                    key={topic.id}
+                    label={topic.label}
+                    icon={topic.icon}
+                    active={selectedTopic === topic.id}
+                    onPress={() => setSelectedTopic(selectedTopic === topic.id ? null : topic.id)}
+                  />
+                ))}
+              </ScrollView>
+            </View>
+
             {/* Compose Post */}
             <Card style={styles.composeCard}>
               <TextInput
@@ -147,7 +214,7 @@ export default function PeerCirclesTab() {
 
             {/* Posts Feed */}
             <ThemedText style={styles.feedTitle}>{t.peerCircles.recentPosts}</ThemedText>
-            {peerPosts.map((post, index) => (
+            {filteredPosts.map((post, index) => (
               <PeerPost key={index} {...post} index={index} />
             ))}
 
@@ -255,6 +322,43 @@ const styles = StyleSheet.create({
     fontSize: 12,
     color: COLORS.textTertiary,
     marginTop: 2,
+  },
+
+  // Topics Section
+  topicsSection: {
+    marginBottom: 20,
+  },
+  topicsTitle: {
+    fontSize: 16,
+    fontWeight: '600',
+    color: COLORS.textPrimary,
+    marginBottom: 12,
+  },
+  topicsScroll: {
+    gap: 10,
+    paddingRight: 20,
+  },
+  topicChip: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 6,
+    paddingHorizontal: 14,
+    paddingVertical: 8,
+    borderRadius: 20,
+    backgroundColor: COLORS.tealLight,
+    borderWidth: 1,
+    borderColor: COLORS.teal,
+  },
+  topicChipActive: {
+    backgroundColor: COLORS.teal,
+  },
+  topicChipText: {
+    fontSize: 13,
+    fontWeight: '600',
+    color: COLORS.teal,
+  },
+  topicChipTextActive: {
+    color: COLORS.cardWhite,
   },
 
   // Compose Card

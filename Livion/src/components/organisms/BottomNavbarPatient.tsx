@@ -1,5 +1,5 @@
 import { Href, usePathname, useRouter } from 'expo-router';
-import { Activity, MessageSquare, Sparkles, Users } from 'lucide-react-native';
+import { Activity, MessageSquare, Stethoscope, Users } from 'lucide-react-native';
 import React from 'react';
 import { Dimensions, Platform, Pressable, StyleSheet, View } from 'react-native';
 import { ThemedText } from '../../src/components/atoms/ThemedText';
@@ -48,8 +48,8 @@ export default function FloatingPillNav() {
         />
 
         <NavButton
-          icon={<Sparkles size={18} color={COLORS.cardWhite} />}
-          label="Symptoms"
+          icon={<Stethoscope size={18} color={COLORS.cardWhite} />}
+          label="Doctor"
           active={currentPath === '/patient/dashboard/symptoms'}
           onPress={() => navigate('/patient/dashboard/symptoms')}
         />

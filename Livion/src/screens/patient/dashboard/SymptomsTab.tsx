@@ -6,7 +6,6 @@
 
 import { Ionicons } from '@expo/vector-icons';
 import {
-  FileText,
   Clock,
   TrendingDown,
   TrendingUp,
@@ -19,11 +18,14 @@ import {
   MapPin,
   Stethoscope,
   ClipboardList,
+  X,
+  Check,
 } from 'lucide-react-native';
 import React, { useRef, useEffect, useState } from 'react';
 import {
   Animated,
   Linking,
+  Modal,
   Platform,
   Pressable,
   ScrollView,
@@ -229,50 +231,257 @@ function HistoryItem({ date, symptoms, painLevel, notes, index, loggedAtLabel }:
   );
 }
 
-// Quick action button component
-function QuickActionButton({
-  icon: Icon,
-  label,
-  color,
-  bgColor,
-  onPress,
-}: any) {
-  const scaleAnim = useRef(new Animated.Value(1)).current;
+// Appointment slots data
+const APPOINTMENT_SLOTS = [
+  { id: '1', date: '2025-12-11', day: 'wednesday', time: '09:00', available: true },
+  { id: '2', date: '2025-12-11', day: 'wednesday', time: '10:30', available: true },
+  { id: '3', date: '2025-12-11', day: 'wednesday', time: '14:00', available: false },
+  { id: '4', date: '2025-12-12', day: 'thursday', time: '09:00', available: true },
+  { id: '5', date: '2025-12-12', day: 'thursday', time: '11:00', available: true },
+  { id: '6', date: '2025-12-12', day: 'thursday', time: '15:30', available: true },
+  { id: '7', date: '2025-12-13', day: 'friday', time: '10:00', available: true },
+  { id: '8', date: '2025-12-13', day: 'friday', time: '14:30', available: false },
+];
 
-  const handlePressIn = () => {
-    Animated.spring(scaleAnim, {
-      toValue: 0.95,
-      useNativeDriver: true,
-      speed: 50,
-    }).start();
+// Schedule Modal Component
+function ScheduleModal({
+  visible,
+  onClose,
+  selectedSlot,
+  setSelectedSlot,
+  t,
+}: {
+  visible: boolean;
+  onClose: () => void;
+  selectedSlot: string | null;
+  setSelectedSlot: (id: string | null) => void;
+  t: any;
+}) {
+  const fadeAnim = useRef(new Animated.Value(0)).current;
+  const slideAnim = useRef(new Animated.Value(300)).current;
+
+  useEffect(() => {
+    if (visible) {
+      Animated.parallel([
+        Animated.timing(fadeAnim, { toValue: 1, duration: 200, useNativeDriver: true }),
+        Animated.spring(slideAnim, { toValue: 0, useNativeDriver: true, speed: 15, bounciness: 5 }),
+      ]).start();
+    } else {
+      fadeAnim.setValue(0);
+      slideAnim.setValue(300);
+    }
+  }, [visible]);
+
+  const handleConfirm = () => {
+    if (selectedSlot) {
+      // Handle booking confirmation
+      onClose();
+      setSelectedSlot(null);
+    }
   };
 
-  const handlePressOut = () => {
-    Animated.spring(scaleAnim, {
-      toValue: 1,
-      useNativeDriver: true,
-      speed: 50,
-    }).start();
+  const getDayName = (day: string) => {
+    const days: { [key: string]: string } = t.symptoms.scheduling?.days || {
+      monday: 'Luni',
+      tuesday: 'Marți',
+      wednesday: 'Miercuri',
+      thursday: 'Joi',
+      friday: 'Vineri',
+      saturday: 'Sâmbătă',
+      sunday: 'Duminică',
+    };
+    return days[day] || day;
   };
+
+  const formatDate = (dateStr: string) => {
+    const date = new Date(dateStr);
+    return date.toLocaleDateString('ro-RO', { day: 'numeric', month: 'short' });
+  };
+
+  // Group slots by date
+  const groupedSlots = APPOINTMENT_SLOTS.reduce((acc, slot) => {
+    if (!acc[slot.date]) {
+      acc[slot.date] = { day: slot.day, slots: [] };
+    }
+    acc[slot.date].slots.push(slot);
+    return acc;
+  }, {} as { [key: string]: { day: string; slots: typeof APPOINTMENT_SLOTS } });
 
   return (
-    <Pressable
-      onPressIn={handlePressIn}
-      onPressOut={handlePressOut}
-      onPress={onPress}
-    >
-      <Animated.View
-        style={[
-          styles.quickActionBtn,
-          { transform: [{ scale: scaleAnim }] },
-        ]}
-      >
-        <View style={[styles.quickActionIcon, { backgroundColor: bgColor }]}>
-          <Icon size={22} color={color} />
-        </View>
-        <ThemedText style={styles.quickActionLabel}>{label}</ThemedText>
+    <Modal visible={visible} transparent animationType="none" onRequestClose={onClose}>
+      <Animated.View style={[styles.modalOverlay, { opacity: fadeAnim }]}>
+        <Pressable style={styles.modalOverlayTouch} onPress={onClose} />
+        <Animated.View style={[styles.scheduleModal, { transform: [{ translateY: slideAnim }] }]}>
+          {/* Header */}
+          <View style={styles.scheduleHeader}>
+            <View>
+              <ThemedText style={styles.scheduleTitle}>
+                {t.symptoms.scheduling?.title || 'Programează o Consultație'}
+              </ThemedText>
+              <ThemedText style={styles.scheduleSubtitle}>
+                {t.symptoms.scheduling?.subtitle || 'Selectează un interval disponibil'}
+              </ThemedText>
+            </View>
+            <Pressable style={styles.scheduleCloseBtn} onPress={onClose}>
+              <X size={20} color={COLORS.textSecondary} />
+            </Pressable>
+          </View>
+
+          {/* Slots */}
+          <ScrollView style={styles.slotsContainer} showsVerticalScrollIndicator={false}>
+            {Object.entries(groupedSlots).map(([date, { day, slots }]) => (
+              <View key={date} style={styles.daySection}>
+                <ThemedText style={styles.dayTitle}>
+                  {getDayName(day)}, {formatDate(date)}
+                </ThemedText>
+                <View style={styles.slotsRow}>
+                  {slots.map((slot) => (
+                    <Pressable
+                      key={slot.id}
+                      style={[
+                        styles.slotBtn,
+                        !slot.available && styles.slotBtnUnavailable,
+                        selectedSlot === slot.id && styles.slotBtnSelected,
+                      ]}
+                      onPress={() => slot.available && setSelectedSlot(slot.id)}
+                      disabled={!slot.available}
+                    >
+                      <ThemedText
+                        style={[
+                          styles.slotTime,
+                          !slot.available && styles.slotTimeUnavailable,
+                          selectedSlot === slot.id && styles.slotTimeSelected,
+                        ]}
+                      >
+                        {slot.time}
+                      </ThemedText>
+                    </Pressable>
+                  ))}
+                </View>
+              </View>
+            ))}
+          </ScrollView>
+
+          {/* Confirm Button */}
+          <Pressable
+            style={[styles.confirmBtn, !selectedSlot && styles.confirmBtnDisabled]}
+            onPress={handleConfirm}
+            disabled={!selectedSlot}
+          >
+            <Check size={18} color={COLORS.cardWhite} />
+            <ThemedText style={styles.confirmBtnText}>
+              {t.symptoms.scheduling?.confirm || 'Confirmă Programarea'}
+            </ThemedText>
+          </Pressable>
+        </Animated.View>
       </Animated.View>
-    </Pressable>
+    </Modal>
+  );
+}
+
+// Romanian month names
+const ROMANIAN_MONTHS = [
+  'Ianuarie', 'Februarie', 'Martie', 'Aprilie', 'Mai', 'Iunie',
+  'Iulie', 'August', 'Septembrie', 'Octombrie', 'Noiembrie', 'Decembrie'
+];
+
+const ROMANIAN_DAYS = ['Lun', 'Mar', 'Mie', 'Joi', 'Vin', 'Sâm', 'Dum'];
+
+// Calendar Modal Component
+function CalendarModal({
+  visible,
+  onClose,
+}: {
+  visible: boolean;
+  onClose: () => void;
+}) {
+  const fadeAnim = useRef(new Animated.Value(0)).current;
+  const slideAnim = useRef(new Animated.Value(300)).current;
+  const today = new Date();
+  const currentMonth = today.getMonth();
+  const currentYear = today.getFullYear();
+  const currentDay = today.getDate();
+
+  useEffect(() => {
+    if (visible) {
+      Animated.parallel([
+        Animated.timing(fadeAnim, { toValue: 1, duration: 200, useNativeDriver: true }),
+        Animated.spring(slideAnim, { toValue: 0, useNativeDriver: true, speed: 15, bounciness: 5 }),
+      ]).start();
+    } else {
+      fadeAnim.setValue(0);
+      slideAnim.setValue(300);
+    }
+  }, [visible]);
+
+  // Get days in month
+  const getDaysInMonth = (month: number, year: number) => {
+    return new Date(year, month + 1, 0).getDate();
+  };
+
+  // Get first day of month (0 = Sunday, we need Monday = 0)
+  const getFirstDayOfMonth = (month: number, year: number) => {
+    const day = new Date(year, month, 1).getDay();
+    return day === 0 ? 6 : day - 1; // Convert to Monday-based
+  };
+
+  const daysInMonth = getDaysInMonth(currentMonth, currentYear);
+  const firstDay = getFirstDayOfMonth(currentMonth, currentYear);
+
+  // Create calendar grid
+  const calendarDays = [];
+  for (let i = 0; i < firstDay; i++) {
+    calendarDays.push(null); // Empty cells before first day
+  }
+  for (let i = 1; i <= daysInMonth; i++) {
+    calendarDays.push(i);
+  }
+
+  return (
+    <Modal visible={visible} transparent animationType="none" onRequestClose={onClose}>
+      <Animated.View style={[styles.modalOverlay, { opacity: fadeAnim }]}>
+        <Pressable style={styles.modalOverlayTouch} onPress={onClose} />
+        <Animated.View style={[styles.calendarModal, { transform: [{ translateY: slideAnim }] }]}>
+          {/* Header */}
+          <View style={styles.calendarHeader}>
+            <ThemedText style={styles.calendarTitle}>
+              {ROMANIAN_MONTHS[currentMonth]} {currentYear}
+            </ThemedText>
+            <Pressable style={styles.scheduleCloseBtn} onPress={onClose}>
+              <X size={20} color={COLORS.textSecondary} />
+            </Pressable>
+          </View>
+
+          {/* Day names */}
+          <View style={styles.calendarDayNames}>
+            {ROMANIAN_DAYS.map((day) => (
+              <ThemedText key={day} style={styles.calendarDayName}>{day}</ThemedText>
+            ))}
+          </View>
+
+          {/* Calendar grid */}
+          <View style={styles.calendarGrid}>
+            {calendarDays.map((day, index) => (
+              <View key={index} style={styles.calendarDayCell}>
+                {day !== null && (
+                  <View style={[
+                    styles.calendarDay,
+                    day === currentDay && styles.calendarDayToday,
+                  ]}>
+                    <ThemedText style={[
+                      styles.calendarDayText,
+                      day === currentDay && styles.calendarDayTextToday,
+                    ]}>
+                      {day}
+                    </ThemedText>
+                  </View>
+                )}
+              </View>
+            ))}
+          </View>
+        </Animated.View>
+      </Animated.View>
+    </Modal>
   );
 }
 
@@ -285,6 +494,9 @@ export default function SymptomsTab() {
   const [chatVisible, setChatVisible] = useState(false);
   const [urgentModalVisible, setUrgentModalVisible] = useState(false);
   const [urgentSeverity, setUrgentSeverity] = useState<'high' | 'critical'>('high');
+  const [scheduleModalVisible, setScheduleModalVisible] = useState(false);
+  const [selectedSlot, setSelectedSlot] = useState<string | null>(null);
+  const [calendarModalVisible, setCalendarModalVisible] = useState(false);
 
   // Animations
   const fadeAnim = useRef(new Animated.Value(0)).current;
@@ -376,8 +588,8 @@ export default function SymptomsTab() {
                 {t.symptoms.subtitle}
               </ThemedText>
             </View>
-            <Pressable style={styles.historyBtn}>
-              <FileText size={22} color={COLORS.textPrimary} />
+            <Pressable style={styles.historyBtn} onPress={() => setCalendarModalVisible(true)}>
+              <Calendar size={22} color={COLORS.textPrimary} />
             </Pressable>
           </View>
 
@@ -417,7 +629,7 @@ export default function SymptomsTab() {
                       {DOCTOR_INFO.name}
                     </ThemedText>
                     <ThemedText style={styles.doctorRole}>
-                      {DOCTOR_INFO.role}
+                      {t.symptoms.familyPhysician}
                     </ThemedText>
                     <View style={styles.doctorRating}>
                       <Star size={14} color={COLORS.amber} fill={COLORS.amber} />
@@ -446,46 +658,30 @@ export default function SymptomsTab() {
 
                 {/* Quick Actions */}
                 <View style={styles.doctorActions}>
-                  <Pressable style={styles.doctorActionBtn} onPress={handleCall}>
-                    <Phone size={18} color={COLORS.cardWhite} />
-                    <ThemedText style={styles.doctorActionText}>{t.symptoms.call}</ThemedText>
+                  <Pressable style={styles.doctorActionBtnSmall} onPress={handleCall}>
+                    <Phone size={16} color={COLORS.cardWhite} />
+                    <ThemedText style={styles.doctorActionTextSmall}>{t.symptoms.call}</ThemedText>
                   </Pressable>
                   <Pressable
-                    style={[styles.doctorActionBtn, styles.doctorActionBtnSecondary]}
+                    style={[styles.doctorActionBtnSmall, styles.doctorActionBtnSecondary]}
                     onPress={() => setChatVisible(true)}
                   >
-                    <MessageCircle size={18} color={COLORS.teal} />
-                    <ThemedText style={styles.doctorActionTextSecondary}>
+                    <MessageCircle size={16} color={COLORS.teal} />
+                    <ThemedText style={styles.doctorActionTextSecondarySmall}>
                       {t.symptoms.message}
+                    </ThemedText>
+                  </Pressable>
+                  <Pressable
+                    style={[styles.doctorActionBtnSmall, styles.doctorActionBtnSchedule]}
+                    onPress={() => setScheduleModalVisible(true)}
+                  >
+                    <Calendar size={16} color={COLORS.success} />
+                    <ThemedText style={styles.doctorActionTextSchedule}>
+                      {t.symptoms.schedule}
                     </ThemedText>
                   </Pressable>
                 </View>
               </Card>
-
-              {/* Quick Action Buttons */}
-              <View style={styles.quickActions}>
-                <QuickActionButton
-                  icon={Phone}
-                  label={t.symptoms.call}
-                  color={COLORS.teal}
-                  bgColor={COLORS.tealLight}
-                  onPress={handleCall}
-                />
-                <QuickActionButton
-                  icon={MessageCircle}
-                  label={t.symptoms.chat}
-                  color={COLORS.amber}
-                  bgColor={COLORS.amberLight}
-                  onPress={() => setChatVisible(true)}
-                />
-                <QuickActionButton
-                  icon={Calendar}
-                  label={t.symptoms.schedule}
-                  color={COLORS.success}
-                  bgColor={COLORS.successLight}
-                  onPress={() => {}}
-                />
-              </View>
 
               {/* Info Cards */}
               <Card style={styles.infoCard}>
@@ -702,6 +898,21 @@ export default function SymptomsTab() {
         doctorPhone={DOCTOR_INFO.phone}
         severity={urgentSeverity}
       />
+
+      {/* Schedule Modal */}
+      <ScheduleModal
+        visible={scheduleModalVisible}
+        onClose={() => setScheduleModalVisible(false)}
+        selectedSlot={selectedSlot}
+        setSelectedSlot={setSelectedSlot}
+        t={t}
+      />
+
+      {/* Calendar Modal */}
+      <CalendarModal
+        visible={calendarModalVisible}
+        onClose={() => setCalendarModalVisible(false)}
+      />
     </View>
   );
 }
@@ -899,7 +1110,7 @@ const styles = StyleSheet.create({
   },
   doctorActions: {
     flexDirection: 'row',
-    gap: 12,
+    gap: 8,
   },
   doctorActionBtn: {
     flex: 1,
@@ -926,40 +1137,37 @@ const styles = StyleSheet.create({
     fontWeight: '600',
     color: COLORS.teal,
   },
-
-  // Quick Actions
-  quickActions: {
+  doctorActionBtnSmall: {
+    flex: 1,
     flexDirection: 'row',
-    justifyContent: 'space-around',
-    marginBottom: 24,
-    paddingHorizontal: 10,
-  },
-  quickActionBtn: {
     alignItems: 'center',
-  },
-  quickActionIcon: {
-    width: 56,
-    height: 56,
-    borderRadius: 18,
     justifyContent: 'center',
-    alignItems: 'center',
-    marginBottom: 8,
-    borderWidth: 1,
-    borderColor: 'rgba(255, 255, 255, 0.6)',
-    ...Platform.select({
-      ios: {
-        shadowColor: '#000',
-        shadowOpacity: 0.06,
-        shadowOffset: { width: 0, height: 4 },
-        shadowRadius: 8,
-      },
-      android: { elevation: 2 },
-    }),
+    backgroundColor: COLORS.teal,
+    borderRadius: 12,
+    paddingVertical: 12,
+    paddingHorizontal: 8,
+    gap: 4,
+    minHeight: 44,
   },
-  quickActionLabel: {
-    fontSize: 13,
-    color: COLORS.textSecondary,
-    fontWeight: '500',
+  doctorActionTextSmall: {
+    fontSize: 12,
+    fontWeight: '600',
+    color: COLORS.cardWhite,
+  },
+  doctorActionTextSecondarySmall: {
+    fontSize: 12,
+    fontWeight: '600',
+    color: COLORS.teal,
+  },
+  doctorActionBtnSchedule: {
+    backgroundColor: COLORS.successLight,
+    borderWidth: 1,
+    borderColor: COLORS.success,
+  },
+  doctorActionTextSchedule: {
+    fontSize: 12,
+    fontWeight: '600',
+    color: COLORS.success,
   },
 
   // Info Card
@@ -1247,5 +1455,173 @@ const styles = StyleSheet.create({
   summaryDivider: {
     width: 1,
     backgroundColor: COLORS.border,
+  },
+
+  // Modal styles
+  modalOverlay: {
+    flex: 1,
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    justifyContent: 'flex-end',
+  },
+  modalOverlayTouch: {
+    flex: 1,
+  },
+  scheduleModal: {
+    backgroundColor: COLORS.cardWhite,
+    borderTopLeftRadius: 24,
+    borderTopRightRadius: 24,
+    paddingTop: 20,
+    paddingHorizontal: 20,
+    paddingBottom: 40,
+    maxHeight: '70%',
+  },
+  scheduleHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'flex-start',
+    marginBottom: 20,
+  },
+  scheduleTitle: {
+    fontSize: 20,
+    fontWeight: '700',
+    color: COLORS.textPrimary,
+  },
+  scheduleSubtitle: {
+    fontSize: 14,
+    color: COLORS.textSecondary,
+    marginTop: 4,
+  },
+  scheduleCloseBtn: {
+    width: 36,
+    height: 36,
+    borderRadius: 18,
+    backgroundColor: COLORS.background,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  slotsContainer: {
+    marginBottom: 20,
+  },
+  daySection: {
+    marginBottom: 20,
+  },
+  dayTitle: {
+    fontSize: 15,
+    fontWeight: '600',
+    color: COLORS.textPrimary,
+    marginBottom: 12,
+  },
+  slotsRow: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    gap: 10,
+  },
+  slotBtn: {
+    paddingHorizontal: 16,
+    paddingVertical: 10,
+    borderRadius: 12,
+    backgroundColor: COLORS.tealLight,
+    borderWidth: 1,
+    borderColor: COLORS.teal,
+  },
+  slotBtnUnavailable: {
+    backgroundColor: COLORS.background,
+    borderColor: COLORS.border,
+  },
+  slotBtnSelected: {
+    backgroundColor: COLORS.teal,
+    borderColor: COLORS.teal,
+  },
+  slotTime: {
+    fontSize: 14,
+    fontWeight: '600',
+    color: COLORS.teal,
+  },
+  slotTimeUnavailable: {
+    color: COLORS.textTertiary,
+  },
+  slotTimeSelected: {
+    color: COLORS.cardWhite,
+  },
+  confirmBtn: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: COLORS.teal,
+    borderRadius: 14,
+    paddingVertical: 16,
+    gap: 10,
+  },
+  confirmBtnDisabled: {
+    backgroundColor: COLORS.border,
+  },
+  confirmBtnText: {
+    fontSize: 16,
+    fontWeight: '600',
+    color: COLORS.cardWhite,
+  },
+
+  // Calendar Modal styles
+  calendarModal: {
+    backgroundColor: COLORS.cardWhite,
+    borderTopLeftRadius: 24,
+    borderTopRightRadius: 24,
+    paddingTop: 20,
+    paddingHorizontal: 20,
+    paddingBottom: 40,
+  },
+  calendarHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: 20,
+  },
+  calendarTitle: {
+    fontSize: 22,
+    fontWeight: '700',
+    color: COLORS.textPrimary,
+  },
+  calendarDayNames: {
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    marginBottom: 12,
+    paddingHorizontal: 4,
+  },
+  calendarDayName: {
+    fontSize: 13,
+    fontWeight: '600',
+    color: COLORS.textSecondary,
+    width: 40,
+    textAlign: 'center',
+  },
+  calendarGrid: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+  },
+  calendarDayCell: {
+    width: '14.28%',
+    aspectRatio: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    padding: 2,
+  },
+  calendarDay: {
+    width: 36,
+    height: 36,
+    borderRadius: 18,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  calendarDayToday: {
+    backgroundColor: COLORS.teal,
+  },
+  calendarDayText: {
+    fontSize: 15,
+    fontWeight: '500',
+    color: COLORS.textPrimary,
+  },
+  calendarDayTextToday: {
+    color: COLORS.cardWhite,
+    fontWeight: '700',
   },
 });

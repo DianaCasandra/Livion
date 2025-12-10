@@ -341,7 +341,7 @@ export default function CarePlanTab() {
               onPress={() => setAiModalVisible(true)}
             >
               <View style={styles.aiButtonIcon}>
-                <Sparkles size={24} color={COLORS.amber} />
+                <Sparkles size={24} color={COLORS.teal} />
               </View>
               <View style={styles.aiButtonContent}>
                 <ThemedText style={styles.aiButtonTitle}>{t.carePlan.aiInsights}</ThemedText>
@@ -349,7 +349,7 @@ export default function CarePlanTab() {
                   {t.carePlan.aiSubtitle}
                 </ThemedText>
               </View>
-              <ChevronRight size={22} color={COLORS.amber} />
+              <ChevronRight size={22} color={COLORS.teal} />
             </Pressable>
           </Animated.View>
 
@@ -481,10 +481,10 @@ const styles = StyleSheet.create({
     padding: 16,
     borderRadius: 20,
     borderWidth: 2,
-    borderColor: COLORS.amber,
+    borderColor: COLORS.teal,
     ...Platform.select({
       ios: {
-        shadowColor: COLORS.amber,
+        shadowColor: COLORS.teal,
         shadowOpacity: 0.2,
         shadowOffset: { width: 0, height: 4 },
         shadowRadius: 12,
@@ -496,7 +496,7 @@ const styles = StyleSheet.create({
     width: 50,
     height: 50,
     borderRadius: 25,
-    backgroundColor: COLORS.amberLight,
+    backgroundColor: COLORS.tealLight,
     justifyContent: 'center',
     alignItems: 'center',
     marginRight: 14,
