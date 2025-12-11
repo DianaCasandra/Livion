@@ -1,6 +1,6 @@
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import { UserProvider, MockDataProvider, LanguageProvider } from '@/src/components/providers';
+import { UserProvider, MockDataProvider, LanguageProvider, NotificationProvider } from '@/src/components/providers';
 import { ThemeProvider } from '@/src/components/providers/ThemeProvider';
 
 // Patient Onboarding Screens
@@ -26,27 +26,29 @@ export default function App() {
       <LanguageProvider>
         <UserProvider>
           <MockDataProvider>
-            <NavigationContainer>
-            <Stack.Navigator
-              initialRouteName="Welcome"
-              screenOptions={{ headerShown: false }}
-            >
-              {/* Onboarding Flow */}
-              <Stack.Screen name="Welcome" component={WelcomeScreen} />
-              <Stack.Screen name="Register" component={RegisterScreen} />
-              <Stack.Screen name="Consent" component={ConsentScreen} />
-              <Stack.Screen name="DataConnections" component={DataConnectionsScreen} />
-              <Stack.Screen name="Risk" component={RiskScreen} />
-              <Stack.Screen name="UserPromise" component={UserPromiseScreen} />
+            <NotificationProvider>
+              <NavigationContainer>
+              <Stack.Navigator
+                initialRouteName="Welcome"
+                screenOptions={{ headerShown: false }}
+              >
+                {/* Onboarding Flow */}
+                <Stack.Screen name="Welcome" component={WelcomeScreen} />
+                <Stack.Screen name="Register" component={RegisterScreen} />
+                <Stack.Screen name="Consent" component={ConsentScreen} />
+                <Stack.Screen name="DataConnections" component={DataConnectionsScreen} />
+                <Stack.Screen name="Risk" component={RiskScreen} />
+                <Stack.Screen name="UserPromise" component={UserPromiseScreen} />
 
-              {/* Main Dashboard */}
-              <Stack.Screen name="Dashboard" component={DashboardTabs} />
+                {/* Main Dashboard */}
+                <Stack.Screen name="Dashboard" component={DashboardTabs} />
 
-              {/* Lab Results */}
-              <Stack.Screen name="LabResults" component={LabResultsScreen} />
-              <Stack.Screen name="LabResultDetail" component={LabResultDetailScreen} />
-            </Stack.Navigator>
-            </NavigationContainer>
+                {/* Lab Results */}
+                <Stack.Screen name="LabResults" component={LabResultsScreen} />
+                <Stack.Screen name="LabResultDetail" component={LabResultDetailScreen} />
+              </Stack.Navigator>
+              </NavigationContainer>
+            </NotificationProvider>
           </MockDataProvider>
         </UserProvider>
       </LanguageProvider>

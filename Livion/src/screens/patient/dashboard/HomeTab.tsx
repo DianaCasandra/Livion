@@ -46,6 +46,7 @@ import { SupportModal } from '../../../components/molecules/SupportModal';
 import { WelcomeBlob } from '../../../components/molecules/WelcomeBlob';
 import { COLORS } from '@/src/constants/Colors';
 import { useLanguage } from '../../../components/providers/LanguageProvider';
+import { useNotifications } from '../../../components/providers/NotificationProvider';
 
 // Get current greeting key
 const getGreetingKey = () => {
@@ -56,6 +57,7 @@ const getGreetingKey = () => {
 export default function HomeTab() {
   const navigation = useNavigation();
   const { t } = useLanguage();
+  const { startReminders } = useNotifications();
   const greetingKey = getGreetingKey();
   const greeting = t.home.greetings[greetingKey as keyof typeof t.home.greetings];
 
@@ -134,6 +136,13 @@ export default function HomeTab() {
       Animated.timing(slideAnim, { toValue: 0, duration: 400, useNativeDriver: true }),
     ]).start();
   }, []);
+
+  // Start reminders when dashboard is shown
+  useEffect(() => {
+    if (showDashboard) {
+      startReminders();
+    }
+  }, [showDashboard, startReminders]);
 
   const handleBlobPress = () => {
     // Animate welcome out
