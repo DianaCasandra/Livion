@@ -25,6 +25,7 @@ import {
 import React, { useRef, useEffect, useState } from 'react';
 import {
   Animated,
+  Modal,
   Platform,
   Pressable,
   ScrollView,
@@ -78,6 +79,11 @@ export default function HomeTab() {
   const [tasks, setTasks] = useState(INITIAL_TASKS);
   const [selectedMood, setSelectedMood] = useState<string | null>(null);
   const [showSupportModal, setShowSupportModal] = useState(false);
+  const [insightPopup, setInsightPopup] = useState<{ visible: boolean; title: string; explanation: string }>({
+    visible: false,
+    title: '',
+    explanation: '',
+  });
 
   const handleNavigate = (screen: string) => {
     navigation.navigate(screen as never);
@@ -275,7 +281,7 @@ export default function HomeTab() {
               {/* Today's Tasks */}
               <View style={styles.tasksHeader}>
                 <ThemedText style={styles.sectionTitle}>{t.home.todaysPlan}</ThemedText>
-                <ThemedText style={[styles.taskCount, completedCount === tasks.length && { color: COLORS.success }]}>
+                <ThemedText style={[styles.taskCount, completedCount === tasks.length && { color: COLORS.teal }]}>
                   {completedCount === tasks.length ? t.home.allDone : `${completedCount} ${t.home.ofDone} ${tasks.length} ${t.home.done}`}
                 </ThemedText>
               </View>
@@ -283,7 +289,7 @@ export default function HomeTab() {
               <Card style={[styles.tasksCard, completedCount === tasks.length && styles.tasksCardDone]}>
                 {completedCount === tasks.length ? (
                   <View style={styles.allDoneContainer}>
-                    <CheckCircle2 size={36} color={COLORS.success} />
+                    <CheckCircle2 size={36} color={COLORS.teal} />
                     <ThemedText style={styles.allDoneTitle}>{t.home.greatJob}</ThemedText>
                     <ThemedText style={styles.allDoneSubtitle}>
                       {t.home.completedAllTasks}
@@ -305,30 +311,42 @@ export default function HomeTab() {
               {/* Insights Section */}
               <ThemedText style={styles.sectionTitle}>{t.home.insightsForYou}</ThemedText>
 
-              <Card style={styles.insightCard} highlight="amber">
-                <View style={styles.insightBadge}>
-                  <ThemedText style={styles.insightBadgeText}>{t.home.new}</ThemedText>
-                </View>
-                <ThemedText style={styles.insightTitle}>{t.home.insights.eveningReadings}</ThemedText>
-                <ThemedText style={styles.insightBody}>
-                  {t.home.insights.eveningReadingsBody}
-                </ThemedText>
-                <Pressable style={styles.insightAction}>
-                  <ThemedText style={styles.insightActionText}>{t.home.seeDetails}</ThemedText>
-                  <Ionicons name="chevron-forward" size={16} color={COLORS.teal} />
-                </Pressable>
-              </Card>
+              <Pressable onPress={() => setInsightPopup({
+                visible: true,
+                title: t.home.insights.eveningReadings,
+                explanation: 'Valorile tensiunii tale de seară sunt ușor mai mari decât de obicei. Încearcă să te relaxezi înainte de culcare - evită ecranele și cafeaua.',
+              })}>
+                <Card style={styles.insightCard} highlight="amber">
+                  <View style={styles.insightBadge}>
+                    <ThemedText style={styles.insightBadgeText}>{t.home.new}</ThemedText>
+                  </View>
+                  <ThemedText style={styles.insightTitle}>{t.home.insights.eveningReadings}</ThemedText>
+                  <ThemedText style={styles.insightBody}>
+                    {t.home.insights.eveningReadingsBody}
+                  </ThemedText>
+                  <View style={styles.insightAction}>
+                    <ThemedText style={styles.insightActionText}>{t.home.seeDetails}</ThemedText>
+                    <Ionicons name="chevron-forward" size={16} color={COLORS.teal} />
+                  </View>
+                </Card>
+              </Pressable>
 
-              <Card style={styles.insightCard}>
-                <ThemedText style={styles.insightTitle}>{t.home.insights.breathingSteady}</ThemedText>
-                <ThemedText style={styles.insightBody}>
-                  {t.home.insights.breathingSteadyBody}
-                </ThemedText>
-                <Pressable style={styles.insightAction}>
-                  <ThemedText style={styles.insightActionText}>{t.home.learnMore}</ThemedText>
-                  <Ionicons name="chevron-forward" size={16} color={COLORS.teal} />
-                </Pressable>
-              </Card>
+              <Pressable onPress={() => setInsightPopup({
+                visible: true,
+                title: t.home.insights.breathingSteady,
+                explanation: 'Pulsul tău este stabil și în limite normale. Continuă să menții un ritm de viață echilibrat pentru a păstra aceste rezultate bune.',
+              })}>
+                <Card style={styles.insightCard}>
+                  <ThemedText style={styles.insightTitle}>{t.home.insights.breathingSteady}</ThemedText>
+                  <ThemedText style={styles.insightBody}>
+                    {t.home.insights.breathingSteadyBody}
+                  </ThemedText>
+                  <View style={styles.insightAction}>
+                    <ThemedText style={styles.insightActionText}>{t.home.learnMore}</ThemedText>
+                    <Ionicons name="chevron-forward" size={16} color={COLORS.teal} />
+                  </View>
+                </Card>
+              </Pressable>
 
               <View style={{ height: 100 }} />
             </Animated.View>
@@ -345,6 +363,33 @@ export default function HomeTab() {
 
       {/* Support Modal for Rough mood */}
       <SupportModal visible={showSupportModal} onClose={() => setShowSupportModal(false)} />
+
+      {/* Simple Insight Explanation Popup */}
+      <Modal
+        visible={insightPopup.visible}
+        transparent
+        animationType="fade"
+        onRequestClose={() => setInsightPopup({ ...insightPopup, visible: false })}
+      >
+        <Pressable
+          style={styles.popupOverlay}
+          onPress={() => setInsightPopup({ ...insightPopup, visible: false })}
+        >
+          <View style={styles.popupCard}>
+            <View style={styles.popupHeader}>
+              <Sparkles size={20} color={COLORS.teal} />
+              <ThemedText style={styles.popupTitle}>{insightPopup.title}</ThemedText>
+            </View>
+            <ThemedText style={styles.popupExplanation}>{insightPopup.explanation}</ThemedText>
+            <Pressable
+              style={styles.popupButton}
+              onPress={() => setInsightPopup({ ...insightPopup, visible: false })}
+            >
+              <ThemedText style={styles.popupButtonText}>Am înțeles</ThemedText>
+            </Pressable>
+          </View>
+        </Pressable>
+      </Modal>
     </View>
   );
 }
@@ -488,8 +533,8 @@ const styles = StyleSheet.create({
     padding: 8,
   },
   tasksCardDone: {
-    backgroundColor: COLORS.success + '10',
-    borderColor: COLORS.success + '30',
+    backgroundColor: COLORS.tealLight,
+    borderColor: COLORS.teal + '30',
   },
   allDoneContainer: {
     alignItems: 'center',
@@ -499,7 +544,7 @@ const styles = StyleSheet.create({
   allDoneTitle: {
     fontSize: 18,
     fontWeight: '700',
-    color: COLORS.success,
+    color: COLORS.teal,
     marginTop: 12,
   },
   allDoneSubtitle: {
@@ -548,5 +593,59 @@ const styles = StyleSheet.create({
     fontSize: 14,
     fontWeight: '600',
     color: COLORS.teal,
+  },
+
+  // Popup styles
+  popupOverlay: {
+    flex: 1,
+    backgroundColor: 'rgba(0, 0, 0, 0.4)',
+    justifyContent: 'center',
+    alignItems: 'center',
+    padding: 24,
+  },
+  popupCard: {
+    backgroundColor: COLORS.cardWhite,
+    borderRadius: 20,
+    padding: 24,
+    width: '100%',
+    maxWidth: 340,
+    ...Platform.select({
+      ios: {
+        shadowColor: '#000',
+        shadowOpacity: 0.15,
+        shadowOffset: { width: 0, height: 8 },
+        shadowRadius: 24,
+      },
+      android: { elevation: 8 },
+    }),
+  },
+  popupHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 10,
+    marginBottom: 14,
+  },
+  popupTitle: {
+    fontSize: 17,
+    fontWeight: '600',
+    color: COLORS.textPrimary,
+    flex: 1,
+  },
+  popupExplanation: {
+    fontSize: 15,
+    color: COLORS.textSecondary,
+    lineHeight: 23,
+    marginBottom: 20,
+  },
+  popupButton: {
+    backgroundColor: COLORS.teal,
+    borderRadius: 12,
+    paddingVertical: 12,
+    alignItems: 'center',
+  },
+  popupButtonText: {
+    fontSize: 15,
+    fontWeight: '600',
+    color: COLORS.cardWhite,
   },
 });

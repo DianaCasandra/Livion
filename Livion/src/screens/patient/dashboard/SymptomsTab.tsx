@@ -462,17 +462,27 @@ function CalendarModal({
       <Animated.View style={[styles.modalOverlay, { opacity: fadeAnim }]}>
         <Pressable style={styles.modalOverlayTouch} onPress={onClose} />
         <Animated.View style={[styles.calendarModal, { transform: [{ translateY: slideAnim }] }]}>
-          {/* Header */}
-          <View style={styles.calendarHeader}>
-            <ThemedText style={styles.calendarTitle}>
-              {ROMANIAN_MONTHS[currentMonth]} {currentYear}
-            </ThemedText>
-            <Pressable style={styles.scheduleCloseBtn} onPress={onClose}>
-              <X size={20} color={COLORS.textSecondary} />
+          {/* Teal Header */}
+          <View style={styles.calendarHeaderGradient}>
+            <View style={styles.calendarHeaderLeft}>
+              <View style={styles.calendarIconWrap}>
+                <Calendar size={24} color="#fff" />
+              </View>
+              <View>
+                <ThemedText style={styles.calendarTitle}>
+                  {ROMANIAN_MONTHS[currentMonth]} {currentYear}
+                </ThemedText>
+                <ThemedText style={styles.calendarSubtitle}>
+                  Programări și jurnal
+                </ThemedText>
+              </View>
+            </View>
+            <Pressable style={styles.calendarCloseBtn} onPress={onClose}>
+              <X size={20} color="#fff" />
             </Pressable>
           </View>
 
-          {/* Legend */}
+          {/* Legend - with teal background */}
           <View style={styles.calendarLegend}>
             <View style={styles.legendItem}>
               <View style={[styles.legendDot, { backgroundColor: COLORS.teal }]} />
@@ -495,28 +505,32 @@ function CalendarModal({
           <View style={styles.calendarGrid}>
             {calendarDays.map((day, index) => {
               const event = day ? CALENDAR_EVENTS[day] : null;
-              const hasAppointment = event?.type === 'appointment' || event?.type === 'both';
-              const hasLog = event?.type === 'log' || event?.type === 'both';
+              const isFutureDay = day !== null && day > currentDay;
+              // Only show events for past and current days
+              const hasAppointment = !isFutureDay && (event?.type === 'appointment' || event?.type === 'both');
+              const hasLog = !isFutureDay && (event?.type === 'log' || event?.type === 'both');
 
               return (
                 <View key={index} style={styles.calendarDayCell}>
                   {day !== null && (
                     <Pressable
-                      onPress={() => handleDayPress(day)}
+                      onPress={() => !isFutureDay && handleDayPress(day)}
                       style={[
                         styles.calendarDay,
                         day === currentDay && styles.calendarDayToday,
                         selectedDay === day && styles.calendarDaySelected,
+                        isFutureDay && styles.calendarDayFuture,
                       ]}
                     >
                       <ThemedText style={[
                         styles.calendarDayText,
                         day === currentDay && styles.calendarDayTextToday,
                         selectedDay === day && styles.calendarDayTextSelected,
+                        isFutureDay && styles.calendarDayTextFuture,
                       ]}>
                         {day}
                       </ThemedText>
-                      {/* Event indicators */}
+                      {/* Event indicators - only for past/current days */}
                       {(hasAppointment || hasLog) && (
                         <View style={styles.eventIndicators}>
                           {hasAppointment && <View style={[styles.eventDot, { backgroundColor: COLORS.teal }]} />}
@@ -543,7 +557,7 @@ function CalendarModal({
                   <View style={styles.eventCardContent}>
                     <View style={styles.eventCardHeader}>
                       <Calendar size={14} color={COLORS.teal} />
-                      <ThemedText style={styles.eventCardLabel}>Programare</ThemedText>
+                      <ThemedText style={[styles.eventCardLabel, { color: COLORS.teal }]}>Programare</ThemedText>
                     </View>
                     <ThemedText style={styles.eventCardText}>{selectedEvent.appointment}</ThemedText>
                   </View>
@@ -556,7 +570,7 @@ function CalendarModal({
                   <View style={styles.eventCardContent}>
                     <View style={styles.eventCardHeader}>
                       <ClipboardList size={14} color={COLORS.amber} />
-                      <ThemedText style={styles.eventCardLabel}>Jurnal Simptome</ThemedText>
+                      <ThemedText style={[styles.eventCardLabel, { color: COLORS.amber }]}>Jurnal Simptome</ThemedText>
                     </View>
                     <ThemedText style={styles.eventCardText}>{selectedEvent.log.symptoms}</ThemedText>
                     <ThemedText style={styles.eventCardPain}>
@@ -778,14 +792,24 @@ export default function SymptomsTab() {
                 </ThemedText>
               </Card>
 
-              <Card style={styles.infoCard}>
-                <View style={styles.infoCardHeader}>
-                  <Ionicons name="alert-circle-outline" size={20} color={COLORS.amber} />
-                  <ThemedText style={styles.infoCardTitle}>{t.symptoms.emergencyContact}</ThemedText>
+              {/* Emergency Contact Card */}
+              <Card style={styles.emergencyCard}>
+                <View style={styles.emergencyHeader}>
+                  <View style={styles.emergencyIconWrap}>
+                    <Ionicons name="alert-circle" size={18} color={COLORS.error} />
+                  </View>
+                  <View style={styles.emergencyTitleWrap}>
+                    <ThemedText style={styles.emergencyTitle}>{t.symptoms.emergencyContact}</ThemedText>
+                    <ThemedText style={styles.emergencySubtitle}>Pentru situații urgente</ThemedText>
+                  </View>
                 </View>
-                <ThemedText style={styles.infoCardText}>
+                <ThemedText style={styles.emergencyText}>
                   {t.symptoms.emergencyText}
                 </ThemedText>
+                <Pressable style={styles.emergencyCallBtn} onPress={() => Linking.openURL('tel:112')}>
+                  <Ionicons name="call" size={15} color={COLORS.error} />
+                  <ThemedText style={styles.emergencyCallText}>Sună 112</ThemedText>
+                </Pressable>
               </Card>
 
               <Card style={styles.infoCard} highlight="teal">
@@ -818,13 +842,23 @@ export default function SymptomsTab() {
             >
               {/* Symptom Log Card */}
               <Card style={styles.checkinCard}>
+                {/* Header with icon */}
                 <View style={styles.checkinHeader}>
-                  <View style={styles.checkinBadge}>
-                    <ThemedText style={styles.checkinBadgeText}>
-                      {t.symptoms.logForDoctor}
+                  <View style={styles.checkinTitleRow}>
+                    <View style={styles.checkinIconCircle}>
+                      <ClipboardList size={18} color={COLORS.teal} />
+                    </View>
+                    <ThemedText style={styles.checkinTitle}>
+                      {t.symptoms.symptomsLog}
                     </ThemedText>
                   </View>
+                  <ThemedText style={styles.checkinSubtitle}>
+                    {t.symptoms.logForDoctor.toLowerCase()}
+                  </ThemedText>
                 </View>
+
+                {/* Divider */}
+                <View style={styles.checkinDivider} />
 
                 {/* Symptoms Input */}
                 <View style={styles.inputGroup}>
@@ -847,12 +881,14 @@ export default function SymptomsTab() {
                   <ThemedText style={styles.inputLabel}>
                     {t.symptoms.painLevel}
                   </ThemedText>
-                  <PainScale
-                    value={painLevel}
-                    onChange={setPainLevel}
-                    noPainLabel={t.symptoms.noPain}
-                    severeLabel={t.symptoms.severe}
-                  />
+                  <View style={styles.painScaleCard}>
+                    <PainScale
+                      value={painLevel}
+                      onChange={setPainLevel}
+                      noPainLabel={t.symptoms.noPain}
+                      severeLabel={t.symptoms.severe}
+                    />
+                  </View>
                   {painLevel >= 7 && (
                     <View style={styles.painWarning}>
                       <Ionicons
@@ -892,10 +928,10 @@ export default function SymptomsTab() {
 
                 {/* Submit Button */}
                 <Pressable style={styles.submitBtn} onPress={handleSubmit}>
+                  <Send size={18} color={COLORS.cardWhite} />
                   <ThemedText style={styles.submitBtnText}>
                     {t.symptoms.sendToDoctor}
                   </ThemedText>
-                  <Send size={18} color={COLORS.cardWhite} />
                 </Pressable>
               </Card>
 
@@ -1244,6 +1280,62 @@ const styles = StyleSheet.create({
     color: COLORS.teal,
   },
 
+  // Emergency Card
+  emergencyCard: {
+    marginBottom: 12,
+    backgroundColor: '#fef2f2',
+    borderLeftWidth: 3,
+    borderLeftColor: COLORS.error,
+  },
+  emergencyHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 12,
+    marginBottom: 10,
+  },
+  emergencyIconWrap: {
+    width: 36,
+    height: 36,
+    borderRadius: 18,
+    backgroundColor: COLORS.errorLight,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  emergencyTitleWrap: {
+    flex: 1,
+  },
+  emergencyTitle: {
+    fontSize: 16,
+    fontWeight: '600',
+    color: COLORS.textPrimary,
+  },
+  emergencySubtitle: {
+    fontSize: 12,
+    color: COLORS.error,
+    marginTop: 1,
+  },
+  emergencyText: {
+    fontSize: 14,
+    color: COLORS.textSecondary,
+    lineHeight: 20,
+  },
+  emergencyCallBtn: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: COLORS.errorLight,
+    borderRadius: 10,
+    paddingVertical: 10,
+    paddingHorizontal: 14,
+    gap: 6,
+    marginTop: 14,
+    alignSelf: 'flex-start',
+  },
+  emergencyCallText: {
+    fontSize: 14,
+    fontWeight: '600',
+    color: COLORS.error,
+  },
+
   // Info Card
   infoCard: {
     marginBottom: 12,
@@ -1278,23 +1370,43 @@ const styles = StyleSheet.create({
 
   // Check-in Card
   checkinCard: {
-    marginBottom: 12,
+    marginBottom: 16,
+    padding: 0,
+    paddingTop: 20,
+    paddingHorizontal: 20,
+    paddingBottom: 20,
   },
   checkinHeader: {
-    marginBottom: 20,
+    marginBottom: 6,
   },
-  checkinBadge: {
+  checkinTitleRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 10,
+    marginBottom: 6,
+  },
+  checkinIconCircle: {
+    width: 36,
+    height: 36,
+    borderRadius: 18,
     backgroundColor: COLORS.tealLight,
-    paddingHorizontal: 12,
-    paddingVertical: 6,
-    borderRadius: 8,
-    alignSelf: 'flex-start',
+    justifyContent: 'center',
+    alignItems: 'center',
   },
-  checkinBadgeText: {
-    fontSize: 11,
+  checkinTitle: {
+    fontSize: 20,
     fontWeight: '700',
-    color: COLORS.teal,
-    letterSpacing: 0.5,
+    color: COLORS.textPrimary,
+  },
+  checkinSubtitle: {
+    fontSize: 13,
+    color: COLORS.textSecondary,
+    marginLeft: 46,
+  },
+  checkinDivider: {
+    height: 1,
+    backgroundColor: COLORS.border,
+    marginVertical: 18,
   },
 
   // Input Group
@@ -1302,24 +1414,31 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
   inputLabel: {
-    fontSize: 15,
+    fontSize: 14,
     fontWeight: '600',
     color: COLORS.textPrimary,
-    marginBottom: 10,
+    marginBottom: 8,
   },
   textInput: {
-    backgroundColor: 'rgba(255, 255, 255, 0.5)',
-    borderRadius: 14,
+    backgroundColor: COLORS.background,
+    borderRadius: 12,
     padding: 14,
+    paddingTop: 12,
     fontSize: 15,
     color: COLORS.textPrimary,
     minHeight: 80,
     textAlignVertical: 'top',
     borderWidth: 1,
-    borderColor: 'rgba(255, 255, 255, 0.7)',
+    borderColor: COLORS.border,
   },
   textInputSmall: {
     minHeight: 60,
+  },
+  painScaleCard: {
+    backgroundColor: COLORS.background,
+    borderRadius: 12,
+    padding: 16,
+    paddingTop: 14,
   },
 
   // Pain Scale
@@ -1390,13 +1509,13 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     backgroundColor: COLORS.teal,
-    borderRadius: 14,
-    paddingVertical: 16,
-    gap: 10,
-    marginTop: 8,
+    borderRadius: 12,
+    paddingVertical: 14,
+    gap: 8,
+    marginTop: 4,
   },
   submitBtnText: {
-    fontSize: 16,
+    fontSize: 15,
     fontWeight: '600',
     color: COLORS.cardWhite,
   },
@@ -1638,39 +1757,81 @@ const styles = StyleSheet.create({
   // Calendar Modal styles
   calendarModal: {
     backgroundColor: COLORS.cardWhite,
-    borderTopLeftRadius: 24,
-    borderTopRightRadius: 24,
-    paddingTop: 20,
-    paddingHorizontal: 20,
+    borderTopLeftRadius: 28,
+    borderTopRightRadius: 28,
     paddingBottom: 40,
+    overflow: 'hidden',
+    ...Platform.select({
+      ios: {
+        shadowColor: COLORS.teal,
+        shadowOpacity: 0.15,
+        shadowOffset: { width: 0, height: -4 },
+        shadowRadius: 20,
+      },
+      android: { elevation: 10 },
+    }),
   },
-  calendarHeader: {
+  calendarHeaderGradient: {
     flexDirection: 'row',
-    justifyContent: 'space-between',
     alignItems: 'center',
-    marginBottom: 20,
+    justifyContent: 'space-between',
+    padding: 20,
+    paddingTop: 24,
+    paddingBottom: 20,
+    backgroundColor: COLORS.teal,
+  },
+  calendarHeaderLeft: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 14,
+  },
+  calendarIconWrap: {
+    width: 52,
+    height: 52,
+    borderRadius: 26,
+    backgroundColor: 'rgba(255, 255, 255, 0.25)',
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderWidth: 2,
+    borderColor: 'rgba(255, 255, 255, 0.4)',
   },
   calendarTitle: {
-    fontSize: 22,
+    fontSize: 24,
     fontWeight: '700',
-    color: COLORS.textPrimary,
+    color: '#fff',
+    letterSpacing: 0.3,
+  },
+  calendarSubtitle: {
+    fontSize: 14,
+    color: 'rgba(255, 255, 255, 0.85)',
+    marginTop: 3,
+  },
+  calendarCloseBtn: {
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    backgroundColor: 'rgba(255, 255, 255, 0.2)',
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   calendarDayNames: {
     flexDirection: 'row',
     justifyContent: 'space-around',
     marginBottom: 12,
     paddingHorizontal: 4,
+    paddingTop: 16,
   },
   calendarDayName: {
     fontSize: 13,
-    fontWeight: '600',
-    color: COLORS.textSecondary,
+    fontWeight: '700',
+    color: COLORS.teal,
     width: 40,
     textAlign: 'center',
   },
   calendarGrid: {
     flexDirection: 'row',
     flexWrap: 'wrap',
+    paddingHorizontal: 8,
   },
   calendarDayCell: {
     width: '14.28%',
@@ -1680,14 +1841,23 @@ const styles = StyleSheet.create({
     padding: 2,
   },
   calendarDay: {
-    width: 36,
-    height: 36,
-    borderRadius: 18,
+    width: 40,
+    height: 40,
+    borderRadius: 20,
     justifyContent: 'center',
     alignItems: 'center',
   },
   calendarDayToday: {
     backgroundColor: COLORS.teal,
+    ...Platform.select({
+      ios: {
+        shadowColor: COLORS.teal,
+        shadowOpacity: 0.4,
+        shadowOffset: { width: 0, height: 2 },
+        shadowRadius: 8,
+      },
+      android: { elevation: 4 },
+    }),
   },
   calendarDayText: {
     fontSize: 15,
@@ -1695,97 +1865,113 @@ const styles = StyleSheet.create({
     color: COLORS.textPrimary,
   },
   calendarDayTextToday: {
-    color: COLORS.cardWhite,
+    color: '#fff',
     fontWeight: '700',
   },
   calendarDaySelected: {
-    backgroundColor: COLORS.amber,
+    backgroundColor: COLORS.tealLight,
+    borderWidth: 2,
+    borderColor: COLORS.teal,
   },
   calendarDayTextSelected: {
-    color: COLORS.cardWhite,
+    color: COLORS.tealDark,
     fontWeight: '700',
+  },
+  calendarDayFuture: {
+    opacity: 0.4,
+  },
+  calendarDayTextFuture: {
+    color: COLORS.textTertiary,
   },
 
   // Calendar legend
   calendarLegend: {
     flexDirection: 'row',
     justifyContent: 'center',
-    gap: 20,
-    marginBottom: 16,
+    gap: 24,
+    paddingVertical: 14,
+    backgroundColor: COLORS.tealLight,
+    borderBottomWidth: 1,
+    borderBottomColor: COLORS.teal + '20',
   },
   legendItem: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 6,
+    gap: 8,
   },
   legendDot: {
-    width: 8,
-    height: 8,
-    borderRadius: 4,
+    width: 10,
+    height: 10,
+    borderRadius: 5,
   },
   legendText: {
-    fontSize: 12,
-    color: COLORS.textSecondary,
+    fontSize: 13,
+    color: COLORS.tealDark,
+    fontWeight: '500',
   },
 
   // Event indicators on calendar days
   eventIndicators: {
     flexDirection: 'row',
     position: 'absolute',
-    bottom: 2,
-    gap: 2,
+    bottom: 4,
+    gap: 3,
   },
   eventDot: {
-    width: 5,
-    height: 5,
-    borderRadius: 2.5,
+    width: 6,
+    height: 6,
+    borderRadius: 3,
   },
 
   // Event details panel
   eventDetails: {
     marginTop: 16,
+    marginHorizontal: 20,
     paddingTop: 16,
     borderTopWidth: 1,
-    borderTopColor: COLORS.border,
+    borderTopColor: COLORS.teal + '20',
   },
   eventDetailsTitle: {
-    fontSize: 16,
-    fontWeight: '600',
-    color: COLORS.textPrimary,
-    marginBottom: 12,
+    fontSize: 18,
+    fontWeight: '700',
+    color: COLORS.teal,
+    marginBottom: 14,
   },
   eventCard: {
     flexDirection: 'row',
-    backgroundColor: COLORS.background,
-    borderRadius: 12,
+    backgroundColor: COLORS.tealLight + '60',
+    borderRadius: 16,
     overflow: 'hidden',
-    marginBottom: 10,
+    marginBottom: 12,
+    borderWidth: 1,
+    borderColor: COLORS.teal + '15',
   },
   eventCardAccent: {
-    width: 4,
+    width: 5,
   },
   eventCardContent: {
     flex: 1,
-    padding: 12,
+    padding: 14,
   },
   eventCardHeader: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 6,
-    marginBottom: 4,
+    gap: 8,
+    marginBottom: 6,
   },
   eventCardLabel: {
-    fontSize: 12,
+    fontSize: 13,
     fontWeight: '600',
     color: COLORS.textSecondary,
   },
   eventCardText: {
-    fontSize: 14,
+    fontSize: 15,
     color: COLORS.textPrimary,
+    fontWeight: '500',
   },
   eventCardPain: {
-    fontSize: 12,
+    fontSize: 13,
     color: COLORS.textSecondary,
-    marginTop: 4,
+    marginTop: 6,
   },
 });

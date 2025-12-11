@@ -252,20 +252,22 @@ export function AIInsightsModal({ visible, onClose }: AIInsightsModalProps) {
         >
           {/* Header */}
           <View style={styles.header}>
-            <View style={styles.headerLeft}>
-              <View style={styles.aiIconWrap}>
-                <Sparkles size={24} color={COLORS.amber} />
+            <View style={styles.headerGradient}>
+              <View style={styles.headerLeft}>
+                <View style={styles.aiIconWrap}>
+                  <Sparkles size={22} color="#fff" />
+                </View>
+                <View>
+                  <ThemedText style={styles.headerTitle}>{t.aiInsights.title}</ThemedText>
+                  <ThemedText style={styles.headerSubtitle}>
+                    {t.aiInsights.personalizedForYou}
+                  </ThemedText>
+                </View>
               </View>
-              <View>
-                <ThemedText style={styles.headerTitle}>{t.aiInsights.title}</ThemedText>
-                <ThemedText style={styles.headerSubtitle}>
-                  {t.aiInsights.personalizedForYou}
-                </ThemedText>
-              </View>
+              <Pressable style={styles.closeButton} onPress={onClose}>
+                <X size={20} color="#fff" />
+              </Pressable>
             </View>
-            <Pressable style={styles.closeButton} onPress={onClose}>
-              <X size={22} color={COLORS.textSecondary} />
-            </Pressable>
           </View>
 
           {/* Quick Stats */}
@@ -290,9 +292,11 @@ export function AIInsightsModal({ visible, onClose }: AIInsightsModalProps) {
             />
           </View>
 
-          {/* AI Summary Banner */}
+          {/* AI Summary Banner - Teal themed */}
           <View style={styles.aiBanner}>
-            <Sparkles size={18} color={COLORS.amber} />
+            <View style={styles.aiBannerIcon}>
+              <Sparkles size={18} color="#fff" />
+            </View>
             <ThemedText style={styles.aiBannerText}>
               {t.aiInsights.aiBannerText}
             </ThemedText>
@@ -360,14 +364,17 @@ const styles = StyleSheet.create({
 
   // Header
   header: {
+    overflow: 'hidden',
+  },
+
+  headerGradient: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
     padding: 20,
-    paddingBottom: 16,
-    backgroundColor: COLORS.cardWhite,
-    borderBottomWidth: 1,
-    borderBottomColor: COLORS.border,
+    paddingBottom: 20,
+    paddingTop: 24,
+    backgroundColor: COLORS.teal,
   },
 
   headerLeft: {
@@ -377,31 +384,34 @@ const styles = StyleSheet.create({
   },
 
   aiIconWrap: {
-    width: 48,
-    height: 48,
-    borderRadius: 24,
-    backgroundColor: COLORS.amberLight,
+    width: 50,
+    height: 50,
+    borderRadius: 25,
+    backgroundColor: 'rgba(255, 255, 255, 0.25)',
     justifyContent: 'center',
     alignItems: 'center',
+    borderWidth: 2,
+    borderColor: 'rgba(255, 255, 255, 0.4)',
   },
 
   headerTitle: {
     fontSize: 22,
     fontWeight: '700',
-    color: COLORS.textPrimary,
+    color: '#fff',
+    letterSpacing: 0.2,
   },
 
   headerSubtitle: {
     fontSize: 14,
-    color: COLORS.textSecondary,
+    color: 'rgba(255, 255, 255, 0.85)',
     marginTop: 2,
   },
 
   closeButton: {
-    width: 40,
-    height: 40,
-    borderRadius: 20,
-    backgroundColor: COLORS.background,
+    width: 38,
+    height: 38,
+    borderRadius: 19,
+    backgroundColor: 'rgba(255, 255, 255, 0.2)',
     justifyContent: 'center',
     alignItems: 'center',
   },
@@ -410,9 +420,9 @@ const styles = StyleSheet.create({
   quickStats: {
     flexDirection: 'row',
     justifyContent: 'space-around',
-    paddingVertical: 20,
+    paddingVertical: 18,
     paddingHorizontal: 16,
-    backgroundColor: COLORS.cardWhite,
+    backgroundColor: COLORS.background,
   },
 
   quickStat: {
@@ -420,9 +430,9 @@ const styles = StyleSheet.create({
   },
 
   quickStatIcon: {
-    width: 44,
-    height: 44,
-    borderRadius: 22,
+    width: 46,
+    height: 46,
+    borderRadius: 23,
     justifyContent: 'center',
     alignItems: 'center',
     marginBottom: 8,
@@ -444,19 +454,30 @@ const styles = StyleSheet.create({
   aiBanner: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: COLORS.amberLight,
+    backgroundColor: COLORS.tealLight,
     marginHorizontal: 20,
     marginTop: 16,
     marginBottom: 8,
     padding: 14,
     borderRadius: 14,
     gap: 12,
+    borderWidth: 1,
+    borderColor: COLORS.teal + '30',
+  },
+
+  aiBannerIcon: {
+    width: 34,
+    height: 34,
+    borderRadius: 17,
+    backgroundColor: COLORS.teal,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
 
   aiBannerText: {
     flex: 1,
     fontSize: 14,
-    color: COLORS.amberDark,
+    color: COLORS.textPrimary,
     lineHeight: 20,
   },
 
@@ -473,7 +494,7 @@ const styles = StyleSheet.create({
   // Insight Card
   insightCard: {
     backgroundColor: COLORS.cardWhite,
-    borderRadius: 20,
+    borderRadius: 18,
     padding: 16,
     marginBottom: 12,
     borderWidth: 1,
@@ -516,12 +537,16 @@ const styles = StyleSheet.create({
 
   insightCardCount: {
     fontSize: 13,
-    color: COLORS.textTertiary,
+    color: COLORS.textSecondary,
     marginTop: 2,
   },
 
   insightCardBody: {
     gap: 10,
+    backgroundColor: COLORS.background,
+    marginTop: 4,
+    padding: 12,
+    borderRadius: 12,
   },
 
   insightItem: {

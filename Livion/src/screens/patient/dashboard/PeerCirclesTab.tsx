@@ -3,24 +3,23 @@
  * A moderated space to share experiences with other patients
  */
 
+import { COLORS } from '@/src/constants/Colors';
 import { Ionicons } from '@expo/vector-icons';
-import { Users, Shield, Heart, MessageSquare, Activity, Salad, Brain, Dumbbell, HeartPulse } from 'lucide-react-native';
-import React, { useRef, useEffect, useState } from 'react';
+import { Activity, Brain, Dumbbell, Heart, HeartPulse, MessageSquare, Salad, Shield, Users } from 'lucide-react-native';
+import React, { useEffect, useRef, useState } from 'react';
 import {
   Animated,
-  Platform,
   Pressable,
   ScrollView,
   StatusBar,
   StyleSheet,
   Switch,
   TextInput,
-  View,
+  View
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { ThemedText } from '../../../components/atoms/ThemedText';
 import { Card } from '../../../components/atoms/Card';
-import { COLORS } from '@/src/constants/Colors';
+import { ThemedText } from '../../../components/atoms/ThemedText';
 import { useLanguage } from '../../../components/providers/LanguageProvider';
 
 // Peer post component
@@ -176,6 +175,20 @@ export default function PeerCirclesTab() {
               </View>
             </Card>
 
+          {/* Compose Post */}
+            <Card style={styles.composeCard}>
+              <TextInput
+                style={styles.composeInput}
+                placeholder={t.peerCircles.sharePlaceholder}
+                placeholderTextColor={COLORS.textTertiary}
+                multiline
+                numberOfLines={3}
+              />
+              <Pressable style={styles.postButton}>
+                <ThemedText style={styles.postButtonText}>{t.peerCircles.post}</ThemedText>
+              </Pressable>
+            </Card>
+            
             {/* Topic Filters */}
             <View style={styles.topicsSection}>
               <ThemedText style={styles.topicsTitle}>
@@ -198,19 +211,6 @@ export default function PeerCirclesTab() {
               </ScrollView>
             </View>
 
-            {/* Compose Post */}
-            <Card style={styles.composeCard}>
-              <TextInput
-                style={styles.composeInput}
-                placeholder={t.peerCircles.sharePlaceholder}
-                placeholderTextColor={COLORS.textTertiary}
-                multiline
-                numberOfLines={3}
-              />
-              <Pressable style={styles.postButton}>
-                <ThemedText style={styles.postButtonText}>{t.peerCircles.post}</ThemedText>
-              </Pressable>
-            </Card>
 
             {/* Posts Feed */}
             <ThemedText style={styles.feedTitle}>{t.peerCircles.recentPosts}</ThemedText>

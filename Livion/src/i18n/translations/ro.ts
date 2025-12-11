@@ -23,8 +23,8 @@ export const ro: TranslationKeys = {
 
   // Welcome Screen
   welcome: {
-    tagline: 'Povestea ta de sănătate. A ta de împărtășit.',
-    privacyLink: 'Promisiunea Utilizatorului & Explicator Confidențialitate',
+    tagline: 'Povestea sănătății tale. Tu alegi cum o împartășești.',
+    privacyLink: 'Promisiunea Utilizatorului & Confidențialitate',
     getStarted: 'Începe',
   },
 
@@ -109,7 +109,7 @@ export const ro: TranslationKeys = {
       item3Bold: '3. Pașii mici contează.',
       item3Text: ' Sănătatea nu este o cursă. Momentele mici contează — Livion te ajută să le observi.',
       item4Bold: '4. Călătoria ta este unică.',
-      item4Text: ' IA noastră se adaptează la tine, nu te judecă niciodată.',
+      item4Text: ' Inteligența artificială folosită de noi se adaptează la tine, nu te judecă niciodată.',
       item5Bold: '5. Faci parte din ceva mai mare.',
       item5Text: ' Fiecare alegere contribuie la o misiune de comunități mai puternice și îngrijire onestă.',
       item6Bold: '6. Toată lumea aparține.',
@@ -172,8 +172,8 @@ export const ro: TranslationKeys = {
     insights: {
       eveningReadings: 'Citirile de seară s-au îmbunătățit',
       eveningReadingsBody: 'Tensiunea arterială a avut tendință de scădere în ultimele 3 seri. Continuă tot așa!',
-      breathingSteady: 'Respirația arată stabilă',
-      breathingSteadyBody: 'Rata respiratorie a rămas în intervalul normal toată săptămâna.',
+      breathingSteady: 'Pulsul pare stabil',
+      breathingSteadyBody: 'Ritmul cardiac a rămas în intervalul normal toată săptămâna.',
     },
     tasks: {
       morningBloodPressure: 'Tensiune arterială dimineața',
